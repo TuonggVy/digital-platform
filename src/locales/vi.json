@@ -1,0 +1,939 @@
+{
+  "brand": "VTC TELECOM",
+  "demoLabel": "Demo",
+  "common": {
+    "loading": "Đang tải...",
+    "viewDetails": "Xem chi tiết",
+    "addToCart": "Thêm vào giỏ",
+    "buyNow": "Mua ngay",
+    "contactSales": "Liên hệ tư vấn",
+    "learnMore": "Tìm hiểu thêm",
+    "seeAll": "Xem tất cả",
+    "back": "Quay lại",
+    "cancel": "Hủy",
+    "save": "Lưu thay đổi",
+    "confirm": "Xác nhận",
+    "close": "Đóng",
+    "search": "Tìm kiếm",
+    "filter": "Bộ lọc",
+    "clearFilter": "Xóa bộ lọc",
+    "sortBy": "Sắp xếp",
+    "noResults": "Không tìm thấy kết quả phù hợp",
+    "tryAgain": "Thử lại",
+    "startingFrom": "Chỉ từ",
+    "perMonth": "/tháng",
+    "perYear": "/năm",
+    "oneTime": "một lần",
+    "reviews": "đánh giá",
+    "quantity": "Số lượng",
+    "copy": "Sao chép",
+    "copied": "Đã sao chép",
+    "edit": "Sửa",
+    "delete": "Xóa",
+    "add": "Thêm mới",
+    "status": "Trạng thái",
+    "all": "Tất cả",
+    "yes": "Có",
+    "no": "Không",
+    "required": "bắt buộc",
+    "optional": "không bắt buộc",
+    "gridView": "Dạng lưới",
+    "listView": "Dạng danh sách",
+    "readMore": "Đọc thêm",
+    "goHome": "Về trang chủ",
+    "download": "Tải xuống",
+    "renew": "Gia hạn",
+    "support": "Hỗ trợ",
+    "viewKey": "Xem license key",
+    "viewQr": "Xem mã QR",
+    "instructions": "Hướng dẫn kích hoạt",
+    "submit": "Gửi",
+    "continue": "Tiếp tục",
+    "monthly": "Hàng tháng",
+    "yearly": "Hàng năm",
+    "processing": "Đang xử lý...",
+    "helpfulYes": "Có, hữu ích",
+    "helpfulNo": "Chưa hữu ích"
+  },
+  "nav": {
+    "home": "Trang chủ",
+    "products": "Sản phẩm",
+    "solutions": "Giải pháp",
+    "pricing": "Bảng giá",
+    "support": "Hỗ trợ",
+    "about": "Về chúng tôi",
+    "contact": "Liên hệ",
+    "login": "Đăng nhập",
+    "getStarted": "Bắt đầu ngay",
+    "cart": "Giỏ hàng",
+    "account": "Tài khoản",
+    "logout": "Đăng xuất",
+    "adminPanel": "Trang quản trị",
+    "megamenu": {
+      "cloud": "Dịch vụ Cloud",
+      "kaspersky": "Phần mềm Kaspersky",
+      "esim": "eSIM du lịch",
+      "viewAllCloud": "Xem tất cả dịch vụ Cloud",
+      "viewAllKaspersky": "Xem tất cả gói Kaspersky",
+      "viewAllEsim": "Xem tất cả eSIM"
+    }
+  },
+  "products": {
+    "cloud": {
+      "server": "Cloud Server",
+      "kubernetes": "Managed Kubernetes",
+      "storage": "Cloud Storage",
+      "backup": "Cloud Backup",
+      "loadbalancer": "Load Balancer"
+    },
+    "kaspersky": {
+      "standard": "Kaspersky Standard",
+      "plus": "Kaspersky Plus",
+      "premium": "Kaspersky Premium",
+      "soho": "Kaspersky Small Office Security"
+    },
+    "esim": {
+      "asia": "eSIM châu Á",
+      "europe": "eSIM châu Âu",
+      "namerica": "eSIM Bắc Mỹ",
+      "global": "eSIM toàn cầu"
+    }
+  },
+  "footer": {
+    "description": "Nền tảng dịch vụ số cung cấp Cloud, bảo mật Kaspersky và eSIM du lịch quốc tế.",
+    "products": "Sản phẩm",
+    "company": "Công ty",
+    "support": "Hỗ trợ",
+    "legal": "Pháp lý",
+    "newsletterTitle": "Đăng ký nhận tin",
+    "newsletterDesc": "Nhận thông tin ưu đãi và cập nhật sản phẩm mới nhất.",
+    "newsletterPlaceholder": "Nhập email của bạn",
+    "newsletterSubmit": "Đăng ký",
+    "newsletterSuccess": "Cảm ơn bạn đã đăng ký!",
+    "rights": "Tất cả các quyền được bảo lưu.",
+    "demoNotice": "Đây là website demo, dữ liệu và giá chỉ mang tính minh họa."
+  },
+  "home": {
+    "hero": {
+      "title": "Giải pháp số mạnh mẽ cho mọi hành trình",
+      "subtitle": "Cloud linh hoạt, bảo mật đáng tin cậy và kết nối toàn cầu trong một nền tảng.",
+      "ctaPrimary": "Khám phá sản phẩm",
+      "ctaSecondary": "Liên hệ tư vấn"
+    },
+    "partners": {
+      "title": "Được tin dùng cùng các nền tảng hàng đầu"
+    },
+    "categories": {
+      "eyebrow": "DỊCH VỤ",
+      "title": "Ba nhóm dịch vụ chính",
+      "subtitle": "Mọi thứ bạn cần cho hạ tầng số, bảo mật và kết nối toàn cầu.",
+      "cloud": {
+        "name": "Dịch vụ Cloud",
+        "desc": "Máy chủ, Kubernetes và lưu trữ đám mây hiệu suất cao.",
+        "b1": "Khởi tạo máy chủ trong vài phút",
+        "b2": "Mở rộng linh hoạt theo nhu cầu",
+        "b3": "Vận hành ổn định 24/7"
+      },
+      "kaspersky": {
+        "name": "Phần mềm Kaspersky",
+        "desc": "Bảo vệ thiết bị và dữ liệu trước mọi nguy cơ mạng.",
+        "b1": "Chống virus và mã độc",
+        "b2": "Bảo vệ giao dịch trực tuyến",
+        "b3": "Quản lý tập trung nhiều thiết bị"
+      },
+      "esim": {
+        "name": "eSIM du lịch quốc tế",
+        "desc": "Kết nối ngay khi đặt chân đến hơn 100 quốc gia.",
+        "b1": "Kích hoạt bằng mã QR",
+        "b2": "Không cần đổi SIM vật lý",
+        "b3": "Đa dạng gói dữ liệu"
+      }
+    },
+    "whyUs": {
+      "eyebrow": "LÝ DO CHỌN CHÚNG TÔI",
+      "title": "Vì sao chọn VTC TELECOM",
+      "subtitle": "Từ tốc độ triển khai đến minh bạch chi phí, mọi trải nghiệm đều được thiết kế để bạn an tâm vận hành.",
+      "fast": {
+        "title": "Hỗ trợ nhanh chóng",
+        "desc": "Đội ngũ kỹ thuật phản hồi và xử lý sự cố trong thời gian ngắn."
+      },
+      "transparent": {
+        "title": "Dịch vụ minh bạch",
+        "desc": "Giá cả rõ ràng, không phát sinh chi phí ẩn."
+      },
+      "payment": {
+        "title": "Thanh toán thuận tiện",
+        "desc": "Nhiều phương thức thanh toán linh hoạt, an toàn."
+      },
+      "flexible": {
+        "title": "Giải pháp linh hoạt",
+        "desc": "Dễ dàng nâng cấp, mở rộng theo nhu cầu thực tế."
+      }
+    },
+    "featured": {
+      "eyebrow": "SẢN PHẨM",
+      "title": "Sản phẩm nổi bật",
+      "subtitle": "Những dịch vụ được khách hàng lựa chọn nhiều nhất."
+    },
+    "process": {
+      "eyebrow": "QUY TRÌNH",
+      "title": "Quy trình mua dịch vụ",
+      "step1": {
+        "title": "Chọn dịch vụ",
+        "desc": "Khám phá và lựa chọn dịch vụ phù hợp nhu cầu."
+      },
+      "step2": {
+        "title": "Chọn gói phù hợp",
+        "desc": "Tùy chỉnh cấu hình, dung lượng hoặc thời hạn."
+      },
+      "step3": {
+        "title": "Hoàn tất thanh toán",
+        "desc": "Thanh toán an toàn qua nhiều phương thức."
+      },
+      "step4": {
+        "title": "Nhận và sử dụng dịch vụ",
+        "desc": "Kích hoạt và bắt đầu sử dụng ngay lập tức."
+      }
+    },
+    "cloudSection": {
+      "eyebrow": "CLOUD",
+      "title": "Hạ tầng Cloud hiệu suất cao",
+      "subtitle": "Nền tảng máy chủ đám mây được thiết kế cho tốc độ và độ tin cậy.",
+      "f1": "Máy chủ Cloud hiệu suất cao",
+      "f2": "Linh hoạt mở rộng",
+      "f3": "Bảo mật nhiều lớp",
+      "f4": "Hỗ trợ triển khai nhanh"
+    },
+    "kasperskySection": {
+      "eyebrow": "BẢO MẬT",
+      "title": "Bảo vệ toàn diện với Kaspersky",
+      "subtitle": "Chống lại mọi mối đe dọa mạng đang gia tăng mỗi ngày.",
+      "f1": "Chống virus",
+      "f2": "Bảo vệ thanh toán",
+      "f3": "Chống lừa đảo",
+      "f4": "Bảo vệ quyền riêng tư"
+    },
+    "esimSection": {
+      "eyebrow": "KẾT NỐI TOÀN CẦU",
+      "title": "Kết nối toàn cầu với eSIM",
+      "subtitle": "Sẵn sàng kết nối ngay khi bạn hạ cánh.",
+      "f1": "Kết nối tại hơn 100 quốc gia",
+      "f2": "Không cần SIM vật lý",
+      "f3": "Nhận QR nhanh chóng",
+      "f4": "Nhiều gói dữ liệu"
+    },
+    "stats": {
+      "eyebrow": "SỐ LIỆU",
+      "title": "VTC TELECOM qua những con số",
+      "customers": "khách hàng",
+      "countries": "quốc gia hỗ trợ",
+      "uptime": "thời gian hoạt động",
+      "supportHours": "hỗ trợ"
+    },
+    "testimonials": {
+      "eyebrow": "ĐÁNH GIÁ",
+      "title": "Khách hàng nói gì về chúng tôi"
+    },
+    "faq": {
+      "eyebrow": "HỖ TRỢ",
+      "title": "Câu hỏi thường gặp"
+    },
+    "cta": {
+      "title": "Bắt đầu hành trình số của bạn ngay hôm nay",
+      "primary": "Xem sản phẩm",
+      "secondary": "Liên hệ tư vấn"
+    },
+    "tabs": {
+      "all": "Tất cả",
+      "cloud": "Cloud",
+      "kaspersky": "Kaspersky",
+      "esim": "eSIM"
+    }
+  },
+  "productsPage": {
+    "title": "Tất cả sản phẩm",
+    "subtitle": "Khám phá toàn bộ dịch vụ số của VTC TELECOM.",
+    "searchPlaceholder": "Tìm kiếm sản phẩm...",
+    "category": "Danh mục",
+    "priceRange": "Khoảng giá",
+    "billingCycle": "Chu kỳ thanh toán",
+    "sort": {
+      "featured": "Nổi bật",
+      "priceAsc": "Giá tăng dần",
+      "priceDesc": "Giá giảm dần"
+    },
+    "resultsCount": "{{count}} sản phẩm",
+    "emptyTitle": "Không tìm thấy sản phẩm phù hợp",
+    "emptyDesc": "Hãy thử điều chỉnh bộ lọc hoặc từ khóa tìm kiếm."
+  },
+  "cloudPage": {
+    "heroTitle": "Hạ tầng Cloud cho mọi quy mô",
+    "heroSubtitle": "Từ máy chủ cá nhân đến hệ thống Kubernetes doanh nghiệp.",
+    "compareTitle": "So sánh các gói Cloud",
+    "useCasesTitle": "Các trường hợp sử dụng",
+    "whyTitle": "Tại sao nên dùng Cloud VTC TELECOM",
+    "faqTitle": "Câu hỏi thường gặp về Cloud",
+    "useCase1": "Website và ứng dụng",
+    "useCase2": "Hệ thống DevOps & container hóa",
+    "useCase3": "Sao lưu và lưu trữ dữ liệu"
+  },
+  "kasperskyPage": {
+    "heroTitle": "Bảo mật toàn diện cho mọi thiết bị",
+    "heroSubtitle": "Chọn gói Kaspersky phù hợp với cá nhân, gia đình hoặc doanh nghiệp.",
+    "filterUserType": "Đối tượng sử dụng",
+    "filterDevices": "Số thiết bị",
+    "filterDuration": "Thời hạn",
+    "personal": "Cá nhân",
+    "family": "Gia đình",
+    "business": "Doanh nghiệp",
+    "compareTitle": "So sánh tính năng các gói"
+  },
+  "esimPage": {
+    "heroTitle": "eSIM du lịch quốc tế",
+    "heroSubtitle": "Kết nối ngay khi đặt chân đến hơn 100 quốc gia trên thế giới.",
+    "searchCountry": "Tìm kiếm quốc gia...",
+    "filterRegion": "Khu vực",
+    "filterData": "Dung lượng",
+    "filterDays": "Số ngày",
+    "filterHotspot": "Hỗ trợ hotspot",
+    "filterNetwork": "Loại mạng",
+    "checkDeviceTitle": "Thiết bị của bạn có hỗ trợ eSIM không?",
+    "checkDeviceDesc": "Kiểm tra nhanh danh sách thiết bị hỗ trợ eSIM trước khi mua.",
+    "checkDeviceCta": "Kiểm tra ngay"
+  },
+  "productDetail": {
+    "startingFrom": "Giá chỉ từ",
+    "selectPackage": "Chọn gói dịch vụ",
+    "totalPrice": "Tổng giá",
+    "overview": "Tổng quan",
+    "benefits": "Lợi ích",
+    "features": "Tính năng",
+    "howItWorks": "Cách hoạt động",
+    "suitableFor": "Đối tượng phù hợp",
+    "specs": "Thông số & chi tiết gói",
+    "usageGuide": "Hướng dẫn sử dụng",
+    "faq": "Câu hỏi thường gặp",
+    "relatedProducts": "Sản phẩm liên quan",
+    "region": "Khu vực máy chủ",
+    "cpu": "CPU",
+    "ram": "RAM",
+    "ssd": "Ổ cứng SSD",
+    "os": "Hệ điều hành",
+    "billingCycle": "Chu kỳ thanh toán",
+    "devices": "Số thiết bị",
+    "duration": "Thời hạn",
+    "userType": "Loại người dùng",
+    "supportedOs": "Hệ điều hành hỗ trợ",
+    "country": "Quốc gia / Khu vực",
+    "dataAmount": "Dung lượng",
+    "days": "Số ngày",
+    "hotspot": "Hỗ trợ hotspot",
+    "networkType": "Loại mạng",
+    "activationTime": "Thời điểm kích hoạt",
+    "activationOnPurchase": "Kích hoạt ngay khi mua",
+    "activationOnArrival": "Kích hoạt khi đến nơi",
+    "addedToCart": "Đã thêm vào giỏ hàng"
+  },
+  "pricingPage": {
+    "title": "Bảng giá dịch vụ",
+    "subtitle": "Chọn gói phù hợp với nhu cầu của bạn.",
+    "monthly": "Hàng tháng",
+    "yearly": "Hàng năm",
+    "mostPopular": "Phổ biến nhất",
+    "tabs": {
+      "cloud": "Cloud",
+      "kaspersky": "Kaspersky",
+      "esim": "eSIM"
+    }
+  },
+  "solutionsPage": {
+    "title": "Giải pháp theo nhu cầu",
+    "subtitle": "Tìm giải pháp số phù hợp với mục tiêu của bạn.",
+    "website": {
+      "title": "Website và ứng dụng",
+      "desc": "Hạ tầng Cloud ổn định cho website và ứng dụng của bạn."
+    },
+    "smallBusiness": {
+      "title": "Doanh nghiệp nhỏ",
+      "desc": "Giải pháp bảo mật và lưu trữ tối ưu chi phí."
+    },
+    "remoteWork": {
+      "title": "Làm việc từ xa",
+      "desc": "Kết nối và bảo mật an toàn cho đội ngũ làm việc từ xa."
+    },
+    "deviceProtection": {
+      "title": "Bảo vệ thiết bị",
+      "desc": "Bảo vệ toàn diện thiết bị cá nhân và gia đình."
+    },
+    "travel": {
+      "title": "Du lịch quốc tế",
+      "desc": "Kết nối liền mạch với eSIM tại hơn 100 quốc gia."
+    },
+    "frequentTravelers": {
+      "title": "Đội ngũ thường xuyên công tác",
+      "desc": "Giải pháp eSIM linh hoạt cho nhân sự công tác thường xuyên."
+    },
+    "exploreCta": "Khám phá giải pháp"
+  },
+  "aboutPage": {
+    "storyTitle": "Câu chuyện thương hiệu",
+    "storyContent": "VTC TELECOM được thành lập với mong muốn mang đến các dịch vụ số chất lượng cao, dễ tiếp cận cho mọi cá nhân và doanh nghiệp tại Việt Nam.",
+    "missionTitle": "Sứ mệnh",
+    "missionContent": "Đơn giản hóa việc tiếp cận công nghệ số thông qua các giải pháp Cloud, bảo mật và kết nối đáng tin cậy.",
+    "visionTitle": "Tầm nhìn",
+    "visionContent": "Trở thành nền tảng dịch vụ số được tin dùng hàng đầu khu vực Đông Nam Á.",
+    "valuesTitle": "Giá trị cốt lõi",
+    "value1": {
+      "title": "Minh bạch",
+      "desc": "Rõ ràng trong giá cả và chất lượng dịch vụ."
+    },
+    "value2": {
+      "title": "Đổi mới",
+      "desc": "Không ngừng cải tiến sản phẩm và trải nghiệm."
+    },
+    "value3": {
+      "title": "Tin cậy",
+      "desc": "Đặt sự an toàn và ổn định của khách hàng lên hàng đầu."
+    },
+    "value4": {
+      "title": "Tận tâm",
+      "desc": "Luôn đồng hành và hỗ trợ khách hàng kịp thời."
+    },
+    "milestonesTitle": "Các cột mốc",
+    "teamTitle": "Đội ngũ của chúng tôi",
+    "ctaTitle": "Sẵn sàng đồng hành cùng VTC TELECOM?",
+    "disclaimer": "* Nội dung trang này là dữ liệu minh họa, chưa phải thông tin pháp lý chính thức."
+  },
+  "contactPage": {
+    "title": "Liên hệ với chúng tôi",
+    "subtitle": "Đội ngũ VTC TELECOM sẵn sàng hỗ trợ bạn.",
+    "form": {
+      "fullName": "Họ tên",
+      "email": "Email",
+      "phone": "Số điện thoại",
+      "company": "Công ty",
+      "subject": "Chủ đề",
+      "message": "Nội dung",
+      "submit": "Gửi yêu cầu"
+    },
+    "successTitle": "Gửi yêu cầu thành công!",
+    "successDesc": "Chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất.",
+    "info": {
+      "email": "Email hỗ trợ",
+      "hotline": "Hotline",
+      "hours": "Giờ làm việc",
+      "hoursValue": "8:00 - 21:00, Thứ Hai - Chủ Nhật",
+      "address": "Địa chỉ",
+      "addressValue": "Tầng 12, Tòa nhà Innovation, Quận 1, TP. Hồ Chí Minh (demo)",
+      "mapPlaceholder": "Bản đồ minh họa (demo)"
+    }
+  },
+  "supportPage": {
+    "title": "Trung tâm hỗ trợ",
+    "subtitle": "Tìm câu trả lời nhanh chóng cho mọi thắc mắc.",
+    "searchPlaceholder": "Tìm kiếm bài viết hướng dẫn...",
+    "categories": {
+      "cloud": "Cloud",
+      "kaspersky": "Kaspersky",
+      "esim": "eSIM",
+      "billing": "Thanh toán",
+      "account": "Tài khoản"
+    },
+    "readTime": "phút đọc",
+    "tableOfContents": "Mục lục",
+    "relatedArticles": "Bài viết liên quan",
+    "wasHelpful": "Bài viết có hữu ích không?",
+    "thanksFeedback": "Cảm ơn phản hồi của bạn!"
+  },
+  "esimDevicesPage": {
+    "title": "Kiểm tra thiết bị hỗ trợ eSIM",
+    "subtitle": "Tra cứu nhanh danh sách thiết bị tương thích eSIM.",
+    "searchPlaceholder": "Tìm kiếm theo tên thiết bị...",
+    "supported": "Hỗ trợ eSIM",
+    "notSupported": "Không hỗ trợ"
+  },
+  "legal": {
+    "termsTitle": "Điều khoản sử dụng",
+    "privacyTitle": "Chính sách bảo mật",
+    "termsDisclaimer": "Nội dung này là dữ liệu demo, cần được bộ phận pháp lý của công ty rà soát và cập nhật trước khi sử dụng chính thức.",
+    "privacyDisclaimer": "Nội dung này là dữ liệu demo, không phải chính sách bảo mật pháp lý chính thức."
+  },
+  "notFoundPage": {
+    "title": "404",
+    "subtitle": "Không tìm thấy trang bạn yêu cầu",
+    "desc": "Trang bạn tìm kiếm có thể đã bị xóa hoặc không tồn tại.",
+    "goHome": "Về trang chủ",
+    "findProducts": "Tìm sản phẩm"
+  },
+  "auth": {
+    "login": {
+      "title": "Đăng nhập",
+      "subtitle": "Chào mừng bạn quay trở lại VTC TELECOM",
+      "email": "Email",
+      "password": "Mật khẩu",
+      "remember": "Ghi nhớ đăng nhập",
+      "forgot": "Quên mật khẩu?",
+      "submit": "Đăng nhập",
+      "noAccount": "Chưa có tài khoản?",
+      "registerNow": "Đăng ký ngay",
+      "demoAccounts": "Tài khoản demo",
+      "demoCustomer": "Khách hàng",
+      "demoAdmin": "Quản trị viên",
+      "success": "Đăng nhập thành công!",
+      "invalidCredentials": "Email hoặc mật khẩu không đúng"
+    },
+    "register": {
+      "title": "Đăng ký tài khoản",
+      "subtitle": "Tạo tài khoản để bắt đầu sử dụng dịch vụ",
+      "fullName": "Họ tên",
+      "email": "Email",
+      "phone": "Số điện thoại",
+      "password": "Mật khẩu",
+      "confirmPassword": "Xác nhận mật khẩu",
+      "agreeTerms": "Tôi đồng ý với các điều khoản sử dụng",
+      "agreeTermsPrefix": "Tôi đồng ý với",
+      "agreeTermsLink": "điều khoản sử dụng",
+      "submit": "Đăng ký",
+      "haveAccount": "Đã có tài khoản?",
+      "loginNow": "Đăng nhập",
+      "success": "Đăng ký thành công!",
+      "emailExists": "Email này đã được sử dụng"
+    },
+    "forgotPassword": {
+      "title": "Quên mật khẩu",
+      "subtitle": "Nhập email để nhận hướng dẫn đặt lại mật khẩu",
+      "email": "Email",
+      "submit": "Gửi yêu cầu",
+      "success": "Đã gửi email hướng dẫn đặt lại mật khẩu (demo, không có email thật được gửi).",
+      "backToLogin": "Quay lại đăng nhập"
+    }
+  },
+  "cart": {
+    "title": "Giỏ hàng của bạn",
+    "package": "Gói",
+    "cycle": "Chu kỳ",
+    "remove": "Xóa",
+    "subtotal": "Tạm tính",
+    "discount": "Giảm giá",
+    "total": "Tổng thanh toán",
+    "couponPlaceholder": "Nhập mã giảm giá",
+    "applyCoupon": "Áp dụng",
+    "couponApplied": "Áp dụng mã giảm giá thành công!",
+    "couponInvalid": "Mã giảm giá không hợp lệ",
+    "couponNotApplicable": "Mã giảm giá không áp dụng cho đơn hàng này",
+    "checkout": "Tiến hành thanh toán",
+    "emptyTitle": "Giỏ hàng của bạn đang trống",
+    "emptyDesc": "Hãy khám phá các dịch vụ số của chúng tôi.",
+    "continueShopping": "Tiếp tục mua sắm",
+    "itemRemoved": "Đã xóa sản phẩm khỏi giỏ hàng",
+    "itemAdded": "Đã thêm sản phẩm vào giỏ hàng",
+    "couponHint": "Mã demo: NOVA10 (giảm 10%), WELCOME50 (giảm 50.000₫), CLOUD15 (giảm 15% cho dịch vụ Cloud)"
+  },
+  "checkout": {
+    "title": "Thanh toán",
+    "steps": {
+      "info": "Thông tin khách hàng",
+      "review": "Kiểm tra đơn hàng",
+      "payment": "Thanh toán",
+      "complete": "Hoàn tất"
+    },
+    "customerInfo": {
+      "fullName": "Họ tên",
+      "email": "Email",
+      "phone": "Số điện thoại",
+      "company": "Tên công ty",
+      "taxCode": "Mã số thuế",
+      "note": "Ghi chú"
+    },
+    "paymentMethod": {
+      "title": "Phương thức thanh toán",
+      "bank_transfer": "Chuyển khoản ngân hàng",
+      "vietqr": "VietQR",
+      "e_wallet": "Ví điện tử",
+      "international_card": "Thẻ quốc tế"
+    },
+    "qr": {
+      "title": "Quét mã QR để thanh toán",
+      "accountName": "Tên tài khoản",
+      "accountNumber": "Số tài khoản",
+      "bankName": "Ngân hàng",
+      "transferContent": "Nội dung chuyển khoản",
+      "note": "Đây là mã QR minh họa cho mục đích demo.",
+      "orderCodePending": "Mã đơn hàng chính thức sẽ được cung cấp ngay sau khi bạn hoàn tất đơn hàng."
+    },
+    "internationalCardNote": "Demo — không thu thập thông tin thẻ thật. Đơn hàng sẽ được xác nhận ngay lập tức để mô phỏng thanh toán.",
+    "orderSummary": "Tóm tắt đơn hàng",
+    "placeOrder": "Hoàn tất đơn hàng",
+    "processingOrder": "Đang xử lý đơn hàng...",
+    "success": {
+      "title": "Đặt hàng thành công!",
+      "orderCode": "Mã đơn hàng",
+      "total": "Tổng tiền",
+      "paymentMethodLabel": "Phương thức thanh toán",
+      "status": "Trạng thái",
+      "viewOrder": "Xem đơn hàng",
+      "continueShopping": "Tiếp tục mua sắm"
+    }
+  },
+  "account": {
+    "sidebar": {
+      "dashboard": "Tổng quan",
+      "orders": "Đơn hàng",
+      "services": "Dịch vụ của tôi",
+      "tickets": "Yêu cầu hỗ trợ",
+      "profile": "Hồ sơ",
+      "security": "Bảo mật"
+    },
+    "dashboard": {
+      "greeting": "Xin chào, {{name}}!",
+      "activeServices": "Dịch vụ đang hoạt động",
+      "recentOrders": "Đơn hàng gần đây",
+      "expiringServices": "Dịch vụ sắp hết hạn",
+      "totalSpent": "Tổng chi tiêu",
+      "quickActions": "Thao tác nhanh",
+      "browseProducts": "Khám phá sản phẩm",
+      "newTicket": "Tạo yêu cầu hỗ trợ"
+    },
+    "orders": {
+      "title": "Đơn hàng của tôi",
+      "orderCode": "Mã đơn",
+      "date": "Ngày đặt",
+      "products": "Sản phẩm",
+      "total": "Tổng tiền",
+      "status": "Trạng thái",
+      "action": "Thao tác",
+      "empty": "Bạn chưa có đơn hàng nào"
+    },
+    "orderDetail": {
+      "title": "Chi tiết đơn hàng",
+      "timeline": "Trạng thái xử lý",
+      "items": "Sản phẩm trong đơn",
+      "customerInfo": "Thông tin khách hàng",
+      "paymentInfo": "Thông tin thanh toán",
+      "downloadInvoice": "Tải hóa đơn",
+      "invoiceDemo": "Đây là bản demo, chức năng tải hóa đơn chưa được tích hợp thật."
+    },
+    "services": {
+      "title": "Dịch vụ của tôi",
+      "empty": "Bạn chưa có dịch vụ nào",
+      "ip": "Địa chỉ IP",
+      "region": "Khu vực",
+      "startDate": "Ngày bắt đầu",
+      "expiryDate": "Ngày hết hạn",
+      "licenseKey": "License key",
+      "activationGuide": "Hướng dẫn kích hoạt",
+      "installGuide": "Hướng dẫn cài đặt"
+    },
+    "tickets": {
+      "title": "Yêu cầu hỗ trợ",
+      "newTicket": "Tạo yêu cầu mới",
+      "empty": "Bạn chưa có yêu cầu hỗ trợ nào",
+      "code": "Mã yêu cầu",
+      "subject": "Chủ đề",
+      "priority": "Mức độ ưu tiên",
+      "form": {
+        "serviceType": "Loại dịch vụ",
+        "relatedService": "Dịch vụ liên quan",
+        "subject": "Chủ đề",
+        "priority": "Mức độ ưu tiên",
+        "message": "Nội dung",
+        "attachment": "Tệp đính kèm",
+        "attachmentHint": "Đây là chức năng minh họa, tệp sẽ không được tải lên thật.",
+        "submit": "Gửi yêu cầu",
+        "success": "Đã tạo yêu cầu hỗ trợ thành công"
+      },
+      "priorities": {
+        "LOW": "Thấp",
+        "MEDIUM": "Trung bình",
+        "HIGH": "Cao",
+        "URGENT": "Khẩn cấp"
+      }
+    },
+    "profile": {
+      "title": "Hồ sơ cá nhân",
+      "fullName": "Họ tên",
+      "email": "Email",
+      "phone": "Số điện thoại",
+      "company": "Công ty",
+      "taxCode": "Mã số thuế",
+      "address": "Địa chỉ",
+      "success": "Cập nhật hồ sơ thành công"
+    },
+    "security": {
+      "title": "Bảo mật tài khoản",
+      "changePassword": "Đổi mật khẩu",
+      "currentPassword": "Mật khẩu hiện tại",
+      "newPassword": "Mật khẩu mới",
+      "confirmPassword": "Xác nhận mật khẩu mới",
+      "twoFactor": "Xác thực hai bước",
+      "twoFactorDesc": "Tăng cường bảo mật cho tài khoản của bạn (demo).",
+      "enable": "Bật",
+      "disable": "Tắt",
+      "sessions": "Phiên đăng nhập",
+      "currentSession": "Phiên hiện tại",
+      "revoke": "Thu hồi",
+      "passwordChanged": "Đổi mật khẩu thành công",
+      "currentPasswordInvalid": "Mật khẩu hiện tại không đúng"
+    }
+  },
+  "status": {
+    "order": {
+      "PENDING_PAYMENT": "Chờ thanh toán",
+      "PAID": "Đã thanh toán",
+      "PROCESSING": "Đang xử lý",
+      "COMPLETED": "Hoàn tất",
+      "CANCELLED": "Đã hủy",
+      "REFUNDED": "Đã hoàn tiền"
+    },
+    "service": {
+      "PENDING_ACTIVATION": "Chờ kích hoạt",
+      "ACTIVE": "Đang hoạt động",
+      "EXPIRING_SOON": "Sắp hết hạn",
+      "EXPIRED": "Đã hết hạn",
+      "SUSPENDED": "Tạm ngưng"
+    },
+    "ticket": {
+      "OPEN": "Mới",
+      "IN_PROGRESS": "Đang xử lý",
+      "RESOLVED": "Đã giải quyết",
+      "CLOSED": "Đã đóng"
+    },
+    "payment": {
+      "UNPAID": "Chưa thanh toán",
+      "PAID": "Đã thanh toán",
+      "REFUNDED": "Đã hoàn tiền"
+    }
+  },
+  "admin": {
+    "sidebar": {
+      "brand": "VTC TELECOM",
+      "portal": "Cổng quản trị",
+      "openMenu": "Mở menu quản trị",
+      "collapse": "Thu gọn thanh bên",
+      "expand": "Mở rộng thanh bên",
+      "groups": {
+        "overview": "Tổng quan",
+        "business": "Kinh doanh",
+        "services": "Quản lý dịch vụ",
+        "operation": "Vận hành"
+      },
+      "dashboard": "Tổng quan",
+      "products": "Sản phẩm",
+      "orders": "Đơn hàng",
+      "customers": "Khách hàng",
+      "services": "Dịch vụ Cloud",
+      "licenses": "License Kaspersky",
+      "esims": "eSIM",
+      "tickets": "Hỗ trợ",
+      "content": "Quản lý nội dung",
+      "profile": "Hồ sơ",
+      "settings": "Cài đặt",
+      "logout": "Đăng xuất",
+      "comingSoon": "Tính năng đang được phát triển"
+    },
+    "dashboard": {
+      "title": "Tổng quan quản trị",
+      "totalRevenue": "Tổng doanh thu",
+      "totalOrders": "Tổng đơn hàng",
+      "totalCustomers": "Khách hàng",
+      "activeServices": "Dịch vụ đang hoạt động",
+      "revenueChart": "Doanh thu theo tháng",
+      "categoryChart": "Đơn hàng theo danh mục",
+      "recentOrders": "Đơn hàng gần đây",
+      "topProducts": "Sản phẩm bán chạy",
+      "lowStockAlert": "Cảnh báo kho license & eSIM sắp hết"
+    },
+    "products": {
+      "title": "Quản lý sản phẩm",
+      "addNew": "Thêm sản phẩm",
+      "searchPlaceholder": "Tìm kiếm sản phẩm...",
+      "name": "Tên sản phẩm",
+      "category": "Danh mục",
+      "price": "Giá",
+      "status": "Trạng thái",
+      "featured": "Nổi bật",
+      "active": "Đang bán",
+      "inactive": "Ngừng bán",
+      "preview": "Xem trước",
+      "deleteConfirm": "Bạn có chắc chắn muốn xóa sản phẩm này?",
+      "deleted": "Đã xóa sản phẩm",
+      "form": {
+        "nameVi": "Tên tiếng Việt",
+        "nameEn": "Tên tiếng Anh",
+        "slug": "Đường dẫn (slug)",
+        "category": "Danh mục",
+        "shortDesc": "Mô tả ngắn",
+        "description": "Mô tả chi tiết",
+        "startingPrice": "Giá bắt đầu",
+        "badge": "Nhãn (badge)",
+        "features": "Tính năng",
+        "status": "Trạng thái",
+        "isFeatured": "Sản phẩm nổi bật",
+        "packages": "Danh sách gói dịch vụ",
+        "save": "Lưu sản phẩm",
+        "created": "Đã tạo sản phẩm thành công",
+        "updated": "Đã cập nhật sản phẩm thành công",
+        "subCategory": "Danh mục con",
+        "shortDescVi": "Mô tả ngắn (Tiếng Việt)",
+        "shortDescEn": "Mô tả ngắn (Tiếng Anh)",
+        "descriptionVi": "Mô tả chi tiết (Tiếng Việt)",
+        "descriptionEn": "Mô tả chi tiết (Tiếng Anh)",
+        "featureVi": "Tính năng (Tiếng Việt)",
+        "featureEn": "Tính năng (Tiếng Anh)",
+        "addFeature": "Thêm tính năng",
+        "noFeatures": "Chưa có tính năng nào",
+        "packageNameVi": "Tên gói (Tiếng Việt)",
+        "packageNameEn": "Tên gói (Tiếng Anh)",
+        "packagePrice": "Giá gói",
+        "packageBillingCycle": "Chu kỳ thanh toán",
+        "addPackage": "Thêm gói",
+        "noPackages": "Chưa có gói dịch vụ nào",
+        "createTitle": "Thêm sản phẩm mới",
+        "editTitle": "Chỉnh sửa sản phẩm"
+      }
+    },
+    "orders": {
+      "title": "Quản lý đơn hàng",
+      "orderCode": "Mã đơn",
+      "customer": "Khách hàng",
+      "date": "Ngày",
+      "total": "Tổng tiền",
+      "status": "Trạng thái",
+      "paymentMethod": "Phương thức thanh toán",
+      "updateStatus": "Cập nhật trạng thái",
+      "statusUpdated": "Đã cập nhật trạng thái đơn hàng",
+      "items": "Sản phẩm trong đơn",
+      "customerInfo": "Thông tin khách hàng",
+      "noOrders": "Chưa có đơn hàng nào",
+      "details": "Chi tiết"
+    },
+    "customers": {
+      "title": "Quản lý khách hàng",
+      "name": "Họ tên",
+      "email": "Email",
+      "phone": "Số điện thoại",
+      "orderCount": "Số đơn hàng",
+      "totalSpent": "Tổng chi tiêu",
+      "status": "Trạng thái",
+      "searchPlaceholder": "Tìm theo tên hoặc email...",
+      "noCustomers": "Không tìm thấy khách hàng phù hợp"
+    },
+    "services": {
+      "title": "Quản lý dịch vụ",
+      "noServices": "Không có dịch vụ nào",
+      "startDate": "Ngày bắt đầu",
+      "expiryDate": "Ngày hết hạn",
+      "orderCode": "Mã đơn",
+      "packageName": "Gói dịch vụ",
+      "ip": "Địa chỉ IP",
+      "cpu": "CPU",
+      "ram": "RAM",
+      "ssd": "SSD",
+      "region": "Khu vực",
+      "devices": "Số thiết bị",
+      "licenseKey": "License key",
+      "country": "Quốc gia",
+      "dataAmount": "Dung lượng",
+      "days": "Số ngày",
+      "user": "Người dùng"
+    },
+    "licenses": {
+      "title": "Kho license Kaspersky",
+      "addNew": "Thêm license",
+      "key": "License key",
+      "product": "Sản phẩm",
+      "duration": "Thời hạn",
+      "status": "Trạng thái",
+      "assignedOrder": "Gán cho đơn hàng",
+      "expiryDate": "Ngày hết hạn",
+      "unassigned": "Chưa gán",
+      "modalTitle": "Thêm license mới",
+      "productName": "Tên sản phẩm",
+      "statuses": {
+        "AVAILABLE": "Còn hàng",
+        "ASSIGNED": "Đã gán",
+        "EXPIRED": "Hết hạn"
+      },
+      "cancel": "Hủy",
+      "save": "Lưu",
+      "added": "Đã thêm license mới"
+    },
+    "esims": {
+      "title": "Kho eSIM",
+      "addNew": "Thêm eSIM",
+      "code": "Mã eSIM",
+      "country": "Quốc gia",
+      "dataAmount": "Dung lượng",
+      "days": "Số ngày",
+      "status": "Trạng thái",
+      "assignedOrder": "Gán cho đơn hàng",
+      "modalTitle": "Thêm eSIM mới",
+      "product": "Sản phẩm",
+      "statuses": {
+        "AVAILABLE": "Còn hàng",
+        "ASSIGNED": "Đã gán",
+        "USED": "Đã sử dụng"
+      },
+      "cancel": "Hủy",
+      "save": "Lưu",
+      "added": "Đã thêm eSIM mới"
+    },
+    "tickets": {
+      "title": "Quản lý yêu cầu hỗ trợ",
+      "updatePriority": "Đổi mức độ ưu tiên",
+      "updateStatus": "Đổi trạng thái",
+      "addReply": "Thêm phản hồi",
+      "replyPlaceholder": "Nhập phản hồi cho khách hàng...",
+      "replySent": "Đã gửi phản hồi",
+      "category": "Danh mục",
+      "message": "Nội dung yêu cầu",
+      "replies": "Phản hồi",
+      "noTickets": "Không có yêu cầu nào",
+      "user": "Người gửi",
+      "details": "Chi tiết yêu cầu",
+      "categories": {
+        "cloud": "Cloud",
+        "kaspersky": "Kaspersky",
+        "esim": "eSIM",
+        "billing": "Thanh toán",
+        "account": "Tài khoản"
+      }
+    },
+    "content": {
+      "title": "Quản lý nội dung website",
+      "banners": "Banner",
+      "faqs": "Câu hỏi thường gặp",
+      "articles": "Bài viết hỗ trợ",
+      "testimonials": "Đánh giá khách hàng",
+      "bannerStatus": "Trạng thái hiển thị",
+      "readTime": "Thời gian đọc",
+      "category": "Danh mục",
+      "rating": "Đánh giá",
+      "role": "Vai trò",
+      "group": "Nhóm",
+      "minutes": "phút"
+    }
+  },
+  "toast": {
+    "addedToCart": "Đã thêm sản phẩm vào giỏ hàng",
+    "removedFromCart": "Đã xóa sản phẩm khỏi giỏ hàng",
+    "couponApplied": "Đã áp dụng mã giảm giá",
+    "loginSuccess": "Đăng nhập thành công",
+    "registerSuccess": "Đăng ký tài khoản thành công",
+    "orderSuccess": "Đặt hàng thành công",
+    "profileUpdated": "Cập nhật hồ sơ thành công",
+    "ticketCreated": "Đã tạo yêu cầu hỗ trợ",
+    "statusUpdated": "Đã cập nhật trạng thái",
+    "validationError": "Vui lòng kiểm tra lại thông tin đã nhập",
+    "genericError": "Đã có lỗi xảy ra, vui lòng thử lại"
+  },
+  "validation": {
+    "required": "Trường này là bắt buộc",
+    "invalidEmail": "Email không hợp lệ",
+    "minLength": "Vui lòng nhập tối thiểu {{count}} ký tự",
+    "maxLength": "Vui lòng nhập tối đa {{count}} ký tự",
+    "passwordMismatch": "Mật khẩu xác nhận không khớp",
+    "invalidPhone": "Số điện thoại không hợp lệ",
+    "mustAgreeTerms": "Bạn cần đồng ý với điều khoản sử dụng"
+  }
+}

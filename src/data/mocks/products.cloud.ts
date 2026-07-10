@@ -1,0 +1,521 @@
+import type { Product } from '@/types'
+
+export const cloudProducts: Product[] = [
+  {
+    id: 'cloud-server',
+    slug: 'cloud-server',
+    category: 'cloud',
+    subCategory: 'cloud-server',
+    name: { vi: 'Cloud Server', en: 'Cloud Server' },
+    shortDescription: {
+      vi: 'Máy chủ ảo hiệu suất cao, khởi tạo trong vài phút.',
+      en: 'High-performance virtual servers, ready in minutes.',
+    },
+    description: {
+      vi: 'Cloud Server của VTC TELECOM cung cấp hạ tầng máy chủ ảo linh hoạt, hiệu suất cao với SSD NVMe, băng thông lớn và khả năng mở rộng theo nhu cầu thực tế. Phù hợp cho website, ứng dụng và hệ thống doanh nghiệp.',
+      en: 'VTC TELECOM Cloud Server delivers flexible, high-performance virtual server infrastructure with NVMe SSD, generous bandwidth, and on-demand scalability. Ideal for websites, applications, and business systems.',
+    },
+    icon: 'Server',
+    badge: { vi: 'Phổ biến', en: 'Popular' },
+    startingPrice: 299000,
+    currency: 'VND',
+    billingCycles: ['monthly', 'yearly'],
+    features: [
+      { vi: 'SSD NVMe tốc độ cao', en: 'High-speed NVMe SSD' },
+      { vi: 'Băng thông không giới hạn*', en: 'Unmetered bandwidth*' },
+      { vi: 'Khởi tạo trong 60 giây', en: 'Provisioned in 60 seconds' },
+    ],
+    benefits: [
+      {
+        vi: 'Hiệu suất ổn định nhờ hạ tầng ảo hóa KVM',
+        en: 'Stable performance with KVM virtualization',
+      },
+      { vi: 'Toàn quyền root truy cập máy chủ', en: 'Full root access to your server' },
+      { vi: 'Snapshot và backup dễ dàng', en: 'Easy snapshots and backups' },
+      { vi: 'Chi phí minh bạch, không phát sinh ẩn', en: 'Transparent pricing, no hidden fees' },
+    ],
+    howItWorks: [
+      {
+        vi: 'Chọn cấu hình và khu vực máy chủ phù hợp',
+        en: 'Choose the configuration and region you need',
+      },
+      { vi: 'Hoàn tất thanh toán để kích hoạt', en: 'Complete payment to activate' },
+      {
+        vi: 'Nhận thông tin truy cập trong vài phút',
+        en: 'Receive access credentials within minutes',
+      },
+      { vi: 'Triển khai ứng dụng và bắt đầu vận hành', en: 'Deploy your application and go live' },
+    ],
+    suitableFor: [
+      {
+        vi: 'Website và ứng dụng doanh nghiệp vừa và nhỏ',
+        en: 'Websites and small-to-medium business apps',
+      },
+      {
+        vi: 'Lập trình viên cần môi trường phát triển riêng',
+        en: 'Developers needing a dedicated dev environment',
+      },
+      { vi: 'Hệ thống cần khả năng mở rộng nhanh', en: 'Systems that need to scale quickly' },
+    ],
+    faqs: [
+      {
+        question: {
+          vi: 'Tôi có thể nâng cấp cấu hình sau khi mua không?',
+          en: 'Can I upgrade my configuration later?',
+        },
+        answer: {
+          vi: 'Có, bạn có thể nâng cấp CPU, RAM, SSD bất kỳ lúc nào từ khu vực quản lý dịch vụ.',
+          en: 'Yes, you can upgrade CPU, RAM, and SSD at any time from your service management area.',
+        },
+      },
+      {
+        question: {
+          vi: 'Có hỗ trợ cài đặt hệ điều hành theo yêu cầu không?',
+          en: 'Can I install a custom operating system?',
+        },
+        answer: {
+          vi: 'Cloud Server hỗ trợ nhiều hệ điều hành phổ biến như Ubuntu, CentOS, Windows Server.',
+          en: 'Cloud Server supports popular operating systems such as Ubuntu, CentOS, and Windows Server.',
+        },
+      },
+    ],
+    rating: 4.8,
+    reviewCount: 214,
+    isFeatured: true,
+    isActive: true,
+    relatedProductIds: ['managed-kubernetes', 'cloud-backup', 'load-balancer'],
+    createdAt: '2025-01-10T00:00:00.000Z',
+    updatedAt: '2025-06-01T00:00:00.000Z',
+    packages: [
+      {
+        id: 'cloud-server-starter',
+        name: { vi: 'Starter', en: 'Starter' },
+        price: 299000,
+        billingCycle: 'monthly',
+        cloud: {
+          regions: ['Singapore'],
+          cpu: '2 vCPU',
+          ram: '4 GB',
+          ssd: '60 GB',
+          bandwidth: '2 TB',
+          os: ['Ubuntu 22.04', 'CentOS Stream', 'Windows Server 2022'],
+        },
+      },
+      {
+        id: 'cloud-server-business',
+        name: { vi: 'Business', en: 'Business' },
+        price: 699000,
+        billingCycle: 'monthly',
+        isPopular: true,
+        cloud: {
+          regions: ['Singapore', 'Hong Kong'],
+          cpu: '4 vCPU',
+          ram: '8 GB',
+          ssd: '120 GB',
+          bandwidth: '4 TB',
+          os: ['Ubuntu 22.04', 'CentOS Stream', 'Windows Server 2022'],
+        },
+      },
+      {
+        id: 'cloud-server-performance',
+        name: { vi: 'Performance', en: 'Performance' },
+        price: 1499000,
+        billingCycle: 'monthly',
+        cloud: {
+          regions: ['Singapore', 'Hong Kong'],
+          cpu: '8 vCPU',
+          ram: '16 GB',
+          ssd: '250 GB',
+          bandwidth: '8 TB',
+          os: ['Ubuntu 22.04', 'CentOS Stream', 'Windows Server 2022'],
+        },
+      },
+      {
+        id: 'cloud-server-enterprise',
+        name: { vi: 'Enterprise', en: 'Enterprise' },
+        price: 2990000,
+        billingCycle: 'monthly',
+        cloud: {
+          regions: ['Singapore', 'Hong Kong', 'Tokyo'],
+          cpu: '16 vCPU',
+          ram: '32 GB',
+          ssd: '500 GB',
+          bandwidth: '16 TB',
+          os: ['Ubuntu 22.04', 'CentOS Stream', 'Windows Server 2022'],
+        },
+      },
+    ],
+  },
+  {
+    id: 'managed-kubernetes',
+    slug: 'managed-kubernetes',
+    category: 'cloud',
+    subCategory: 'kubernetes',
+    name: { vi: 'Managed Kubernetes', en: 'Managed Kubernetes' },
+    shortDescription: {
+      vi: 'Nền tảng Kubernetes được quản lý toàn diện, tự động mở rộng.',
+      en: 'Fully managed Kubernetes platform with auto-scaling.',
+    },
+    description: {
+      vi: 'Managed Kubernetes giúp bạn triển khai và vận hành container ở quy mô lớn mà không cần quản lý control plane. Tích hợp sẵn auto scaling, load balancer và giám sát hệ thống.',
+      en: 'Managed Kubernetes lets you deploy and run containers at scale without managing the control plane. Comes with built-in auto scaling, load balancer integration, and monitoring.',
+    },
+    icon: 'Boxes',
+    startingPrice: 1990000,
+    currency: 'VND',
+    billingCycles: ['monthly', 'yearly'],
+    features: [
+      { vi: 'Managed control plane', en: 'Managed control plane' },
+      { vi: 'Auto scaling theo tải', en: 'Load-based auto scaling' },
+      { vi: 'Tích hợp Load Balancer', en: 'Load balancer integration' },
+    ],
+    benefits: [
+      { vi: 'Không cần quản lý hạ tầng control plane', en: 'No control plane management overhead' },
+      { vi: 'Giám sát hệ thống theo thời gian thực', en: 'Real-time system monitoring' },
+      { vi: 'Mạng riêng ảo bảo mật cao', en: 'Highly secure private networking' },
+      { vi: 'Tự động phục hồi khi node gặp sự cố', en: 'Automatic node failure recovery' },
+    ],
+    howItWorks: [
+      { vi: 'Chọn gói cụm Kubernetes phù hợp', en: 'Choose the Kubernetes cluster plan' },
+      {
+        vi: 'Cụm được khởi tạo tự động sau thanh toán',
+        en: 'Cluster is provisioned automatically after payment',
+      },
+      {
+        vi: 'Kết nối qua kubectl để triển khai ứng dụng',
+        en: 'Connect via kubectl to deploy your workloads',
+      },
+      { vi: 'Theo dõi và mở rộng cụm theo nhu cầu', en: 'Monitor and scale the cluster as needed' },
+    ],
+    suitableFor: [
+      { vi: 'Đội ngũ DevOps triển khai microservices', en: 'DevOps teams running microservices' },
+      {
+        vi: 'Doanh nghiệp cần hạ tầng container hóa',
+        en: 'Businesses needing containerized infrastructure',
+      },
+    ],
+    faqs: [
+      {
+        question: {
+          vi: 'Tôi có cần kinh nghiệm Kubernetes để sử dụng không?',
+          en: 'Do I need Kubernetes experience to use this?',
+        },
+        answer: {
+          vi: 'Nên có kiến thức cơ bản về Kubernetes để khai thác hiệu quả, đội ngũ hỗ trợ luôn sẵn sàng đồng hành.',
+          en: 'Basic Kubernetes knowledge is recommended, and our support team is always available to help.',
+        },
+      },
+    ],
+    rating: 4.7,
+    reviewCount: 86,
+    isFeatured: false,
+    isActive: true,
+    relatedProductIds: ['cloud-server', 'load-balancer'],
+    createdAt: '2025-01-12T00:00:00.000Z',
+    updatedAt: '2025-05-20T00:00:00.000Z',
+    packages: [
+      {
+        id: 'k8s-standard',
+        name: { vi: 'Standard', en: 'Standard' },
+        price: 1990000,
+        billingCycle: 'monthly',
+        cloud: {
+          regions: ['Singapore'],
+          cpu: '3 node x 2 vCPU',
+          ram: '3 node x 4 GB',
+          ssd: '150 GB',
+          bandwidth: '5 TB',
+          os: ['Container-Optimized OS'],
+        },
+      },
+      {
+        id: 'k8s-advanced',
+        name: { vi: 'Advanced', en: 'Advanced' },
+        price: 3990000,
+        billingCycle: 'monthly',
+        isPopular: true,
+        cloud: {
+          regions: ['Singapore', 'Hong Kong'],
+          cpu: '5 node x 4 vCPU',
+          ram: '5 node x 8 GB',
+          ssd: '400 GB',
+          bandwidth: '10 TB',
+          os: ['Container-Optimized OS'],
+        },
+      },
+    ],
+  },
+  {
+    id: 'cloud-storage',
+    slug: 'cloud-storage',
+    category: 'cloud',
+    subCategory: 'cloud-storage',
+    name: { vi: 'Cloud Storage', en: 'Cloud Storage' },
+    shortDescription: {
+      vi: 'Lưu trữ đám mây an toàn với khả năng chia sẻ linh hoạt.',
+      en: 'Secure cloud storage with flexible sharing.',
+    },
+    description: {
+      vi: 'Cloud Storage cung cấp không gian lưu trữ đám mây bảo mật, hỗ trợ versioning, chia sẻ an toàn và tích hợp backup tự động cho dữ liệu quan trọng của bạn.',
+      en: 'Cloud Storage provides secure cloud storage space with versioning, secure sharing, and automatic backup integration for your important data.',
+    },
+    icon: 'Database',
+    startingPrice: 99000,
+    currency: 'VND',
+    billingCycles: ['monthly', 'yearly'],
+    features: [
+      { vi: 'Versioning dữ liệu', en: 'Data versioning' },
+      { vi: 'Chia sẻ bảo mật', en: 'Secure sharing' },
+      { vi: 'Hỗ trợ backup tự động', en: 'Automatic backup support' },
+    ],
+    benefits: [
+      { vi: 'Mở rộng dung lượng linh hoạt', en: 'Flexible capacity scaling' },
+      { vi: 'Mã hóa dữ liệu khi lưu trữ', en: 'Data encryption at rest' },
+      { vi: 'Truy cập từ mọi thiết bị', en: 'Access from any device' },
+    ],
+    howItWorks: [
+      { vi: 'Chọn gói dung lượng phù hợp', en: 'Choose the right storage plan' },
+      { vi: 'Nhận thông tin truy cập bucket', en: 'Receive your bucket access credentials' },
+      {
+        vi: 'Tải dữ liệu lên và quản lý qua bảng điều khiển',
+        en: 'Upload and manage data via the dashboard',
+      },
+    ],
+    suitableFor: [
+      {
+        vi: 'Lưu trữ backup và tài liệu doanh nghiệp',
+        en: 'Business backups and document storage',
+      },
+      { vi: 'Ứng dụng cần lưu trữ media, hình ảnh', en: 'Applications storing media and images' },
+    ],
+    faqs: [
+      {
+        question: { vi: 'Dữ liệu có được mã hóa không?', en: 'Is my data encrypted?' },
+        answer: {
+          vi: 'Có, toàn bộ dữ liệu được mã hóa khi lưu trữ và truyền tải.',
+          en: 'Yes, all data is encrypted at rest and in transit.',
+        },
+      },
+    ],
+    rating: 4.6,
+    reviewCount: 132,
+    isFeatured: false,
+    isActive: true,
+    relatedProductIds: ['cloud-backup', 'cloud-server'],
+    createdAt: '2025-01-15T00:00:00.000Z',
+    updatedAt: '2025-05-15T00:00:00.000Z',
+    packages: [
+      {
+        id: 'storage-100gb',
+        name: { vi: '100 GB', en: '100 GB' },
+        price: 99000,
+        billingCycle: 'monthly',
+        cloud: {
+          regions: ['Singapore'],
+          cpu: '-',
+          ram: '-',
+          ssd: '100 GB',
+          bandwidth: '1 TB',
+          os: [],
+        },
+      },
+      {
+        id: 'storage-500gb',
+        name: { vi: '500 GB', en: '500 GB' },
+        price: 349000,
+        billingCycle: 'monthly',
+        isPopular: true,
+        cloud: {
+          regions: ['Singapore', 'Hong Kong'],
+          cpu: '-',
+          ram: '-',
+          ssd: '500 GB',
+          bandwidth: '3 TB',
+          os: [],
+        },
+      },
+      {
+        id: 'storage-1tb',
+        name: { vi: '1 TB', en: '1 TB' },
+        price: 599000,
+        billingCycle: 'monthly',
+        cloud: {
+          regions: ['Singapore', 'Hong Kong'],
+          cpu: '-',
+          ram: '-',
+          ssd: '1000 GB',
+          bandwidth: '6 TB',
+          os: [],
+        },
+      },
+    ],
+  },
+  {
+    id: 'cloud-backup',
+    slug: 'cloud-backup',
+    category: 'cloud',
+    subCategory: 'cloud-backup',
+    name: { vi: 'Cloud Backup', en: 'Cloud Backup' },
+    shortDescription: {
+      vi: 'Sao lưu tự động, khôi phục dữ liệu nhanh chóng.',
+      en: 'Automatic backup with fast data recovery.',
+    },
+    description: {
+      vi: 'Cloud Backup giúp bảo vệ dữ liệu quan trọng của bạn với lịch sao lưu linh hoạt, mã hóa dữ liệu và khả năng khôi phục nhanh chóng theo từng điểm phục hồi.',
+      en: 'Cloud Backup protects your important data with flexible backup schedules, data encryption, and fast recovery from restore points.',
+    },
+    icon: 'ShieldCheck',
+    startingPrice: 149000,
+    currency: 'VND',
+    billingCycles: ['monthly', 'yearly'],
+    features: [
+      { vi: 'Sao lưu tự động', en: 'Automatic backup' },
+      { vi: 'Lịch sao lưu linh hoạt', en: 'Flexible schedule' },
+      { vi: 'Mã hóa dữ liệu', en: 'Data encryption' },
+    ],
+    benefits: [
+      { vi: 'Nhiều điểm khôi phục theo thời gian', en: 'Multiple restore points over time' },
+      { vi: 'Khôi phục nhanh chỉ trong vài phút', en: 'Fast recovery within minutes' },
+      { vi: 'Giảm thiểu rủi ro mất dữ liệu', en: 'Minimize the risk of data loss' },
+    ],
+    howItWorks: [
+      { vi: 'Kết nối nguồn dữ liệu cần sao lưu', en: 'Connect the data source to back up' },
+      { vi: 'Thiết lập lịch sao lưu tự động', en: 'Set up an automatic backup schedule' },
+      {
+        vi: 'Khôi phục dữ liệu khi cần từ restore point',
+        en: 'Restore data when needed from a restore point',
+      },
+    ],
+    suitableFor: [
+      {
+        vi: 'Doanh nghiệp cần bảo vệ dữ liệu quan trọng',
+        en: 'Businesses protecting critical data',
+      },
+    ],
+    faqs: [
+      {
+        question: {
+          vi: 'Tôi có thể khôi phục về thời điểm bất kỳ không?',
+          en: 'Can I restore to any point in time?',
+        },
+        answer: {
+          vi: 'Bạn có thể chọn bất kỳ restore point nào trong lịch sử sao lưu.',
+          en: 'You can choose any restore point from your backup history.',
+        },
+      },
+    ],
+    rating: 4.7,
+    reviewCount: 58,
+    isFeatured: false,
+    isActive: true,
+    relatedProductIds: ['cloud-storage', 'cloud-server'],
+    createdAt: '2025-01-18T00:00:00.000Z',
+    updatedAt: '2025-05-10T00:00:00.000Z',
+    packages: [
+      {
+        id: 'backup-basic',
+        name: { vi: 'Basic', en: 'Basic' },
+        price: 149000,
+        billingCycle: 'monthly',
+        cloud: { regions: ['Singapore'], cpu: '-', ram: '-', ssd: '50 GB', bandwidth: '-', os: [] },
+      },
+      {
+        id: 'backup-pro',
+        name: { vi: 'Pro', en: 'Pro' },
+        price: 349000,
+        billingCycle: 'monthly',
+        isPopular: true,
+        cloud: {
+          regions: ['Singapore', 'Hong Kong'],
+          cpu: '-',
+          ram: '-',
+          ssd: '200 GB',
+          bandwidth: '-',
+          os: [],
+        },
+      },
+    ],
+  },
+  {
+    id: 'load-balancer',
+    slug: 'load-balancer',
+    category: 'cloud',
+    subCategory: 'load-balancer',
+    name: { vi: 'Load Balancer', en: 'Load Balancer' },
+    shortDescription: {
+      vi: 'Cân bằng tải thông minh cho hệ thống nhiều máy chủ.',
+      en: 'Smart load balancing for multi-server systems.',
+    },
+    description: {
+      vi: 'Load Balancer phân phối lưu lượng truy cập đồng đều giữa các máy chủ, đảm bảo hệ thống của bạn luôn ổn định và sẵn sàng cao ngay cả khi lưu lượng tăng đột biến.',
+      en: 'Load Balancer evenly distributes traffic across servers, keeping your system stable and highly available even during traffic spikes.',
+    },
+    icon: 'Network',
+    startingPrice: 199000,
+    currency: 'VND',
+    billingCycles: ['monthly', 'yearly'],
+    features: [
+      { vi: 'Phân phối tải tự động', en: 'Automatic traffic distribution' },
+      { vi: 'Health check máy chủ', en: 'Server health checks' },
+      { vi: 'Hỗ trợ SSL termination', en: 'SSL termination support' },
+    ],
+    benefits: [
+      { vi: 'Tăng tính sẵn sàng cho hệ thống', en: 'Improved system availability' },
+      { vi: 'Tự động loại bỏ máy chủ lỗi', en: 'Automatically removes unhealthy servers' },
+    ],
+    howItWorks: [
+      { vi: 'Chọn gói Load Balancer phù hợp', en: 'Choose the right Load Balancer plan' },
+      { vi: 'Gắn các máy chủ backend vào pool', en: 'Attach backend servers to the pool' },
+      { vi: 'Theo dõi lưu lượng qua bảng điều khiển', en: 'Monitor traffic via the dashboard' },
+    ],
+    suitableFor: [
+      {
+        vi: 'Hệ thống nhiều máy chủ cần cân bằng tải',
+        en: 'Multi-server systems needing load balancing',
+      },
+    ],
+    faqs: [
+      {
+        question: {
+          vi: 'Load Balancer có hỗ trợ HTTPS không?',
+          en: 'Does Load Balancer support HTTPS?',
+        },
+        answer: {
+          vi: 'Có, Load Balancer hỗ trợ SSL termination cho lưu lượng HTTPS.',
+          en: 'Yes, it supports SSL termination for HTTPS traffic.',
+        },
+      },
+    ],
+    rating: 4.5,
+    reviewCount: 41,
+    isFeatured: false,
+    isActive: true,
+    relatedProductIds: ['cloud-server', 'managed-kubernetes'],
+    createdAt: '2025-01-20T00:00:00.000Z',
+    updatedAt: '2025-05-05T00:00:00.000Z',
+    packages: [
+      {
+        id: 'lb-standard',
+        name: { vi: 'Standard', en: 'Standard' },
+        price: 199000,
+        billingCycle: 'monthly',
+        cloud: { regions: ['Singapore'], cpu: '-', ram: '-', ssd: '-', bandwidth: '2 TB', os: [] },
+      },
+      {
+        id: 'lb-advanced',
+        name: { vi: 'Advanced', en: 'Advanced' },
+        price: 449000,
+        billingCycle: 'monthly',
+        isPopular: true,
+        cloud: {
+          regions: ['Singapore', 'Hong Kong'],
+          cpu: '-',
+          ram: '-',
+          ssd: '-',
+          bandwidth: '5 TB',
+          os: [],
+        },
+      },
+    ],
+  },
+]

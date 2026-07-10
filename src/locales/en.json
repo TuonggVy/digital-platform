@@ -1,0 +1,939 @@
+{
+  "brand": "VTC TELECOM",
+  "demoLabel": "Demo",
+  "common": {
+    "loading": "Loading...",
+    "viewDetails": "View details",
+    "addToCart": "Add to cart",
+    "buyNow": "Buy now",
+    "contactSales": "Contact sales",
+    "learnMore": "Learn more",
+    "seeAll": "See all",
+    "back": "Back",
+    "cancel": "Cancel",
+    "save": "Save changes",
+    "confirm": "Confirm",
+    "close": "Close",
+    "search": "Search",
+    "filter": "Filters",
+    "clearFilter": "Clear filters",
+    "sortBy": "Sort by",
+    "noResults": "No matching results found",
+    "tryAgain": "Try again",
+    "startingFrom": "Starting from",
+    "perMonth": "/month",
+    "perYear": "/year",
+    "oneTime": "one-time",
+    "reviews": "reviews",
+    "quantity": "Quantity",
+    "copy": "Copy",
+    "copied": "Copied",
+    "edit": "Edit",
+    "delete": "Delete",
+    "add": "Add new",
+    "status": "Status",
+    "all": "All",
+    "yes": "Yes",
+    "no": "No",
+    "required": "required",
+    "optional": "optional",
+    "gridView": "Grid view",
+    "listView": "List view",
+    "readMore": "Read more",
+    "goHome": "Go home",
+    "download": "Download",
+    "renew": "Renew",
+    "support": "Support",
+    "viewKey": "View license key",
+    "viewQr": "View QR code",
+    "instructions": "Activation guide",
+    "submit": "Submit",
+    "continue": "Continue",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "processing": "Processing...",
+    "helpfulYes": "Yes, helpful",
+    "helpfulNo": "Not helpful"
+  },
+  "nav": {
+    "home": "Home",
+    "products": "Products",
+    "solutions": "Solutions",
+    "pricing": "Pricing",
+    "support": "Support",
+    "about": "About us",
+    "contact": "Contact",
+    "login": "Log in",
+    "getStarted": "Get started",
+    "cart": "Cart",
+    "account": "Account",
+    "logout": "Log out",
+    "adminPanel": "Admin panel",
+    "megamenu": {
+      "cloud": "Cloud Services",
+      "kaspersky": "Kaspersky Software",
+      "esim": "Travel eSIM",
+      "viewAllCloud": "View all Cloud services",
+      "viewAllKaspersky": "View all Kaspersky plans",
+      "viewAllEsim": "View all eSIM"
+    }
+  },
+  "products": {
+    "cloud": {
+      "server": "Cloud Server",
+      "kubernetes": "Managed Kubernetes",
+      "storage": "Cloud Storage",
+      "backup": "Cloud Backup",
+      "loadbalancer": "Load Balancer"
+    },
+    "kaspersky": {
+      "standard": "Kaspersky Standard",
+      "plus": "Kaspersky Plus",
+      "premium": "Kaspersky Premium",
+      "soho": "Kaspersky Small Office Security"
+    },
+    "esim": {
+      "asia": "Asia eSIM",
+      "europe": "Europe eSIM",
+      "namerica": "North America eSIM",
+      "global": "Global eSIM"
+    }
+  },
+  "footer": {
+    "description": "A digital services platform offering Cloud, Kaspersky security, and international travel eSIM.",
+    "products": "Products",
+    "company": "Company",
+    "support": "Support",
+    "legal": "Legal",
+    "newsletterTitle": "Subscribe to updates",
+    "newsletterDesc": "Get the latest offers and product updates.",
+    "newsletterPlaceholder": "Enter your email",
+    "newsletterSubmit": "Subscribe",
+    "newsletterSuccess": "Thanks for subscribing!",
+    "rights": "All rights reserved.",
+    "demoNotice": "This is a demo website; data and pricing are for illustration only."
+  },
+  "home": {
+    "hero": {
+      "title": "Powerful digital solutions for every journey",
+      "subtitle": "Flexible cloud, reliable security, and global connectivity — all in one platform.",
+      "ctaPrimary": "Explore products",
+      "ctaSecondary": "Talk to sales"
+    },
+    "partners": {
+      "title": "Trusted alongside leading platforms"
+    },
+    "categories": {
+      "eyebrow": "SERVICES",
+      "title": "Three core service groups",
+      "subtitle": "Everything you need for digital infrastructure, security, and global connectivity.",
+      "cloud": {
+        "name": "Cloud Services",
+        "desc": "High-performance servers, Kubernetes, and cloud storage.",
+        "b1": "Spin up servers in minutes",
+        "b2": "Scale flexibly on demand",
+        "b3": "Stable 24/7 operation"
+      },
+      "kaspersky": {
+        "name": "Kaspersky Software",
+        "desc": "Protect your devices and data against every cyber threat.",
+        "b1": "Antivirus and malware protection",
+        "b2": "Secure online payments",
+        "b3": "Centralized multi-device management"
+      },
+      "esim": {
+        "name": "International Travel eSIM",
+        "desc": "Stay connected the moment you land in 100+ countries.",
+        "b1": "Activate with a QR code",
+        "b2": "No physical SIM swap needed",
+        "b3": "A wide range of data plans"
+      }
+    },
+    "whyUs": {
+      "eyebrow": "WHY CHOOSE US",
+      "title": "Why choose VTC TELECOM",
+      "subtitle": "From deployment speed to transparent pricing, every experience is designed so you can operate with peace of mind.",
+      "fast": {
+        "title": "Fast support",
+        "desc": "Our technical team responds and resolves issues quickly."
+      },
+      "transparent": {
+        "title": "Transparent service",
+        "desc": "Clear pricing with no hidden fees."
+      },
+      "payment": {
+        "title": "Convenient payment",
+        "desc": "Multiple flexible and secure payment methods."
+      },
+      "flexible": {
+        "title": "Flexible solutions",
+        "desc": "Easily upgrade and scale to fit your real needs."
+      }
+    },
+    "featured": {
+      "eyebrow": "PRODUCTS",
+      "title": "Featured products",
+      "subtitle": "The services our customers choose most."
+    },
+    "process": {
+      "eyebrow": "HOW IT WORKS",
+      "title": "How to purchase a service",
+      "step1": {
+        "title": "Choose a service",
+        "desc": "Explore and pick the service that fits your needs."
+      },
+      "step2": {
+        "title": "Choose the right plan",
+        "desc": "Customize configuration, data, or duration."
+      },
+      "step3": {
+        "title": "Complete payment",
+        "desc": "Pay securely through multiple methods."
+      },
+      "step4": {
+        "title": "Receive and use the service",
+        "desc": "Activate and start using it right away."
+      }
+    },
+    "cloudSection": {
+      "eyebrow": "CLOUD",
+      "title": "High-performance Cloud infrastructure",
+      "subtitle": "A cloud server platform built for speed and reliability.",
+      "f1": "High-performance cloud servers",
+      "f2": "Flexible scalability",
+      "f3": "Multi-layer security",
+      "f4": "Fast deployment support"
+    },
+    "kasperskySection": {
+      "eyebrow": "SECURITY",
+      "title": "Comprehensive protection with Kaspersky",
+      "subtitle": "Defend against ever-growing cyber threats.",
+      "f1": "Antivirus protection",
+      "f2": "Payment protection",
+      "f3": "Anti-phishing",
+      "f4": "Privacy protection"
+    },
+    "esimSection": {
+      "eyebrow": "GLOBAL CONNECTIVITY",
+      "title": "Stay connected globally with eSIM",
+      "subtitle": "Ready to connect the moment you land.",
+      "f1": "Connectivity in 100+ countries",
+      "f2": "No physical SIM required",
+      "f3": "Instant QR activation",
+      "f4": "Multiple data plans"
+    },
+    "stats": {
+      "eyebrow": "BY THE NUMBERS",
+      "title": "VTC TELECOM in numbers",
+      "customers": "customers",
+      "countries": "countries supported",
+      "uptime": "uptime",
+      "supportHours": "support"
+    },
+    "testimonials": {
+      "eyebrow": "TESTIMONIALS",
+      "title": "What our customers say"
+    },
+    "faq": {
+      "eyebrow": "SUPPORT",
+      "title": "Frequently asked questions"
+    },
+    "cta": {
+      "title": "Start your digital journey today",
+      "primary": "View products",
+      "secondary": "Talk to sales"
+    },
+    "tabs": {
+      "all": "All",
+      "cloud": "Cloud",
+      "kaspersky": "Kaspersky",
+      "esim": "eSIM"
+    }
+  },
+  "productsPage": {
+    "title": "All products",
+    "subtitle": "Explore VTC TELECOM's full range of digital services.",
+    "searchPlaceholder": "Search products...",
+    "category": "Category",
+    "priceRange": "Price range",
+    "billingCycle": "Billing cycle",
+    "sort": {
+      "featured": "Featured",
+      "priceAsc": "Price: low to high",
+      "priceDesc": "Price: high to low"
+    },
+    "resultsCount": "{{count}} products",
+    "emptyTitle": "No matching products found",
+    "emptyDesc": "Try adjusting your filters or search keywords."
+  },
+  "cloudPage": {
+    "heroTitle": "Cloud infrastructure for every scale",
+    "heroSubtitle": "From personal servers to enterprise Kubernetes systems.",
+    "compareTitle": "Compare Cloud plans",
+    "useCasesTitle": "Use cases",
+    "whyTitle": "Why choose VTC TELECOM Cloud",
+    "faqTitle": "Cloud FAQ",
+    "useCase1": "Websites and applications",
+    "useCase2": "DevOps & containerized systems",
+    "useCase3": "Data backup and storage"
+  },
+  "kasperskyPage": {
+    "heroTitle": "Comprehensive security for every device",
+    "heroSubtitle": "Pick the Kaspersky plan that fits individuals, families, or businesses.",
+    "filterUserType": "User type",
+    "filterDevices": "Number of devices",
+    "filterDuration": "Duration",
+    "personal": "Personal",
+    "family": "Family",
+    "business": "Business",
+    "compareTitle": "Compare plan features"
+  },
+  "esimPage": {
+    "heroTitle": "International travel eSIM",
+    "heroSubtitle": "Stay connected the moment you land in 100+ countries worldwide.",
+    "searchCountry": "Search country...",
+    "filterRegion": "Region",
+    "filterData": "Data amount",
+    "filterDays": "Number of days",
+    "filterHotspot": "Hotspot support",
+    "filterNetwork": "Network type",
+    "checkDeviceTitle": "Is your device eSIM compatible?",
+    "checkDeviceDesc": "Quickly check the list of eSIM-compatible devices before you buy.",
+    "checkDeviceCta": "Check now"
+  },
+  "productDetail": {
+    "startingFrom": "Starting from",
+    "selectPackage": "Choose a plan",
+    "totalPrice": "Total price",
+    "overview": "Overview",
+    "benefits": "Benefits",
+    "features": "Features",
+    "howItWorks": "How it works",
+    "suitableFor": "Who it's for",
+    "specs": "Specifications & plan details",
+    "usageGuide": "Usage guide",
+    "faq": "Frequently asked questions",
+    "relatedProducts": "Related products",
+    "region": "Server region",
+    "cpu": "CPU",
+    "ram": "RAM",
+    "ssd": "SSD storage",
+    "os": "Operating system",
+    "billingCycle": "Billing cycle",
+    "devices": "Number of devices",
+    "duration": "Duration",
+    "userType": "User type",
+    "supportedOs": "Supported OS",
+    "country": "Country / Region",
+    "dataAmount": "Data amount",
+    "days": "Number of days",
+    "hotspot": "Hotspot support",
+    "networkType": "Network type",
+    "activationTime": "Activation timing",
+    "activationOnPurchase": "Activate immediately on purchase",
+    "activationOnArrival": "Activate on arrival",
+    "addedToCart": "Added to cart"
+  },
+  "pricingPage": {
+    "title": "Service pricing",
+    "subtitle": "Choose the plan that fits your needs.",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "mostPopular": "Most popular",
+    "tabs": {
+      "cloud": "Cloud",
+      "kaspersky": "Kaspersky",
+      "esim": "eSIM"
+    }
+  },
+  "solutionsPage": {
+    "title": "Solutions by need",
+    "subtitle": "Find the digital solution that matches your goals.",
+    "website": {
+      "title": "Websites and apps",
+      "desc": "Stable cloud infrastructure for your website and applications."
+    },
+    "smallBusiness": {
+      "title": "Small businesses",
+      "desc": "Cost-optimized security and storage solutions."
+    },
+    "remoteWork": {
+      "title": "Remote work",
+      "desc": "Secure connectivity for remote teams."
+    },
+    "deviceProtection": {
+      "title": "Device protection",
+      "desc": "Comprehensive protection for personal and family devices."
+    },
+    "travel": {
+      "title": "International travel",
+      "desc": "Seamless connectivity with eSIM in 100+ countries."
+    },
+    "frequentTravelers": {
+      "title": "Frequent business travelers",
+      "desc": "Flexible eSIM solutions for staff who travel often."
+    },
+    "exploreCta": "Explore solution"
+  },
+  "aboutPage": {
+    "storyTitle": "Our story",
+    "storyContent": "VTC TELECOM was founded to bring high-quality, accessible digital services to individuals and businesses across Vietnam.",
+    "missionTitle": "Mission",
+    "missionContent": "Simplify access to digital technology through reliable cloud, security, and connectivity solutions.",
+    "visionTitle": "Vision",
+    "visionContent": "To become the most trusted digital services platform in Southeast Asia.",
+    "valuesTitle": "Core values",
+    "value1": {
+      "title": "Transparency",
+      "desc": "Clear pricing and service quality."
+    },
+    "value2": {
+      "title": "Innovation",
+      "desc": "Continuously improving products and experience."
+    },
+    "value3": {
+      "title": "Reliability",
+      "desc": "Putting customer safety and stability first."
+    },
+    "value4": {
+      "title": "Dedication",
+      "desc": "Always accompanying and supporting our customers."
+    },
+    "milestonesTitle": "Milestones",
+    "teamTitle": "Our team",
+    "ctaTitle": "Ready to partner with VTC TELECOM?",
+    "disclaimer": "* Content on this page is illustrative demo data, not official legal information."
+  },
+  "contactPage": {
+    "title": "Get in touch",
+    "subtitle": "The VTC TELECOM team is ready to help.",
+    "form": {
+      "fullName": "Full name",
+      "email": "Email",
+      "phone": "Phone number",
+      "company": "Company",
+      "subject": "Subject",
+      "message": "Message",
+      "submit": "Send request"
+    },
+    "successTitle": "Request sent successfully!",
+    "successDesc": "We will get back to you as soon as possible.",
+    "info": {
+      "email": "Support email",
+      "hotline": "Hotline",
+      "hours": "Working hours",
+      "hoursValue": "8:00 AM - 9:00 PM, Monday - Sunday",
+      "address": "Address",
+      "addressValue": "12th Floor, Innovation Tower, District 1, Ho Chi Minh City (demo)",
+      "mapPlaceholder": "Illustrative map (demo)"
+    }
+  },
+  "supportPage": {
+    "title": "Support center",
+    "subtitle": "Find quick answers to your questions.",
+    "searchPlaceholder": "Search help articles...",
+    "categories": {
+      "cloud": "Cloud",
+      "kaspersky": "Kaspersky",
+      "esim": "eSIM",
+      "billing": "Billing",
+      "account": "Account"
+    },
+    "readTime": "min read",
+    "tableOfContents": "Table of contents",
+    "relatedArticles": "Related articles",
+    "wasHelpful": "Was this article helpful?",
+    "thanksFeedback": "Thanks for your feedback!"
+  },
+  "esimDevicesPage": {
+    "title": "Check eSIM device compatibility",
+    "subtitle": "Quickly look up eSIM-compatible devices.",
+    "searchPlaceholder": "Search by device name...",
+    "supported": "eSIM supported",
+    "notSupported": "Not supported"
+  },
+  "legal": {
+    "termsTitle": "Terms of Service",
+    "privacyTitle": "Privacy Policy",
+    "termsDisclaimer": "This content is demo data and must be reviewed and updated by the company's legal department before real use.",
+    "privacyDisclaimer": "This content is demo data, not an official legal privacy policy."
+  },
+  "notFoundPage": {
+    "title": "404",
+    "subtitle": "Page not found",
+    "desc": "The page you're looking for may have been removed or doesn't exist.",
+    "goHome": "Go home",
+    "findProducts": "Find products"
+  },
+  "auth": {
+    "login": {
+      "title": "Log in",
+      "subtitle": "Welcome back to VTC TELECOM",
+      "email": "Email",
+      "password": "Password",
+      "remember": "Remember me",
+      "forgot": "Forgot password?",
+      "submit": "Log in",
+      "noAccount": "Don't have an account?",
+      "registerNow": "Register now",
+      "demoAccounts": "Demo accounts",
+      "demoCustomer": "Customer",
+      "demoAdmin": "Administrator",
+      "success": "Logged in successfully!",
+      "invalidCredentials": "Incorrect email or password"
+    },
+    "register": {
+      "title": "Create an account",
+      "subtitle": "Sign up to start using our services",
+      "fullName": "Full name",
+      "email": "Email",
+      "phone": "Phone number",
+      "password": "Password",
+      "confirmPassword": "Confirm password",
+      "agreeTerms": "I agree to the terms of service",
+      "agreeTermsPrefix": "I agree to the",
+      "agreeTermsLink": "terms of service",
+      "submit": "Register",
+      "haveAccount": "Already have an account?",
+      "loginNow": "Log in",
+      "success": "Registered successfully!",
+      "emailExists": "This email is already in use"
+    },
+    "forgotPassword": {
+      "title": "Forgot password",
+      "subtitle": "Enter your email to receive reset instructions",
+      "email": "Email",
+      "submit": "Send request",
+      "success": "Password reset instructions sent (demo, no real email is sent).",
+      "backToLogin": "Back to log in"
+    }
+  },
+  "cart": {
+    "title": "Your cart",
+    "package": "Plan",
+    "cycle": "Cycle",
+    "remove": "Remove",
+    "subtotal": "Subtotal",
+    "discount": "Discount",
+    "total": "Total",
+    "couponPlaceholder": "Enter coupon code",
+    "applyCoupon": "Apply",
+    "couponApplied": "Coupon applied successfully!",
+    "couponInvalid": "Invalid coupon code",
+    "couponNotApplicable": "This coupon doesn't apply to this order",
+    "checkout": "Proceed to checkout",
+    "emptyTitle": "Your cart is empty",
+    "emptyDesc": "Explore our digital services.",
+    "continueShopping": "Continue shopping",
+    "itemRemoved": "Item removed from cart",
+    "itemAdded": "Item added to cart",
+    "couponHint": "Demo codes: NOVA10 (10% off), WELCOME50 (50,000₫ off), CLOUD15 (15% off Cloud items)"
+  },
+  "checkout": {
+    "title": "Checkout",
+    "steps": {
+      "info": "Customer info",
+      "review": "Review order",
+      "payment": "Payment",
+      "complete": "Complete"
+    },
+    "customerInfo": {
+      "fullName": "Full name",
+      "email": "Email",
+      "phone": "Phone number",
+      "company": "Company name",
+      "taxCode": "Tax code",
+      "note": "Note"
+    },
+    "paymentMethod": {
+      "title": "Payment method",
+      "bank_transfer": "Bank transfer",
+      "vietqr": "VietQR",
+      "e_wallet": "E-wallet",
+      "international_card": "International card"
+    },
+    "qr": {
+      "title": "Scan the QR code to pay",
+      "accountName": "Account name",
+      "accountNumber": "Account number",
+      "bankName": "Bank",
+      "transferContent": "Transfer content",
+      "note": "This is an illustrative QR code for demo purposes.",
+      "orderCodePending": "Your final order code will be provided right after you complete the order."
+    },
+    "internationalCardNote": "Demo — no real card details are collected. The order will be confirmed instantly to simulate payment.",
+    "orderSummary": "Order summary",
+    "placeOrder": "Complete order",
+    "processingOrder": "Processing your order...",
+    "success": {
+      "title": "Order placed successfully!",
+      "orderCode": "Order code",
+      "total": "Total",
+      "paymentMethodLabel": "Payment method",
+      "status": "Status",
+      "viewOrder": "View order",
+      "continueShopping": "Continue shopping"
+    }
+  },
+  "account": {
+    "sidebar": {
+      "dashboard": "Overview",
+      "orders": "Orders",
+      "services": "My services",
+      "tickets": "Support tickets",
+      "profile": "Profile",
+      "security": "Security"
+    },
+    "dashboard": {
+      "greeting": "Hello, {{name}}!",
+      "activeServices": "Active services",
+      "recentOrders": "Recent orders",
+      "expiringServices": "Expiring services",
+      "totalSpent": "Total spent",
+      "quickActions": "Quick actions",
+      "browseProducts": "Browse products",
+      "newTicket": "Create support ticket"
+    },
+    "orders": {
+      "title": "My orders",
+      "orderCode": "Order code",
+      "date": "Date",
+      "products": "Products",
+      "total": "Total",
+      "status": "Status",
+      "action": "Action",
+      "empty": "You have no orders yet"
+    },
+    "orderDetail": {
+      "title": "Order details",
+      "timeline": "Status timeline",
+      "items": "Items in this order",
+      "customerInfo": "Customer information",
+      "paymentInfo": "Payment information",
+      "downloadInvoice": "Download invoice",
+      "invoiceDemo": "This is a demo; invoice download isn't actually implemented."
+    },
+    "services": {
+      "title": "My services",
+      "empty": "You have no services yet",
+      "ip": "IP address",
+      "region": "Region",
+      "startDate": "Start date",
+      "expiryDate": "Expiry date",
+      "licenseKey": "License key",
+      "activationGuide": "Activation guide",
+      "installGuide": "Installation guide"
+    },
+    "tickets": {
+      "title": "Support tickets",
+      "newTicket": "Create new ticket",
+      "empty": "You have no support tickets yet",
+      "code": "Ticket code",
+      "subject": "Subject",
+      "priority": "Priority",
+      "form": {
+        "serviceType": "Service type",
+        "relatedService": "Related service",
+        "subject": "Subject",
+        "priority": "Priority",
+        "message": "Message",
+        "attachment": "Attachment",
+        "attachmentHint": "This is a demo feature; the file will not actually be uploaded.",
+        "submit": "Submit ticket",
+        "success": "Support ticket created successfully"
+      },
+      "priorities": {
+        "LOW": "Low",
+        "MEDIUM": "Medium",
+        "HIGH": "High",
+        "URGENT": "Urgent"
+      }
+    },
+    "profile": {
+      "title": "Personal profile",
+      "fullName": "Full name",
+      "email": "Email",
+      "phone": "Phone number",
+      "company": "Company",
+      "taxCode": "Tax code",
+      "address": "Address",
+      "success": "Profile updated successfully"
+    },
+    "security": {
+      "title": "Account security",
+      "changePassword": "Change password",
+      "currentPassword": "Current password",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm new password",
+      "twoFactor": "Two-factor authentication",
+      "twoFactorDesc": "Add extra security to your account (demo).",
+      "enable": "Enable",
+      "disable": "Disable",
+      "sessions": "Login sessions",
+      "currentSession": "Current session",
+      "revoke": "Revoke",
+      "passwordChanged": "Password changed successfully",
+      "currentPasswordInvalid": "Current password is incorrect"
+    }
+  },
+  "status": {
+    "order": {
+      "PENDING_PAYMENT": "Pending payment",
+      "PAID": "Paid",
+      "PROCESSING": "Processing",
+      "COMPLETED": "Completed",
+      "CANCELLED": "Cancelled",
+      "REFUNDED": "Refunded"
+    },
+    "service": {
+      "PENDING_ACTIVATION": "Pending activation",
+      "ACTIVE": "Active",
+      "EXPIRING_SOON": "Expiring soon",
+      "EXPIRED": "Expired",
+      "SUSPENDED": "Suspended"
+    },
+    "ticket": {
+      "OPEN": "Open",
+      "IN_PROGRESS": "In progress",
+      "RESOLVED": "Resolved",
+      "CLOSED": "Closed"
+    },
+    "payment": {
+      "UNPAID": "Unpaid",
+      "PAID": "Paid",
+      "REFUNDED": "Refunded"
+    }
+  },
+  "admin": {
+    "sidebar": {
+      "brand": "VTC TELECOM",
+      "portal": "Admin Portal",
+      "openMenu": "Open admin menu",
+      "collapse": "Collapse sidebar",
+      "expand": "Expand sidebar",
+      "groups": {
+        "overview": "Overview",
+        "business": "Business",
+        "services": "Service Management",
+        "operation": "Operations"
+      },
+      "dashboard": "Dashboard",
+      "products": "Products",
+      "orders": "Orders",
+      "customers": "Customers",
+      "services": "Cloud Services",
+      "licenses": "Kaspersky Licenses",
+      "esims": "eSIM",
+      "tickets": "Support",
+      "content": "Content Management",
+      "profile": "Profile",
+      "settings": "Settings",
+      "logout": "Log out",
+      "comingSoon": "This feature is coming soon"
+    },
+    "dashboard": {
+      "title": "Admin overview",
+      "totalRevenue": "Total revenue",
+      "totalOrders": "Total orders",
+      "totalCustomers": "Customers",
+      "activeServices": "Active services",
+      "revenueChart": "Monthly revenue",
+      "categoryChart": "Orders by category",
+      "recentOrders": "Recent orders",
+      "topProducts": "Top-selling products",
+      "lowStockAlert": "Low license & eSIM stock alerts"
+    },
+    "products": {
+      "title": "Manage products",
+      "addNew": "Add product",
+      "searchPlaceholder": "Search products...",
+      "name": "Product name",
+      "category": "Category",
+      "price": "Price",
+      "status": "Status",
+      "featured": "Featured",
+      "active": "Active",
+      "inactive": "Inactive",
+      "preview": "Preview",
+      "deleteConfirm": "Are you sure you want to delete this product?",
+      "deleted": "Product deleted",
+      "form": {
+        "nameVi": "Vietnamese name",
+        "nameEn": "English name",
+        "slug": "Slug",
+        "category": "Category",
+        "shortDesc": "Short description",
+        "description": "Detailed description",
+        "startingPrice": "Starting price",
+        "badge": "Badge",
+        "features": "Features",
+        "status": "Status",
+        "isFeatured": "Featured product",
+        "packages": "Service packages",
+        "save": "Save product",
+        "created": "Product created successfully",
+        "updated": "Product updated successfully",
+        "subCategory": "Sub-category",
+        "shortDescVi": "Short description (Vietnamese)",
+        "shortDescEn": "Short description (English)",
+        "descriptionVi": "Detailed description (Vietnamese)",
+        "descriptionEn": "Detailed description (English)",
+        "featureVi": "Feature (Vietnamese)",
+        "featureEn": "Feature (English)",
+        "addFeature": "Add feature",
+        "noFeatures": "No features yet",
+        "packageNameVi": "Package name (Vietnamese)",
+        "packageNameEn": "Package name (English)",
+        "packagePrice": "Package price",
+        "packageBillingCycle": "Billing cycle",
+        "addPackage": "Add package",
+        "noPackages": "No packages yet",
+        "createTitle": "Add new product",
+        "editTitle": "Edit product"
+      }
+    },
+    "orders": {
+      "title": "Manage orders",
+      "orderCode": "Order code",
+      "customer": "Customer",
+      "date": "Date",
+      "total": "Total",
+      "status": "Status",
+      "paymentMethod": "Payment method",
+      "updateStatus": "Update status",
+      "statusUpdated": "Order status updated",
+      "items": "Order items",
+      "customerInfo": "Customer information",
+      "noOrders": "No orders yet",
+      "details": "Details"
+    },
+    "customers": {
+      "title": "Manage customers",
+      "name": "Full name",
+      "email": "Email",
+      "phone": "Phone number",
+      "orderCount": "Order count",
+      "totalSpent": "Total spent",
+      "status": "Status",
+      "searchPlaceholder": "Search by name or email...",
+      "noCustomers": "No matching customers found"
+    },
+    "services": {
+      "title": "Manage services",
+      "noServices": "No services found",
+      "startDate": "Start date",
+      "expiryDate": "Expiry date",
+      "orderCode": "Order code",
+      "packageName": "Package",
+      "ip": "IP address",
+      "cpu": "CPU",
+      "ram": "RAM",
+      "ssd": "SSD",
+      "region": "Region",
+      "devices": "Devices",
+      "licenseKey": "License key",
+      "country": "Country",
+      "dataAmount": "Data amount",
+      "days": "Days",
+      "user": "User"
+    },
+    "licenses": {
+      "title": "Kaspersky license stock",
+      "addNew": "Add license",
+      "key": "License key",
+      "product": "Product",
+      "duration": "Duration",
+      "status": "Status",
+      "assignedOrder": "Assigned order",
+      "expiryDate": "Expiry date",
+      "unassigned": "Unassigned",
+      "modalTitle": "Add new license",
+      "productName": "Product name",
+      "statuses": {
+        "AVAILABLE": "Available",
+        "ASSIGNED": "Assigned",
+        "EXPIRED": "Expired"
+      },
+      "cancel": "Cancel",
+      "save": "Save",
+      "added": "License added"
+    },
+    "esims": {
+      "title": "eSIM stock",
+      "addNew": "Add eSIM",
+      "code": "eSIM code",
+      "country": "Country",
+      "dataAmount": "Data amount",
+      "days": "Days",
+      "status": "Status",
+      "assignedOrder": "Assigned order",
+      "modalTitle": "Add new eSIM",
+      "product": "Product",
+      "statuses": {
+        "AVAILABLE": "Available",
+        "ASSIGNED": "Assigned",
+        "USED": "Used"
+      },
+      "cancel": "Cancel",
+      "save": "Save",
+      "added": "eSIM added"
+    },
+    "tickets": {
+      "title": "Manage support tickets",
+      "updatePriority": "Update priority",
+      "updateStatus": "Update status",
+      "addReply": "Add reply",
+      "replyPlaceholder": "Type a reply to the customer...",
+      "replySent": "Reply sent",
+      "category": "Category",
+      "message": "Request message",
+      "replies": "Replies",
+      "noTickets": "No tickets found",
+      "user": "Sender",
+      "details": "Ticket details",
+      "categories": {
+        "cloud": "Cloud",
+        "kaspersky": "Kaspersky",
+        "esim": "eSIM",
+        "billing": "Billing",
+        "account": "Account"
+      }
+    },
+    "content": {
+      "title": "Manage website content",
+      "banners": "Banners",
+      "faqs": "FAQs",
+      "articles": "Support articles",
+      "testimonials": "Testimonials",
+      "bannerStatus": "Display status",
+      "readTime": "Read time",
+      "category": "Category",
+      "rating": "Rating",
+      "role": "Role",
+      "group": "Group",
+      "minutes": "min"
+    }
+  },
+  "toast": {
+    "addedToCart": "Item added to cart",
+    "removedFromCart": "Item removed from cart",
+    "couponApplied": "Coupon applied",
+    "loginSuccess": "Logged in successfully",
+    "registerSuccess": "Account registered successfully",
+    "orderSuccess": "Order placed successfully",
+    "profileUpdated": "Profile updated successfully",
+    "ticketCreated": "Support ticket created",
+    "statusUpdated": "Status updated",
+    "validationError": "Please check the information you entered",
+    "genericError": "Something went wrong, please try again"
+  },
+  "validation": {
+    "required": "This field is required",
+    "invalidEmail": "Invalid email address",
+    "minLength": "Please enter at least {{count}} characters",
+    "maxLength": "Please enter at most {{count}} characters",
+    "passwordMismatch": "Password confirmation doesn't match",
+    "invalidPhone": "Invalid phone number",
+    "mustAgreeTerms": "You must agree to the terms of service"
+  }
+}
