@@ -14,7 +14,6 @@ import { RevealOnScroll } from '@/components/animation/RevealOnScroll'
 import { useAuthStore } from '@/stores/authStore'
 import { useUiStore } from '@/stores/uiStore'
 import { ROUTES } from '@/constants/routes'
-import { DEMO_ACCOUNTS } from '@/constants/config'
 
 function buildLoginSchema(t: TFunction) {
   return z.object({
@@ -46,7 +45,6 @@ export function LoginPage() {
   const {
     register,
     handleSubmit,
-    setValue,
     formState: { errors, isSubmitting },
   } = useForm<LoginFormValues>({
     resolver: zodResolver(schema),
@@ -67,12 +65,6 @@ export function LoginPage() {
     } catch {
       setFormError(t('auth.login.invalidCredentials'))
     }
-  }
-
-  function fillDemo(kind: 'customer' | 'admin') {
-    const account = DEMO_ACCOUNTS[kind]
-    setValue('email', account.email)
-    setValue('password', account.password)
   }
 
   return (
@@ -136,28 +128,6 @@ export function LoginPage() {
                 {t('auth.login.registerNow')}
               </Link>
             </p>
-
-            <div className="mt-6 rounded-xl border border-dashed border-border bg-surface p-4">
-              <p className="text-xs font-medium uppercase tracking-wide text-text-secondary">
-                {t('demoLabel')} · {t('auth.login.demoAccounts')}
-              </p>
-              <div className="mt-2 flex flex-wrap gap-2">
-                <button
-                  type="button"
-                  onClick={() => fillDemo('customer')}
-                  className="rounded-full border border-border bg-background px-3 py-1 text-xs font-medium text-text-primary transition-colors hover:border-primary hover:text-primary"
-                >
-                  {t('auth.login.demoCustomer')}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => fillDemo('admin')}
-                  className="rounded-full border border-border bg-background px-3 py-1 text-xs font-medium text-text-primary transition-colors hover:border-primary hover:text-primary"
-                >
-                  {t('auth.login.demoAdmin')}
-                </button>
-              </div>
-            </div>
           </div>
         </RevealOnScroll>
       </div>
