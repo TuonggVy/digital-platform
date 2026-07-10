@@ -683,18 +683,20 @@ export function HomePage() {
         </section>
       )}
 
-      {/* ============ 13. FINAL CTA — full-bleed gradient, glow button ============ */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary via-secondary to-accent px-4 py-24 sm:px-6 lg:px-8">
-        <div className="absolute inset-0 -z-10 bg-grid opacity-10" />
-        <RevealOnScroll direction="scale" className="mx-auto max-w-4xl">
-          <ContactCTA
-            bare
-            glow
-            title={t('home.cta.title')}
-            primaryLabel={t('home.cta.primary')}
-            secondaryLabel={t('home.cta.secondary')}
-          />
-        </RevealOnScroll>
+      {/* ============ 13. FINAL CTA — rounded card, glow button ============ */}
+      <section className="px-4 pb-16 sm:px-6 lg:px-8">
+        <div className="relative mx-auto max-w-6xl overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-primary via-secondary to-accent px-4 py-24 sm:px-6 lg:px-8">
+          <div className="absolute inset-0 -z-10 bg-grid opacity-10" />
+          <RevealOnScroll direction="scale" className="mx-auto max-w-4xl">
+            <ContactCTA
+              bare
+              glow
+              title={t('home.cta.title')}
+              primaryLabel={t('home.cta.primary')}
+              secondaryLabel={t('home.cta.secondary')}
+            />
+          </RevealOnScroll>
+        </div>
       </section>
     </div>
   )
