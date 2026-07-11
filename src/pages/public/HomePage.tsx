@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next'
 import { motion, useReducedMotion } from 'framer-motion'
 import { ArrowRight, Star, CheckCircle2, ShieldCheck } from 'lucide-react'
 import { Seo } from '@/components/common/Seo'
-import { Button } from '@/components/common/Button'
 import { SectionHeading } from '@/components/common/SectionHeading'
 import { ContactCTA } from '@/components/common/ContactCTA'
 import { Accordion } from '@/components/common/Accordion'
@@ -16,7 +15,7 @@ import { ProductGrid } from '@/components/product/ProductGrid'
 import { RevealOnScroll } from '@/components/animation/RevealOnScroll'
 import { StaggerContainer, StaggerItem } from '@/components/animation/StaggerContainer'
 import { AnimatedCounter } from '@/components/animation/AnimatedCounter'
-import { ParallaxSection } from '@/components/animation/ParallaxSection'
+import { Hero } from '@/components/home/Hero'
 import { productService } from '@/services/productService'
 import { contentService } from '@/services/contentService'
 import { useLocale } from '@/hooks/useLocale'
@@ -107,70 +106,8 @@ export function HomePage() {
     <div>
       <Seo title={t('home.hero.title')} description={t('home.hero.subtitle')} />
 
-      {/* ============ 1. HERO — fullscreen, soft gradient wash, floating parallax shapes ============ */}
-      <section className="relative flex min-h-screen items-center overflow-hidden bg-gradient-to-b from-primary/[0.06] via-background to-background px-4 py-24 sm:px-6 lg:px-8">
-        <div className="absolute inset-0 -z-20 bg-grid opacity-40 [mask-image:radial-gradient(ellipse_60%_50%_at_50%_30%,black,transparent)]" />
-        <ParallaxSection className="pointer-events-none absolute inset-0 -z-10" strength={50}>
-          <div className="animate-float absolute -left-24 -top-24 size-96 rounded-full bg-primary/25 blur-3xl" />
-          <div
-            className="animate-float absolute -right-24 top-1/3 size-96 rounded-full bg-accent/20 blur-3xl"
-            style={{ animationDelay: '1.5s' }}
-          />
-          <div
-            className="animate-drift absolute bottom-0 left-1/3 size-72 rounded-full bg-secondary/20 blur-3xl"
-            style={{ animationDelay: '0.8s' }}
-          />
-        </ParallaxSection>
-
-        <div className="relative mx-auto max-w-3xl text-center">
-          <RevealOnScroll direction="scale">
-            <span className="inline-flex items-center justify-center gap-1.5 rounded-full border border-primary/15 bg-primary/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wide text-primary">
-              <span className="size-1.5 rounded-full bg-primary" />
-              VTC TELECOM
-            </span>
-          </RevealOnScroll>
-          <RevealOnScroll delay={0.1}>
-            <h1 className="mt-5 text-4xl font-bold tracking-tight text-text-primary sm:text-5xl lg:text-6xl">
-              {t('home.hero.title')}
-            </h1>
-            <p className="mx-auto mt-5 max-w-xl text-lg text-text-secondary">
-              {t('home.hero.subtitle')}
-            </p>
-          </RevealOnScroll>
-          <RevealOnScroll delay={0.2}>
-            <div className="mt-8 flex flex-wrap justify-center gap-3">
-              <Link to={ROUTES.PRODUCTS}>
-                <Button size="lg" rightIcon={<ArrowRight className="size-4" />}>
-                  {t('home.hero.ctaPrimary')}
-                </Button>
-              </Link>
-              <Link to={ROUTES.CONTACT}>
-                <Button size="lg" variant="outline">
-                  {t('home.hero.ctaSecondary')}
-                </Button>
-              </Link>
-            </div>
-          </RevealOnScroll>
-          <RevealOnScroll delay={0.3}>
-            <div className="mx-auto mt-14 flex max-w-lg flex-wrap items-center justify-center gap-x-10 gap-y-4 text-sm text-text-secondary">
-              <span className="flex items-center gap-2">
-                <strong className="text-lg font-bold text-text-primary">1.500+</strong>
-                {t('home.stats.customers')}
-              </span>
-              <span className="flex items-center gap-2">
-                <strong className="text-lg font-bold text-text-primary">35+</strong>
-                {t('home.stats.countries')}
-              </span>
-              <span className="flex items-center gap-2">
-                <strong className="text-lg font-bold text-text-primary">24/7</strong>
-                {t('home.stats.supportHours')}
-              </span>
-            </div>
-          </RevealOnScroll>
-        </div>
-
-        <WaveDivider fillClassName="fill-background" />
-      </section>
+      {/* ============ 1. HERO — premium SaaS hero with dashboard + floating cards ============ */}
+      <Hero />
 
       {/* ============ 2. TRUSTED BY — plain white, logo marquee ============ */}
       <section className="bg-background px-4 py-20 sm:px-6 lg:px-8">
@@ -605,7 +542,7 @@ export function HomePage() {
         </StaggerContainer>
       </section>
 
-      {/* ============ 11. TESTIMONIALS — masonry glass cards over blurred backdrop ============ */}
+      {/* ============ 11. TESTIMONIALS — equal-height glass cards over blurred backdrop ============ */}
       {testimonials.length > 0 && (
         <section className="relative overflow-hidden bg-surface px-4 py-28 sm:px-6 lg:px-8">
           <div className="pointer-events-none absolute -left-20 top-10 size-72 rounded-full bg-primary/10 blur-3xl" />
@@ -618,13 +555,10 @@ export function HomePage() {
                 className="mb-16"
               />
             </RevealOnScroll>
-            <StaggerContainer className="columns-1 gap-6 sm:columns-2 lg:columns-3">
-              {testimonials.slice(0, 6).map((testimonial, idx) => (
-                <StaggerItem key={testimonial.id} className="mb-6 break-inside-avoid">
-                  <div
-                    className="flex flex-col gap-4 rounded-2xl border border-white/60 bg-white/70 p-6 shadow-lg shadow-primary/5 backdrop-blur-md"
-                    style={{ marginTop: idx % 3 === 1 ? '1.5rem' : 0 }}
-                  >
+            <StaggerContainer className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {testimonials.slice(0, 6).map((testimonial) => (
+                <StaggerItem key={testimonial.id} className="h-full">
+                  <div className="flex h-full flex-col gap-4 rounded-2xl border border-white/60 bg-white/70 p-6 shadow-lg shadow-primary/5 backdrop-blur-md">
                     <div className="flex items-center gap-1">
                       {Array.from({ length: 5 }).map((_, starIdx) => (
                         <Star
@@ -633,7 +567,7 @@ export function HomePage() {
                         />
                       ))}
                     </div>
-                    <p className="text-sm leading-relaxed text-text-secondary">
+                    <p className="line-clamp-4 flex-1 text-sm leading-relaxed text-text-secondary">
                       &ldquo;{localize(testimonial.content, locale)}&rdquo;
                     </p>
                     <div className="flex items-center gap-3">

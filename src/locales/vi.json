@@ -118,7 +118,54 @@
       "title": "Giải pháp số mạnh mẽ cho mọi hành trình",
       "subtitle": "Cloud linh hoạt, bảo mật đáng tin cậy và kết nối toàn cầu trong một nền tảng.",
       "ctaPrimary": "Khám phá sản phẩm",
-      "ctaSecondary": "Liên hệ tư vấn"
+      "ctaSecondary": "Liên hệ tư vấn",
+      "trustedBy": "Được tin dùng bởi các doanh nghiệp đang phát triển",
+      "scrollHint": "Cuộn để khám phá",
+      "dashboard": {
+        "label": "Trung tâm điều khiển VTC",
+        "status": {
+          "running": "Đang chạy",
+          "protected": "Được bảo vệ",
+          "healthy": "Ổn định"
+        },
+        "cloud": {
+          "title": "Tài nguyên Cloud",
+          "cpu": "CPU",
+          "storage": "Lưu trữ",
+          "bandwidth": "Băng thông"
+        },
+        "security": {
+          "title": "An ninh mạng",
+          "threatProtection": "Chống mối đe dọa",
+          "firewall": "Tường lửa",
+          "monitoring": "Giám sát",
+          "active": "Đang hoạt động",
+          "enabled": "Đã bật",
+          "live": "Trực tiếp"
+        },
+        "esim": {
+          "title": "Mạng eSIM",
+          "countries": "Quốc gia hỗ trợ",
+          "countriesValue": "180+",
+          "activation": "Kích hoạt",
+          "activationValue": "Tức thì",
+          "qrStatus": "Trạng thái QR",
+          "qrValue": "Sẵn sàng"
+        },
+        "throughput": {
+          "title": "Lưu lượng mạng",
+          "change": "+12.4%"
+        },
+        "activity": {
+          "title": "Hoạt động gần đây",
+          "item1": "Server cloud đã được triển khai",
+          "time1": "2 phút trước",
+          "item2": "Đã kích hoạt bản quyền Kaspersky",
+          "time2": "18 phút trước",
+          "item3": "Đã mua eSIM — Nhật Bản",
+          "time3": "1 giờ trước"
+        }
+      }
     },
     "partners": {
       "title": "Được tin dùng cùng các nền tảng hàng đầu"
