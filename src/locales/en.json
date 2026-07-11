@@ -118,7 +118,54 @@
       "title": "Powerful digital solutions for every journey",
       "subtitle": "Flexible cloud, reliable security, and global connectivity — all in one platform.",
       "ctaPrimary": "Explore products",
-      "ctaSecondary": "Talk to sales"
+      "ctaSecondary": "Talk to sales",
+      "trustedBy": "Trusted by growing businesses worldwide",
+      "scrollHint": "Scroll to explore",
+      "dashboard": {
+        "label": "VTC Control Center",
+        "status": {
+          "running": "Running",
+          "protected": "Protected",
+          "healthy": "Healthy"
+        },
+        "cloud": {
+          "title": "Cloud Resources",
+          "cpu": "CPU",
+          "storage": "Storage",
+          "bandwidth": "Bandwidth"
+        },
+        "security": {
+          "title": "Security",
+          "threatProtection": "Threat Protection",
+          "firewall": "Firewall",
+          "monitoring": "Monitoring",
+          "active": "Active",
+          "enabled": "Enabled",
+          "live": "Live"
+        },
+        "esim": {
+          "title": "eSIM Network",
+          "countries": "Available Countries",
+          "countriesValue": "180+",
+          "activation": "Activation",
+          "activationValue": "Instant",
+          "qrStatus": "QR Status",
+          "qrValue": "Ready"
+        },
+        "throughput": {
+          "title": "Network Throughput",
+          "change": "+12.4%"
+        },
+        "activity": {
+          "title": "Recent Activity",
+          "item1": "Cloud server deployed",
+          "time1": "2m ago",
+          "item2": "Kaspersky license activated",
+          "time2": "18m ago",
+          "item3": "eSIM purchased — Japan",
+          "time3": "1h ago"
+        }
+      }
     },
     "partners": {
       "title": "Trusted alongside leading platforms"
