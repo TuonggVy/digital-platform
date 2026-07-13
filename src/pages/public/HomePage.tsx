@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion, useReducedMotion } from 'framer-motion'
-import { ArrowRight, Star, CheckCircle2, ShieldCheck } from 'lucide-react'
+import { ArrowRight, Star, CheckCircle2 } from 'lucide-react'
 import { Seo } from '@/components/common/Seo'
 import { SectionHeading } from '@/components/common/SectionHeading'
 import { ContactCTA } from '@/components/common/ContactCTA'
@@ -16,6 +16,7 @@ import { RevealOnScroll } from '@/components/animation/RevealOnScroll'
 import { StaggerContainer, StaggerItem } from '@/components/animation/StaggerContainer'
 import { AnimatedCounter } from '@/components/animation/AnimatedCounter'
 import { Hero } from '@/components/home/Hero'
+import { CyberSecurityRadar } from '@/components/home/CyberSecurityRadar'
 import { productService } from '@/services/productService'
 import { contentService } from '@/services/contentService'
 import { useLocale } from '@/hooks/useLocale'
@@ -263,8 +264,13 @@ export function HomePage() {
 
       {/* ============ 6. PURCHASE PROCESS — dark chapter, animated timeline, glow nodes ============ */}
       <section className="relative overflow-hidden bg-[#070c18] px-4 py-28 text-white sm:px-6 lg:px-8">
-        <div className="absolute inset-0 -z-10 bg-grid opacity-[0.06]" />
-        <div className="pointer-events-none absolute left-1/2 top-0 size-[560px] -translate-x-1/2 -translate-y-1/4 rounded-full bg-primary/15 blur-3xl" />
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute inset-0 bg-gradient-to-b from-[#070c18] from-0% via-[#0a1630] via-38% to-[#070c18] to-75%" />
+
+          <div className="absolute left-1/2 top-20 h-[420px] w-[900px] -translate-x-1/2 bg-[radial-gradient(ellipse_at_center,rgba(37,99,235,0.20)_0%,rgba(34,211,238,0.08)_38%,transparent_72%)] blur-2xl" />
+
+          <div className="absolute inset-0 bg-grid opacity-[0.05]" />
+        </div>
         <div className="relative mx-auto max-w-3xl">
           <RevealOnScroll>
             <SectionHeading
@@ -311,15 +317,12 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* ============ 7. CLOUD SECTION — dark hero, glass dashboard mockup ============ */}
-      <section className="relative overflow-hidden bg-[#060b17] px-4 py-28 text-white sm:px-6 lg:px-8">
-        <div className="absolute inset-0 -z-10 bg-grid opacity-10" />
-        <div className="pointer-events-none absolute -right-32 top-0 size-96 rounded-full bg-primary/30 blur-3xl" />
+      {/* ============ 7. CLOUD SECTION — soft gradient, glass dashboard mockup ============ */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-primary/[0.06] via-accent/[0.05] to-background px-4 py-28 sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 lg:grid-cols-2">
           <RevealOnScroll direction="left">
             <SectionHeading
               align="left"
-              light
               eyebrow={t('home.cloudSection.eyebrow')}
               title={t('home.cloudSection.title')}
               subtitle={t('home.cloudSection.subtitle')}
@@ -328,11 +331,11 @@ export function HomePage() {
             <StaggerContainer className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {CLOUD_FEATURES.map((feature) => (
                 <StaggerItem key={feature.key}>
-                  <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-4">
-                    <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/20 text-accent">
+                  <div className="flex items-center gap-3 rounded-xl border border-border bg-surface/70 p-4 shadow-sm">
+                    <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
                       <DynamicIcon name={feature.icon} className="size-5" />
                     </span>
-                    <p className="text-sm text-slate-200">
+                    <p className="text-sm text-text-secondary">
                       {t(`home.cloudSection.${feature.key}`)}
                     </p>
                   </div>
@@ -342,26 +345,26 @@ export function HomePage() {
           </RevealOnScroll>
 
           <RevealOnScroll delay={0.1} direction="right">
-            <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-xl">
+            <div className="rounded-3xl border border-border bg-surface/70 p-6 shadow-2xl shadow-primary/10 backdrop-blur">
               <div className="flex items-center justify-between">
                 <div className="flex gap-1.5">
                   <span className="size-2.5 rounded-full bg-red-400/70" />
                   <span className="size-2.5 rounded-full bg-amber-400/70" />
                   <span className="size-2.5 rounded-full bg-emerald-400/70" />
                 </div>
-                <span className="text-xs text-slate-400">cloud-server-01</span>
+                <span className="text-xs text-text-secondary">cloud-server-01</span>
               </div>
               <div className="mt-6 flex flex-col gap-4">
                 {[72, 45, 88, 60].map((value, idx) => (
                   <div key={idx} className="flex items-center gap-3">
-                    <span className="w-16 shrink-0 text-xs text-slate-400">CPU {idx + 1}</span>
-                    <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-white/10">
+                    <span className="w-16 shrink-0 text-xs text-text-secondary">CPU {idx + 1}</span>
+                    <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-border/60">
                       <div
                         className="h-full rounded-full bg-gradient-to-r from-primary to-accent"
                         style={{ width: `${value}%` }}
                       />
                     </div>
-                    <span className="w-10 shrink-0 text-right text-xs text-slate-400">
+                    <span className="w-10 shrink-0 text-right text-xs text-text-secondary">
                       {value}%
                     </span>
                   </div>
@@ -377,34 +380,7 @@ export function HomePage() {
         <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-16 lg:grid-cols-2">
           <RevealOnScroll direction="left" className="relative order-2 lg:order-1">
             <div className="pointer-events-none absolute -left-10 top-1/2 -z-10 size-72 -translate-y-1/2 rounded-full bg-secondary/15 blur-3xl" />
-            <div className="relative flex min-h-[320px] items-center justify-center rounded-3xl border border-border bg-surface/60 p-10">
-              <span className="animate-float absolute size-40 rounded-full bg-secondary/10" />
-              <span
-                className="animate-drift absolute size-56 rounded-full border border-secondary/20"
-                style={{ animationDelay: '0.6s' }}
-              />
-              <span className="relative flex size-24 items-center justify-center rounded-3xl bg-gradient-to-br from-secondary to-primary text-white shadow-lg shadow-secondary/30">
-                <ShieldCheck className="size-12" />
-              </span>
-              <div
-                className="animate-float absolute -left-2 top-8 flex items-center gap-2 rounded-xl border border-border bg-background px-3 py-2 shadow-md sm:left-4"
-                style={{ animationDelay: '0.4s' }}
-              >
-                <DynamicIcon name="Bug" className="size-4 text-secondary" />
-                <span className="text-xs font-medium text-text-primary">
-                  {t('home.kasperskySection.f1')}
-                </span>
-              </div>
-              <div
-                className="animate-float absolute -right-2 bottom-8 flex items-center gap-2 rounded-xl border border-border bg-background px-3 py-2 shadow-md sm:right-4"
-                style={{ animationDelay: '1.1s' }}
-              >
-                <DynamicIcon name="ShieldAlert" className="size-4 text-secondary" />
-                <span className="text-xs font-medium text-text-primary">
-                  {t('home.kasperskySection.f3')}
-                </span>
-              </div>
-            </div>
+            <CyberSecurityRadar />
           </RevealOnScroll>
 
           <RevealOnScroll direction="right" delay={0.1} className="order-1 lg:order-2">

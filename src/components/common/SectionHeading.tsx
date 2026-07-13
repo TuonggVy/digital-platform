@@ -28,14 +28,25 @@ export function SectionHeading({
       {eyebrow && (
         <span
           className={cn(
-            'inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold uppercase tracking-widest',
+            'relative inline-flex items-center gap-1.5 overflow-hidden rounded-full px-3.5 py-1.5 text-xs font-semibold uppercase tracking-widest',
             light
-              ? 'border border-white/15 bg-white/10 text-accent'
+              ? 'border border-white/[0.08] bg-[#070c18]/55 text-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]'
               : 'border border-primary/15 bg-primary/10 text-primary',
           )}
         >
-          <span className={cn('size-1.5 rounded-full', light ? 'bg-accent' : 'bg-primary')} />
-          {eyebrow}
+          {light && (
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 rounded-[inherit] bg-gradient-to-b from-white/[0.035] to-transparent"
+            />
+          )}
+          <span
+            className={cn(
+              'relative z-10 size-1.5 rounded-full',
+              light ? 'bg-accent' : 'bg-primary',
+            )}
+          />
+          <span className="relative z-10">{eyebrow}</span>
         </span>
       )}
       <h2
