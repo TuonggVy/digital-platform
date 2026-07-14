@@ -168,7 +168,10 @@
       }
     },
     "partners": {
-      "title": "Trusted alongside leading platforms"
+      "badge": "Trusted by 500+ Businesses",
+      "titlePrefix": "Trusted by",
+      "titleHighlight": "Leading Digital Platforms",
+      "description": "Partnering with trusted cloud, connectivity, and security platforms to deliver reliable, secure, and flexible digital solutions."
     },
     "categories": {
       "eyebrow": "SERVICES",
