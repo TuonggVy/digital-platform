@@ -7,7 +7,6 @@ import { Button } from '@/components/common/Button'
 import { RevealOnScroll } from '@/components/animation/RevealOnScroll'
 import { AnimatedCounter } from '@/components/animation/AnimatedCounter'
 import { DynamicIcon } from '@/components/common/DynamicIcon'
-import { WaveDivider } from '@/components/common/WaveDivider'
 import { HeroBackground } from './HeroBackground'
 import { HeroDashboard } from './HeroDashboard'
 import { ROUTES } from '@/constants/routes'
@@ -131,8 +130,6 @@ export function Hero() {
       <div className="relative px-4 pb-24 sm:px-6 lg:px-8 lg:pb-32">
         <HeroDashboard />
       </div>
-
-      <WaveDivider fillClassName="fill-background" />
     </section>
   )
 }
