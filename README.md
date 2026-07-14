@@ -1,15 +1,3 @@
-# NovaDigital
-
-A front-end e-commerce demo for **NovaDigital** — a fictional technology company selling three groups of digital
-services: **Cloud** (servers, Kubernetes, storage, backup, load balancer), **Kaspersky** security software, and
-**international travel eSIM**.
-
-> **This project has no backend.** There is no real API, no real database, and no real payment gateway. All data is
-> mock data defined in `src/data/mocks`, served through a mock service layer (`src/services`) that simulates network
-> latency, and persisted in the browser via `localStorage` (cart, session, orders, services, tickets, admin CRUD,
-> language). Product names, prices, and any "partner" logos shown on the homepage are illustrative only and do not
-> represent confirmed pricing or partnerships.
-
 ## Tech stack
 
 React 19 · TypeScript · Vite · Tailwind CSS v4 · Framer Motion · React Router v6 · Zustand · react-hook-form + zod ·
