@@ -10,7 +10,6 @@ import { Accordion } from '@/components/common/Accordion'
 import { Tabs } from '@/components/common/Tabs'
 import { DynamicIcon } from '@/components/common/DynamicIcon'
 import { Marquee } from '@/components/common/Marquee'
-import { WaveDivider } from '@/components/common/WaveDivider'
 import { ProductGrid } from '@/components/product/ProductGrid'
 import { RevealOnScroll } from '@/components/animation/RevealOnScroll'
 import { StaggerContainer, StaggerItem } from '@/components/animation/StaggerContainer'
@@ -287,8 +286,6 @@ export function HomePage() {
             </div>
           </RevealOnScroll>
         </div>
-
-        <WaveDivider fillClassName="fill-[#070c18]" />
       </section>
 
       {/* ============ 6. PURCHASE PROCESS — dark chapter, animated timeline, glow nodes ============ */}
