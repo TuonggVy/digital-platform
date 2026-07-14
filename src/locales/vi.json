@@ -168,7 +168,10 @@
       }
     },
     "partners": {
-      "title": "Được tin dùng cùng các nền tảng hàng đầu"
+      "badge": "Được tin dùng bởi hơn 500 doanh nghiệp",
+      "titlePrefix": "Được tin dùng bởi các",
+      "titleHighlight": "nền tảng số hàng đầu",
+      "description": "Đồng hành cùng các nền tảng cloud, kết nối và bảo mật uy tín để mang đến những giải pháp số ổn định, an toàn và linh hoạt."
     },
     "categories": {
       "eyebrow": "DỊCH VỤ",

@@ -110,22 +110,51 @@ export function HomePage() {
       {/* ============ 1. HERO — premium SaaS hero with dashboard + floating cards ============ */}
       <Hero />
 
-      {/* ============ 2. TRUSTED BY — plain white, logo marquee ============ */}
-      <section className="bg-background px-4 py-20 sm:px-6 lg:px-8">
-        <RevealOnScroll className="mx-auto max-w-7xl text-center">
-          <p className="text-base font-medium text-text-secondary">{t('home.partners.title')}</p>
-          <Marquee
-            className="mt-10"
-            gapClassName="gap-x-20"
-            items={mockPartners}
-            getKey={(partner) => partner.id}
-            renderItem={(partner) => (
-              <span className="text-3xl font-semibold tracking-tight text-text-secondary/70 grayscale">
-                {partner.name}
-              </span>
-            )}
-          />
-        </RevealOnScroll>
+      {/* ============ 2. TRUSTED BY — premium badge + gradient heading + logo marquee ============ */}
+      <section className="relative overflow-hidden bg-background px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
+        <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+          <div className="absolute left-1/2 top-0 h-[360px] w-[760px] -translate-x-1/2 rounded-full bg-primary/[0.08] blur-3xl" />
+          <div className="absolute -left-32 top-20 size-72 rounded-full bg-primary/[0.06] blur-3xl" />
+          <div className="absolute -right-32 top-10 size-72 rounded-full bg-accent/[0.06] blur-3xl" />
+          <div className="absolute inset-0 bg-grid opacity-[0.02]" />
+        </div>
+
+        <div className="relative mx-auto max-w-7xl">
+          <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
+            <RevealOnScroll>
+              <h2 className="max-w-4xl text-balance text-3xl font-bold leading-tight tracking-tight text-text-primary sm:text-4xl lg:text-5xl">
+                {t('home.partners.titlePrefix')}{' '}
+                <span className="text-primary">{t('home.partners.titleHighlight')}</span>
+              </h2>
+            </RevealOnScroll>
+
+            <RevealOnScroll delay={0.08}>
+              <p className="mt-5 max-w-2xl text-base leading-7 text-text-secondary sm:text-lg sm:leading-8">
+                {t('home.partners.description')}
+              </p>
+            </RevealOnScroll>
+
+            <RevealOnScroll delay={0.16} direction="scale">
+              <div className="mt-8 flex items-center justify-center gap-3">
+                <span className="h-px w-16 bg-gradient-to-r from-transparent to-primary/30 sm:w-24" />
+                <span className="h-px w-16 bg-gradient-to-l from-transparent to-primary/30 sm:w-24" />
+              </div>
+            </RevealOnScroll>
+          </div>
+
+          <RevealOnScroll delay={0.22} className="mt-10 sm:mt-12">
+            <Marquee
+              gapClassName="gap-x-14 sm:gap-x-20 lg:gap-x-24"
+              items={mockPartners}
+              getKey={(partner) => partner.id}
+              renderItem={(partner) => (
+                <span className="whitespace-nowrap text-2xl font-semibold tracking-tight text-text-secondary/50 grayscale transition-all duration-300 ease-out hover:scale-105 hover:text-text-primary hover:grayscale-0 sm:text-3xl lg:text-[2rem]">
+                  {partner.name}
+                </span>
+              )}
+            />
+          </RevealOnScroll>
+        </div>
       </section>
 
       {/* ============ 3. PRODUCT CATEGORIES — light gray, blurred blob, lifting cards ============ */}
