@@ -504,10 +504,14 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* ============ 10. STATS — full-width solid banner, animated counters ============ */}
-      <section className="relative overflow-hidden bg-primary px-4 py-20 sm:px-6 lg:px-8">
-        <div className="absolute inset-0 -z-10 bg-grid opacity-10" />
-        <StaggerContainer className="mx-auto grid max-w-7xl grid-cols-2 gap-8 text-center sm:grid-cols-4">
+      {/* ============ 10. STATS — dark chapter matching Process section, animated counters ============ */}
+      <section className="relative overflow-hidden bg-[#070c18] px-4 py-20 text-white sm:px-6 lg:px-8">
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute inset-0 bg-gradient-to-b from-[#070c18] from-0% via-[#0a1630] via-38% to-[#070c18] to-75%" />
+          <div className="absolute left-1/2 top-20 h-[420px] w-[900px] -translate-x-1/2 bg-[radial-gradient(ellipse_at_center,rgba(37,99,235,0.20)_0%,rgba(34,211,238,0.08)_38%,transparent_72%)] blur-2xl" />
+          <div className="absolute inset-0 bg-grid opacity-[0.05]" />
+        </div>
+        <StaggerContainer className="relative mx-auto grid max-w-7xl grid-cols-2 gap-8 text-center sm:grid-cols-4">
           <StaggerItem>
             <div>
               <AnimatedCounter
@@ -628,12 +632,15 @@ export function HomePage() {
 
       {/* ============ 13. FINAL CTA — rounded card, glow button ============ */}
       <section className="px-4 pb-16 sm:px-6 lg:px-8">
-        <div className="relative mx-auto max-w-6xl overflow-hidden rounded-3xl border border-border bg-primary px-4 py-24 sm:px-6 lg:px-8">
-          <div className="absolute inset-0 -z-10 bg-grid opacity-10" />
-          <RevealOnScroll direction="scale" className="mx-auto max-w-4xl">
+        <div className="relative mx-auto max-w-6xl overflow-hidden rounded-3xl border border-border bg-surface px-4 py-24 sm:px-6 lg:px-8">
+          <div className="pointer-events-none absolute -left-20 top-10 size-72 rounded-full bg-primary/10 blur-3xl" />
+          <div className="pointer-events-none absolute -right-20 bottom-10 size-72 rounded-full bg-accent/10 blur-3xl" />
+          <RevealOnScroll direction="scale" className="relative mx-auto max-w-4xl">
             <ContactCTA
               bare
               glow
+              shine
+              tone="light"
               title={t('home.cta.title')}
               primaryLabel={t('home.cta.primary')}
               secondaryLabel={t('home.cta.secondary')}
