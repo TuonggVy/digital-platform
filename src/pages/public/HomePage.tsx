@@ -16,6 +16,7 @@ import { StaggerContainer, StaggerItem } from '@/components/animation/StaggerCon
 import { AnimatedCounter } from '@/components/animation/AnimatedCounter'
 import { Hero } from '@/components/home/Hero'
 import { CyberSecurityRadar } from '@/components/home/CyberSecurityRadar'
+import { SpotlightCard } from '@/components/ui/SpotlightCard'
 import { productService } from '@/services/productService'
 import { contentService } from '@/services/contentService'
 import { useLocale } from '@/hooks/useLocale'
@@ -171,8 +172,11 @@ export function HomePage() {
           <StaggerContainer className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {CATEGORIES.map((category) => (
               <StaggerItem key={category.key}>
-                <div className="flex h-full flex-col gap-4 rounded-2xl border border-border bg-background p-7 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-primary/10">
-                  <span className="flex size-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                <SpotlightCard
+                  tone="none"
+                  className="flex h-full flex-col gap-4 border border-border/60 bg-background/60 p-7 transition-all duration-300 hover:-translate-y-1 hover:border-primary/25 hover:shadow-lg hover:shadow-primary/10"
+                >
+                  <span className="flex size-14 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-transform duration-300 group-hover:scale-110">
                     <DynamicIcon name={category.icon} className="size-7" />
                   </span>
                   <div className="flex-1">
@@ -198,7 +202,7 @@ export function HomePage() {
                     {t('common.learnMore')}
                     <ArrowRight className="size-4" />
                   </Link>
-                </div>
+                </SpotlightCard>
               </StaggerItem>
             ))}
           </StaggerContainer>
@@ -325,7 +329,7 @@ export function HomePage() {
                   <span className="relative z-10 flex size-12 shrink-0 items-center justify-center rounded-full bg-primary text-white shadow-[0_0_30px_-2px_rgba(37,99,235,0.7)] sm:size-16">
                     <DynamicIcon name={step.icon} className="size-5 sm:size-6" />
                   </span>
-                  <div className="pt-1 sm:pt-3">
+                  <SpotlightCard className="flex-1 p-5 sm:p-6">
                     <p className="text-xs font-semibold uppercase tracking-widest text-accent">
                       0{idx + 1}
                     </p>
@@ -335,7 +339,7 @@ export function HomePage() {
                     <p className="mt-2 text-sm text-slate-300">
                       {t(`home.process.${step.key}.desc`)}
                     </p>
-                  </div>
+                  </SpotlightCard>
                 </div>
               </RevealOnScroll>
             ))}
@@ -357,14 +361,17 @@ export function HomePage() {
             <StaggerContainer className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {CLOUD_FEATURES.map((feature) => (
                 <StaggerItem key={feature.key}>
-                  <div className="flex items-center gap-3 rounded-xl border border-border bg-surface/70 p-4 shadow-sm">
-                    <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <SpotlightCard
+                    tone="none"
+                    className="flex items-center gap-3 border border-border/60 bg-background/60 p-4 transition-all duration-300 hover:-translate-y-1 hover:border-primary/25 hover:shadow-lg hover:shadow-primary/10"
+                  >
+                    <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary transition-transform duration-300 group-hover:scale-110">
                       <DynamicIcon name={feature.icon} className="size-5" />
                     </span>
                     <p className="text-sm text-text-secondary">
                       {t(`home.cloudSection.${feature.key}`)}
                     </p>
-                  </div>
+                  </SpotlightCard>
                 </StaggerItem>
               ))}
             </StaggerContainer>
@@ -497,8 +504,8 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* ============ 10. STATS — full-width gradient banner, animated counters ============ */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary via-secondary to-accent px-4 py-20 sm:px-6 lg:px-8">
+      {/* ============ 10. STATS — full-width solid banner, animated counters ============ */}
+      <section className="relative overflow-hidden bg-primary px-4 py-20 sm:px-6 lg:px-8">
         <div className="absolute inset-0 -z-10 bg-grid opacity-10" />
         <StaggerContainer className="mx-auto grid max-w-7xl grid-cols-2 gap-8 text-center sm:grid-cols-4">
           <StaggerItem>
@@ -621,7 +628,7 @@ export function HomePage() {
 
       {/* ============ 13. FINAL CTA — rounded card, glow button ============ */}
       <section className="px-4 pb-16 sm:px-6 lg:px-8">
-        <div className="relative mx-auto max-w-6xl overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-primary via-secondary to-accent px-4 py-24 sm:px-6 lg:px-8">
+        <div className="relative mx-auto max-w-6xl overflow-hidden rounded-3xl border border-border bg-primary px-4 py-24 sm:px-6 lg:px-8">
           <div className="absolute inset-0 -z-10 bg-grid opacity-10" />
           <RevealOnScroll direction="scale" className="mx-auto max-w-4xl">
             <ContactCTA
