@@ -81,10 +81,9 @@ export function Hero() {
               <Link to={ROUTES.PRODUCTS}>
                 <Button
                   size="lg"
-                  className="group shadow-lg shadow-primary/25 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-primary/35"
-                  rightIcon={
-                    <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
-                  }
+                  shine
+                  className="shadow-lg shadow-primary/25"
+                  rightIcon={<ArrowRight className="size-4" />}
                 >
                   {t('home.hero.ctaPrimary')}
                 </Button>

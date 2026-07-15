@@ -131,7 +131,9 @@ export function Header() {
                 </Button>
               </Link>
               <Link to={ROUTES.REGISTER}>
-                <Button size="sm">{t('nav.getStarted')}</Button>
+                <Button size="sm" shine>
+                  {t('nav.getStarted')}
+                </Button>
               </Link>
             </div>
           )}
