@@ -44,9 +44,9 @@ export function ProductCard({ product }: { product: Product }) {
   }
 
   return (
-    <div className="group flex h-full flex-col gap-4 rounded-2xl border border-border bg-background p-5 transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5">
+    <div className="group flex h-full flex-col gap-4 rounded-2xl border border-border/60 bg-background/60 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-primary/25 hover:shadow-lg hover:shadow-primary/10">
       <div className="flex items-start justify-between">
-        <span className="flex size-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
+        <span className="flex size-12 items-center justify-center rounded-xl bg-primary/10 text-primary transition-transform duration-300 group-hover:scale-110">
           <DynamicIcon name={product.icon} className="size-6" />
         </span>
         {product.badge && <Badge variant="primary">{localize(product.badge, locale)}</Badge>}
