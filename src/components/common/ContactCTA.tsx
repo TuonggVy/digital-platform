@@ -13,6 +13,10 @@ interface ContactCTAProps {
   bare?: boolean
   /** Add a soft glow behind the primary button. */
   glow?: boolean
+  /** Text/button treatment — 'dark' assumes a dark or saturated background (default), 'light' assumes a pale background. */
+  tone?: 'dark' | 'light'
+  /** Add a Linear/Vercel-style light sweep to the primary button on hover. */
+  shine?: boolean
 }
 
 export function ContactCTA({
@@ -22,7 +26,11 @@ export function ContactCTA({
   primaryHref = ROUTES.PRODUCTS,
   bare = false,
   glow = false,
+  tone = 'dark',
+  shine = false,
 }: ContactCTAProps) {
+  const isLight = tone === 'light'
+
   return (
     <div
       className={cn(
@@ -32,14 +40,26 @@ export function ContactCTA({
     >
       {!bare && <div className="absolute inset-0 bg-grid opacity-10" />}
       <div className="relative flex flex-col items-center gap-6">
-        <h2 className="max-w-2xl text-3xl font-semibold text-white sm:text-4xl">{title}</h2>
+        <h2
+          className={cn(
+            'max-w-2xl text-3xl font-semibold sm:text-4xl',
+            isLight ? 'text-text-primary' : 'text-white',
+          )}
+        >
+          {title}
+        </h2>
         <div className="flex flex-wrap justify-center gap-3">
           <Link to={primaryHref}>
             <Button
               size="lg"
+              shine={shine}
               className={cn(
-                'bg-white !text-black hover:bg-white/90',
-                glow && 'shadow-[0_0_50px_-5px_rgba(255,255,255,0.55)] hover:shadow-[0_0_70px_-5px_rgba(255,255,255,0.7)]',
+                !isLight && 'bg-white !text-black hover:bg-white/90',
+                !shine &&
+                  glow &&
+                  (isLight
+                    ? 'shadow-[0_0_40px_-8px_rgba(37,99,235,0.35)] hover:shadow-[0_0_55px_-8px_rgba(37,99,235,0.45)]'
+                    : 'shadow-[0_0_50px_-5px_rgba(255,255,255,0.55)] hover:shadow-[0_0_70px_-5px_rgba(255,255,255,0.7)]'),
               )}
               rightIcon={<ArrowRight className="size-4" />}
             >
@@ -50,7 +70,7 @@ export function ContactCTA({
             <Button
               size="lg"
               variant="outline"
-              className="border-white/40 text-white hover:bg-white/10"
+              className={cn(!isLight && 'border-white/40 text-white hover:bg-white/10')}
             >
               {secondaryLabel}
             </Button>
