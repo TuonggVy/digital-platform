@@ -6,11 +6,12 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useAuthStore } from '@/stores/authStore'
 import { useCartStore } from '@/stores/cartStore'
-import { useOrderStore } from '@/stores/orderStore'
 import { useUiStore } from '@/stores/uiStore'
 import { useLocale } from '@/hooks/useLocale'
 import { ROUTES } from '@/constants/routes'
 import type { PaymentMethod } from '@/types'
+import { orderApiService } from '@/services/orderApiService'
+import type { CreateOrderRequest } from '@/services/orderApiService'
 import { Seo } from '@/components/common/Seo'
 import { Button } from '@/components/common/Button'
 import { Input, Textarea } from '@/components/common/Input'
@@ -52,7 +53,6 @@ export function CheckoutPage() {
   const total = useCartStore((s) => s.total)
   const appliedCoupon = useCartStore((s) => s.appliedCoupon)
   const clearCart = useCartStore((s) => s.clearCart)
-  const createOrder = useOrderStore((s) => s.createOrder)
 
   const [step, setStep] = useState<1 | 2 | 3>(1)
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('vietqr')
@@ -107,31 +107,30 @@ export function CheckoutPage() {
   }
 
   async function handlePlaceOrder() {
+    if (isSubmitting) return
     setIsSubmitting(true)
     try {
       const values = getValues()
-      const order = await createOrder({
-        userId: currentUser!.id,
-        items: cartItems,
-        subtotal,
-        discount,
-        couponCode: appliedCoupon?.code,
-        total,
-        paymentMethod,
-        customerInfo: {
-          fullName: values.fullName,
-          email: values.email,
-          phone: values.phone,
-          company: values.company || undefined,
-          taxCode: values.taxCode || undefined,
-          note: values.note || undefined,
-        },
-      })
+      // Backend is the sole source of truth for pricing — only productId/packageId/quantity
+      // and customer info are sent, never unitPrice/subtotal/total/discount/paymentMethod.
+      const payload: CreateOrderRequest = {
+        items: cartItems.map((item) => ({
+          productId: item.productId,
+          packageId: item.packageId,
+          quantity: item.quantity,
+        })),
+        customerName: values.fullName,
+        customerEmail: values.email,
+        customerPhone: values.phone,
+        note: values.note || undefined,
+      }
+      const order = await orderApiService.createOrder(payload)
       setOrderPlaced(true)
       clearCart()
-      navigate(ROUTES.CHECKOUT_SUCCESS(order.orderCode), { replace: true })
-    } catch {
-      showToast(t('toast.genericError'), 'error')
+      navigate(ROUTES.CHECKOUT_SUCCESS(order.id), { replace: true, state: { order } })
+    } catch (error) {
+      const message = error instanceof Error ? error.message : t('toast.genericError')
+      showToast(message, 'error')
     } finally {
       setIsSubmitting(false)
     }
@@ -288,15 +287,19 @@ export function CheckoutPage() {
           )}
         </div>
 
-        <div>
+        <div className="lg:sticky lg:top-24">
           <OrderSummaryCard
             subtotal={subtotal}
             discount={discount}
             total={total}
             locale={locale}
             title={t('checkout.orderSummary')}
-            className="lg:sticky lg:top-24"
           />
+          {appliedCoupon && (
+            <p className="mt-3 rounded-xl border border-dashed border-amber-500/40 bg-amber-500/5 p-3 text-xs text-amber-700">
+              {t('checkout.couponNotAppliedYet')}
+            </p>
+          )}
         </div>
       </div>
     </div>

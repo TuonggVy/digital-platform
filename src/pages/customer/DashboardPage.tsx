@@ -1,17 +1,18 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { Server, Wallet, LifeBuoy, Compass } from 'lucide-react'
+import { Server, LifeBuoy, Compass, AlertCircle } from 'lucide-react'
 import { useAuthStore } from '@/stores/authStore'
-import { orderService } from '@/services/orderService'
 import { serviceService } from '@/services/serviceService'
 import { ticketService } from '@/services/ticketService'
-import type { CustomerService, Order } from '@/types'
+import { orderApiService } from '@/services/orderApiService'
+import type { BackendOrder } from '@/services/orderApiService'
+import type { CustomerService } from '@/types'
 import { Seo } from '@/components/common/Seo'
 import { Button } from '@/components/common/Button'
 import { EmptyState } from '@/components/common/EmptyState'
 import { LoadingSpinner } from '@/components/common/LoadingSpinner'
-import { OrderStatusBadge } from '@/components/common/OrderStatusBadge'
+import { BackendOrderStatusBadge } from '@/components/common/BackendOrderStatusBadge'
 import { ServiceStatusBadge } from '@/components/common/ServiceStatusBadge'
 import { RevealOnScroll } from '@/components/animation/RevealOnScroll'
 import { StaggerContainer, StaggerItem } from '@/components/animation/StaggerContainer'
@@ -19,27 +20,30 @@ import { useLocale } from '@/hooks/useLocale'
 import { formatCurrency, formatDate } from '@/utils/formatters'
 import { ROUTES } from '@/constants/routes'
 
+const RECENT_ORDERS_COUNT = 5
+
 export function DashboardPage() {
   const { t } = useTranslation()
   const locale = useLocale()
   const currentUser = useAuthStore((s) => s.currentUser)
 
-  const [orders, setOrders] = useState<Order[]>([])
   const [services, setServices] = useState<CustomerService[]>([])
   const [ticketCount, setTicketCount] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
+
+  const [recentOrders, setRecentOrders] = useState<BackendOrder[]>([])
+  const [ordersLoading, setOrdersLoading] = useState(true)
+  const [ordersError, setOrdersError] = useState<string | null>(null)
 
   useEffect(() => {
     if (!currentUser) return
     let active = true
     setIsLoading(true)
     Promise.all([
-      orderService.getOrdersByUser(currentUser.id),
       serviceService.getServicesByUser(currentUser.id),
       ticketService.getTicketsByUser(currentUser.id),
-    ]).then(([o, s, tickets]) => {
+    ]).then(([s, tickets]) => {
       if (!active) return
-      setOrders(o)
       setServices(s)
       setTicketCount(tickets.length)
       setIsLoading(false)
@@ -49,12 +53,34 @@ export function DashboardPage() {
     }
   }, [currentUser])
 
+  // Kept independent from the services/tickets fetch above so a failure here
+  // (or a slower response) never blocks the rest of the Dashboard from rendering.
+  useEffect(() => {
+    if (!currentUser) return
+    let active = true
+    setOrdersLoading(true)
+    setOrdersError(null)
+    orderApiService
+      .getMyOrders({ page: 1, pageSize: RECENT_ORDERS_COUNT })
+      .then((result) => {
+        if (!active) return
+        setRecentOrders(result.items)
+        setOrdersLoading(false)
+      })
+      .catch((err) => {
+        if (!active) return
+        setOrdersError(err instanceof Error ? err.message : t('toast.genericError'))
+        setOrdersLoading(false)
+      })
+    return () => {
+      active = false
+    }
+  }, [currentUser, t])
+
   if (!currentUser) return null
   if (isLoading) return <LoadingSpinner className="py-32" label={t('common.loading')} />
 
   const activeServicesCount = services.filter((s) => s.status === 'ACTIVE').length
-  const totalSpent = orders.reduce((sum, o) => sum + o.total, 0)
-  const recentOrders = orders.slice(0, 5)
   const expiringServices = services.filter((s) => s.status === 'EXPIRING_SOON')
 
   return (
@@ -67,7 +93,7 @@ export function DashboardPage() {
         </h1>
       </RevealOnScroll>
 
-      <StaggerContainer className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <StaggerContainer className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <StaggerItem>
           <div className="flex items-center gap-3 rounded-2xl border border-border p-5">
             <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
@@ -76,19 +102,6 @@ export function DashboardPage() {
             <div>
               <p className="text-xs text-text-secondary">{t('account.dashboard.activeServices')}</p>
               <p className="text-2xl font-semibold text-text-primary">{activeServicesCount}</p>
-            </div>
-          </div>
-        </StaggerItem>
-        <StaggerItem>
-          <div className="flex items-center gap-3 rounded-2xl border border-border p-5">
-            <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-secondary/10 text-secondary">
-              <Wallet className="size-5" />
-            </span>
-            <div>
-              <p className="text-xs text-text-secondary">{t('account.dashboard.totalSpent')}</p>
-              <p className="text-2xl font-semibold text-text-primary">
-                {formatCurrency(totalSpent, locale)}
-              </p>
             </div>
           </div>
         </StaggerItem>
@@ -118,27 +131,35 @@ export function DashboardPage() {
               {t('common.seeAll')}
             </Link>
           </div>
-          {recentOrders.length === 0 ? (
+          {ordersLoading ? (
+            <LoadingSpinner className="py-8" label={t('common.loading')} />
+          ) : ordersError ? (
+            <EmptyState
+              icon={<AlertCircle className="size-6" />}
+              title={t('common.error')}
+              description={ordersError}
+            />
+          ) : recentOrders.length === 0 ? (
             <EmptyState title={t('account.orders.empty')} />
           ) : (
             <div className="flex flex-col divide-y divide-border">
               {recentOrders.map((order) => (
                 <Link
                   key={order.id}
-                  to={ROUTES.ACCOUNT_ORDER_DETAIL(order.orderCode)}
+                  to={ROUTES.ACCOUNT_ORDER_DETAIL(order.id)}
                   className="flex flex-wrap items-center justify-between gap-2 py-3 transition-colors hover:text-primary"
                 >
                   <div>
                     <p className="text-sm font-medium text-text-primary">{order.orderCode}</p>
                     <p className="text-xs text-text-secondary">
-                      {formatDate(order.createdAt, locale)}
+                      {formatDate(order.createdDate, locale)}
                     </p>
                   </div>
                   <div className="flex items-center gap-3">
                     <span className="text-sm font-semibold text-text-primary">
-                      {formatCurrency(order.total, locale)}
+                      {formatCurrency(order.totalAmount, locale)}
                     </span>
-                    <OrderStatusBadge status={order.orderStatus} />
+                    <BackendOrderStatusBadge status={order.status} />
                   </div>
                 </Link>
               ))}

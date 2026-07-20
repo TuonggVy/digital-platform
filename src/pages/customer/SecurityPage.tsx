@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useTranslation } from 'react-i18next'
 import type { TFunction } from 'i18next'
+import { useNavigate } from 'react-router-dom'
 import { Laptop, Smartphone, ShieldCheck } from 'lucide-react'
 import { useAuthStore } from '@/stores/authStore'
 import { useUiStore } from '@/stores/uiStore'
@@ -14,6 +15,7 @@ import { Input } from '@/components/common/Input'
 import { Button } from '@/components/common/Button'
 import { Badge } from '@/components/common/Badge'
 import { RevealOnScroll } from '@/components/animation/RevealOnScroll'
+import { ROUTES } from '@/constants/routes'
 
 function buildPasswordSchema(t: TFunction) {
   return z
@@ -22,12 +24,16 @@ function buildPasswordSchema(t: TFunction) {
       newPassword: z
         .string()
         .min(1, t('validation.required'))
-        .min(6, t('validation.minLength', { count: 6 })),
+        .min(8, t('validation.minLength', { count: 8 })),
       confirmPassword: z.string().min(1, t('validation.required')),
     })
     .refine((data) => data.newPassword === data.confirmPassword, {
       message: t('validation.passwordMismatch'),
       path: ['confirmPassword'],
+    })
+    .refine((data) => data.newPassword !== data.currentPassword, {
+      message: t('account.security.samePasswordError'),
+      path: ['newPassword'],
     })
 }
 
@@ -59,7 +65,9 @@ const INITIAL_SESSIONS: LoginSession[] = [
 
 export function SecurityPage() {
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const currentUser = useAuthStore((s) => s.currentUser)
+  const logout = useAuthStore((s) => s.logout)
   const showToast = useUiStore((s) => s.showToast)
 
   const [isTwoFactorEnabled, setIsTwoFactorEnabled] = useState(false)
@@ -81,12 +89,22 @@ export function SecurityPage() {
   async function onSubmit(data: PasswordFormValues) {
     if (!currentUser) return
     try {
-      await authService.changePassword(currentUser.id, data.currentPassword, data.newPassword)
-      showToast(t('account.security.passwordChanged'), 'success')
+      await authService.changePassword({
+        currentPassword: data.currentPassword,
+        newPassword: data.newPassword,
+      })
       reset()
+      showToast(t('account.security.passwordChanged'), 'success')
+      // Backend already revoked the refresh token; the current access token is
+      // stateless and stays valid until it naturally expires if copied elsewhere,
+      // but the client must drop its own session immediately and force re-login.
+      await logout()
+      navigate(ROUTES.LOGIN, { replace: true })
     } catch (error) {
       if (error instanceof Error && error.message === 'INVALID_CURRENT_PASSWORD') {
         setError('currentPassword', { message: t('account.security.currentPasswordInvalid') })
+      } else if (error instanceof Error && error.message === 'SAME_AS_CURRENT_PASSWORD') {
+        setError('newPassword', { message: t('account.security.samePasswordError') })
       } else {
         showToast(t('toast.genericError'), 'error')
       }

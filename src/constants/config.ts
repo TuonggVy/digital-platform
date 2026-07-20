@@ -8,8 +8,12 @@ export const BRAND_NAME = 'VTC TELECOM'
 export const SEED_VERSION = '2026-07-10.1'
 
 export const DEMO_ACCOUNTS = {
+  // Customer login still runs against the local mock repo (backend has no
+  // register/customer-auth endpoints yet — see backend integration notes).
   customer: { email: 'customer@vtctelecom.vn', password: '123456' },
-  admin: { email: 'admin@vtctelecom.vn', password: '123456' },
+  // Admin login now calls the real backend; this must match the seeded
+  // admin account in backend/scripts/run_seed.js.
+  admin: { email: 'admin@digital-platform.local', password: 'Admin@123' },
 }
 
 export const STORAGE_KEYS = {
@@ -22,6 +26,8 @@ export const STORAGE_KEYS = {
   LANGUAGE: 'novadigital_language',
   CONTACT_SUBMISSIONS: 'novadigital_contact_submissions',
   PRODUCTS: 'novadigital_products',
+  ACCESS_TOKEN: 'novadigital_access_token',
+  REFRESH_TOKEN: 'novadigital_refresh_token',
 }
 
 export const MOCK_BANK_TRANSFER = {

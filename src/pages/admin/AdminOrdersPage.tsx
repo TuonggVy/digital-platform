@@ -1,188 +1,191 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ChevronDown } from 'lucide-react'
-import { orderService } from '@/services/orderService'
-import type { Order, OrderStatus } from '@/types'
+import { Link } from 'react-router-dom'
+import { AlertCircle, Eye } from 'lucide-react'
+import { orderApiService } from '@/services/orderApiService'
+import type { BackendOrder, GetAdminOrdersParams, OrderStatus as BackendOrderStatus } from '@/services/orderApiService'
 import { Seo } from '@/components/common/Seo'
 import { PageHeader } from '@/components/admin/PageHeader'
+import { DataTable } from '@/components/admin/DataTable'
+import { SearchBar } from '@/components/common/SearchBar'
 import { Select } from '@/components/common/Select'
-import { LoadingSpinner } from '@/components/common/LoadingSpinner'
+import { Pagination } from '@/components/common/Pagination'
 import { EmptyState } from '@/components/common/EmptyState'
-import { OrderStatusBadge } from '@/components/common/OrderStatusBadge'
+import { BackendOrderStatusBadge } from '@/components/common/BackendOrderStatusBadge'
 import { useLocale } from '@/hooks/useLocale'
 import { formatCurrency, formatDateTime } from '@/utils/formatters'
-import { useUiStore } from '@/stores/uiStore'
-import { cn } from '@/utils/cn'
+import { ROUTES } from '@/constants/routes'
 
-const ORDER_STATUSES: OrderStatus[] = [
-  'PENDING_PAYMENT',
+const PAGE_SIZE = 10
+const SEARCH_DEBOUNCE_MS = 400
+
+const STATUS_OPTIONS: BackendOrderStatus[] = [
+  'PENDING',
+  'AWAITING_PAYMENT',
   'PAID',
   'PROCESSING',
   'COMPLETED',
   'CANCELLED',
+  'FAILED',
   'REFUNDED',
 ]
 
 export function AdminOrdersPage() {
   const { t } = useTranslation()
   const locale = useLocale()
-  const showToast = useUiStore((s) => s.showToast)
 
-  const [orders, setOrders] = useState<Order[]>([])
+  const [orders, setOrders] = useState<BackendOrder[]>([])
+  const [total, setTotal] = useState(0)
+  const [page, setPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
   const [isLoading, setIsLoading] = useState(true)
-  const [statusFilter, setStatusFilter] = useState<OrderStatus | ''>('')
-  const [expandedId, setExpandedId] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
+
+  const [searchInput, setSearchInput] = useState('')
+  const [search, setSearch] = useState('')
+  const [status, setStatus] = useState<BackendOrderStatus | ''>('')
+  const [sort, setSort] = useState<GetAdminOrdersParams['sort']>('newest')
+
+  // Debounce the search box — reset to page 1 once the debounced value actually changes.
+  useEffect(() => {
+    const handle = setTimeout(() => setSearch(searchInput), SEARCH_DEBOUNCE_MS)
+    return () => clearTimeout(handle)
+  }, [searchInput])
 
   useEffect(() => {
-    orderService
-      .getAllOrders()
-      .then(setOrders)
-      .finally(() => setIsLoading(false))
-  }, [])
+    setPage(1)
+  }, [search, status, sort])
 
-  const filtered = useMemo(
-    () => (statusFilter ? orders.filter((o) => o.orderStatus === statusFilter) : orders),
-    [orders, statusFilter],
-  )
+  const loadOrders = useCallback(async () => {
+    setIsLoading(true)
+    setError(null)
+    try {
+      const result = await orderApiService.getAdminOrders({
+        page,
+        pageSize: PAGE_SIZE,
+        search: search || undefined,
+        status: status || undefined,
+        sort,
+      })
+      setOrders(result.items)
+      setTotal(result.total)
+      setTotalPages(Math.max(1, result.totalPages))
+    } catch (err) {
+      setError(err instanceof Error ? err.message : t('toast.genericError'))
+    } finally {
+      setIsLoading(false)
+    }
+  }, [page, search, status, sort, t])
 
-  async function handleStatusChange(order: Order, status: OrderStatus) {
-    const updated = await orderService.updateOrderStatus(order.id, status)
-    setOrders((prev) => prev.map((o) => (o.id === order.id ? updated : o)))
-    showToast(t('admin.orders.statusUpdated'), 'success')
-  }
+  useEffect(() => {
+    loadOrders()
+  }, [loadOrders])
 
   return (
     <div>
       <Seo title={t('admin.orders.title')} />
       <PageHeader title={t('admin.orders.title')} />
 
-      <div className="mb-5">
+      <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center">
+        <SearchBar
+          value={searchInput}
+          onChange={setSearchInput}
+          placeholder={t('admin.orders.searchPlaceholder')}
+          className="sm:max-w-xs"
+        />
         <Select
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value as OrderStatus | '')}
-          options={ORDER_STATUSES.map((s) => ({ value: s, label: t(`status.order.${s}`) }))}
+          value={status}
+          onChange={(e) => setStatus(e.target.value as BackendOrderStatus | '')}
           placeholder={t('common.all')}
           className="sm:w-56"
+          options={STATUS_OPTIONS.map((s) => ({ value: s, label: t(`status.backendOrder.${s}`) }))}
+        />
+        <Select
+          value={sort}
+          onChange={(e) => setSort(e.target.value as GetAdminOrdersParams['sort'])}
+          className="sm:w-56"
+          options={[
+            { value: 'newest', label: t('admin.orders.sortNewest') },
+            { value: 'oldest', label: t('admin.orders.sortOldest') },
+            { value: 'total_asc', label: t('admin.orders.sortTotalAsc') },
+            { value: 'total_desc', label: t('admin.orders.sortTotalDesc') },
+          ]}
         />
       </div>
 
-      {isLoading ? (
-        <LoadingSpinner />
-      ) : filtered.length === 0 ? (
-        <EmptyState title={t('admin.orders.noOrders')} />
+      {error ? (
+        <EmptyState
+          icon={<AlertCircle className="size-6" />}
+          title={t('common.error')}
+          description={error}
+          action={
+            <button
+              type="button"
+              onClick={loadOrders}
+              className="rounded-xl bg-primary px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-dark"
+            >
+              {t('common.tryAgain')}
+            </button>
+          }
+        />
       ) : (
-        <div className="flex flex-col gap-3">
-          {filtered.map((order) => {
-            const isExpanded = expandedId === order.id
-            return (
-              <div key={order.id} className="rounded-2xl border border-border">
-                <button
-                  type="button"
-                  onClick={() => setExpandedId(isExpanded ? null : order.id)}
-                  className="grid w-full grid-cols-1 gap-2 p-4 text-left sm:grid-cols-[1fr_1fr_1fr_1fr_auto] sm:items-center sm:gap-3"
-                >
-                  <div>
-                    <p className="text-xs text-text-secondary sm:hidden">
-                      {t('admin.orders.orderCode')}
-                    </p>
-                    <p className="font-medium text-text-primary">{order.orderCode}</p>
+        <>
+          <DataTable
+            data={orders}
+            isLoading={isLoading}
+            rowKey={(o) => o.id}
+            emptyTitle={t('admin.orders.noOrders')}
+            columns={[
+              { key: 'code', header: t('admin.orders.orderCode'), render: (o) => o.orderCode },
+              {
+                key: 'customer',
+                header: t('admin.orders.customer'),
+                render: (o) => (
+                  <div className="flex flex-col">
+                    <span className="font-medium">{o.customerName}</span>
+                    <span className="text-xs text-text-secondary">{o.customerEmail}</span>
                   </div>
-                  <div>
-                    <p className="text-xs text-text-secondary sm:hidden">
-                      {t('admin.orders.customer')}
-                    </p>
-                    <p className="text-text-primary">{order.customerInfo.fullName}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-text-secondary sm:hidden">
-                      {t('admin.orders.date')}
-                    </p>
-                    <p className="text-text-secondary">{formatDateTime(order.createdAt, locale)}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-text-secondary sm:hidden">
-                      {t('admin.orders.total')}
-                    </p>
-                    <p className="font-medium text-text-primary">
-                      {formatCurrency(order.total, locale)}
-                    </p>
-                  </div>
-                  <div className="flex items-center justify-between gap-2 sm:justify-end">
-                    <OrderStatusBadge status={order.orderStatus} />
-                    <ChevronDown
-                      className={cn(
-                        'size-4 text-text-secondary transition-transform',
-                        isExpanded && 'rotate-180',
-                      )}
-                    />
-                  </div>
-                </button>
+                ),
+              },
+              {
+                key: 'date',
+                header: t('admin.orders.date'),
+                render: (o) => formatDateTime(o.createdDate, locale),
+              },
+              {
+                key: 'total',
+                header: t('admin.orders.total'),
+                render: (o) => formatCurrency(o.totalAmount, locale),
+              },
+              {
+                key: 'status',
+                header: t('admin.orders.status'),
+                render: (o) => <BackendOrderStatusBadge status={o.status} />,
+              },
+              {
+                key: 'actions',
+                header: '',
+                className: 'text-right',
+                render: (o) => (
+                  <Link
+                    to={ROUTES.ADMIN_ORDER_DETAIL(o.id)}
+                    aria-label={t('admin.orders.details')}
+                    title={t('admin.orders.details')}
+                    className="inline-flex rounded-lg p-2 text-text-secondary hover:bg-surface hover:text-text-primary"
+                  >
+                    <Eye className="size-4" />
+                  </Link>
+                ),
+              },
+            ]}
+          />
 
-                {isExpanded && (
-                  <div className="border-t border-border p-4">
-                    <div className="mb-4 flex flex-col gap-2 sm:max-w-xs">
-                      <label className="text-sm font-medium text-text-primary">
-                        {t('admin.orders.updateStatus')}
-                      </label>
-                      <Select
-                        value={order.orderStatus}
-                        onChange={(e) => handleStatusChange(order, e.target.value as OrderStatus)}
-                        options={ORDER_STATUSES.map((s) => ({
-                          value: s,
-                          label: t(`status.order.${s}`),
-                        }))}
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-                      <div>
-                        <h3 className="mb-2 text-sm font-semibold text-text-primary">
-                          {t('admin.orders.items')}
-                        </h3>
-                        <div className="flex flex-col gap-2">
-                          {order.items.map((item) => (
-                            <div
-                              key={item.cartItemId}
-                              className="flex items-center justify-between rounded-xl bg-surface/60 px-3 py-2 text-sm"
-                            >
-                              <div>
-                                <p className="font-medium text-text-primary">{item.productName}</p>
-                                <p className="text-xs text-text-secondary">
-                                  {item.packageName} &times; {item.quantity}
-                                </p>
-                              </div>
-                              <p className="font-medium text-text-primary">
-                                {formatCurrency(item.lineTotal, locale)}
-                              </p>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div>
-                        <h3 className="mb-2 text-sm font-semibold text-text-primary">
-                          {t('admin.orders.customerInfo')}
-                        </h3>
-                        <div className="rounded-xl bg-surface/60 px-3 py-2 text-sm text-text-secondary">
-                          <p>
-                            <span className="text-text-primary">{order.customerInfo.fullName}</span>
-                          </p>
-                          <p>{order.customerInfo.email}</p>
-                          <p>{order.customerInfo.phone}</p>
-                          {order.customerInfo.company && <p>{order.customerInfo.company}</p>}
-                          <p className="mt-2">
-                            {t('admin.orders.paymentMethod')}:{' '}
-                            {t(`checkout.paymentMethod.${order.paymentMethod}`)}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )
-          })}
-        </div>
+          {!isLoading && total > 0 && (
+            <div className="mt-5">
+              <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
+            </div>
+          )}
+        </>
       )}
     </div>
   )

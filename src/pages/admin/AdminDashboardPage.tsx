@@ -1,70 +1,54 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { format } from 'date-fns'
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Cell,
-  Legend,
-  Pie,
-  PieChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from 'recharts'
-import { DollarSign, ShoppingBag, Users, Server, AlertTriangle } from 'lucide-react'
-import { orderService } from '@/services/orderService'
+import { ShoppingBag, Users, Server, AlertTriangle, AlertCircle } from 'lucide-react'
 import { authService } from '@/services/authService'
 import { serviceService } from '@/services/serviceService'
 import { productService } from '@/services/productService'
 import { inventoryService } from '@/services/inventoryService'
-import type { Order, ProductCategory } from '@/types'
+import { orderApiService } from '@/services/orderApiService'
+import type { BackendOrder } from '@/services/orderApiService'
 import { Seo } from '@/components/common/Seo'
 import { StatCard } from '@/components/admin/StatCard'
 import { DataTable } from '@/components/admin/DataTable'
-import { OrderStatusBadge } from '@/components/common/OrderStatusBadge'
+import { BackendOrderStatusBadge } from '@/components/common/BackendOrderStatusBadge'
 import { Badge } from '@/components/common/Badge'
+import { EmptyState } from '@/components/common/EmptyState'
 import { LoadingSpinner } from '@/components/common/LoadingSpinner'
 import { useLocale } from '@/hooks/useLocale'
-import { formatCurrency } from '@/utils/formatters'
+import { formatCurrency, formatDateTime } from '@/utils/formatters'
 import { ROUTES } from '@/constants/routes'
 
 interface DashboardData {
-  orders: Order[]
   customerCount: number
   activeServiceCount: number
-  productNameById: Map<string, string>
   lowStockProducts: { productId: string; productName: string; available: number }[]
 }
 
-const CATEGORY_COLORS: Record<ProductCategory, string> = {
-  cloud: 'var(--color-primary)',
-  kaspersky: 'var(--color-secondary)',
-  esim: 'var(--color-accent)',
-}
+const RECENT_ORDERS_COUNT = 5
 
 export function AdminDashboardPage() {
   const { t } = useTranslation()
   const locale = useLocale()
   const [data, setData] = useState<DashboardData | null>(null)
 
+  const [recentOrders, setRecentOrders] = useState<BackendOrder[]>([])
+  const [ordersTotal, setOrdersTotal] = useState<number | null>(null)
+  const [ordersLoading, setOrdersLoading] = useState(true)
+  const [ordersError, setOrdersError] = useState<string | null>(null)
+
   useEffect(() => {
     let cancelled = false
     Promise.all([
-      orderService.getAllOrders(),
       authService.getAllCustomers(),
       serviceService.getAllForAdmin(),
       productService.getAllForAdmin(),
       inventoryService.getLicenses(),
       inventoryService.getEsimStock(),
-    ]).then(([orders, customers, services, products, licenses, esimStock]) => {
+    ]).then(([customers, services, products, licenses, esimStock]) => {
       if (cancelled) return
 
       const productNameById = new Map(products.map((p) => [p.id, p.name[locale]]))
-
       const availableByProduct = new Map<string, { productName: string; available: number }>()
       for (const lic of licenses) {
         if (lic.status !== 'AVAILABLE') continue
@@ -83,18 +67,12 @@ export function AdminDashboardPage() {
         availableByProduct.set(esim.productId, entry)
       }
       const lowStockProducts = Array.from(availableByProduct.entries())
-        .map(([productId, v]) => ({
-          productId,
-          productName: v.productName,
-          available: v.available,
-        }))
+        .map(([productId, v]) => ({ productId, productName: v.productName, available: v.available }))
         .filter((v) => v.available < 2)
 
       setData({
-        orders,
         customerCount: customers.length,
         activeServiceCount: services.filter((s) => s.status === 'ACTIVE').length,
-        productNameById,
         lowStockProducts,
       })
     })
@@ -103,66 +81,29 @@ export function AdminDashboardPage() {
     }
   }, [locale])
 
-  const totalRevenue = useMemo(
-    () =>
-      data
-        ? data.orders.filter((o) => o.paymentStatus === 'PAID').reduce((sum, o) => sum + o.total, 0)
-        : 0,
-    [data],
-  )
-
-  const revenueChartData = useMemo(() => {
-    if (!data) return []
-    const byMonth = new Map<string, { sortKey: string; label: string; total: number }>()
-    for (const order of data.orders) {
-      const date = new Date(order.createdAt)
-      const sortKey = format(date, 'yyyy-MM')
-      const label = format(date, 'MM/yyyy')
-      const entry = byMonth.get(sortKey) ?? { sortKey, label, total: 0 }
-      entry.total += order.total
-      byMonth.set(sortKey, entry)
+  // Kept independent from the fetch above so Orders API errors/latency never
+  // block the rest of the dashboard from rendering.
+  const loadOrderStats = useCallback(async () => {
+    setOrdersLoading(true)
+    setOrdersError(null)
+    try {
+      const result = await orderApiService.getAdminOrders({
+        page: 1,
+        pageSize: RECENT_ORDERS_COUNT,
+        sort: 'newest',
+      })
+      setRecentOrders(result.items)
+      setOrdersTotal(result.total)
+    } catch (err) {
+      setOrdersError(err instanceof Error ? err.message : t('toast.genericError'))
+    } finally {
+      setOrdersLoading(false)
     }
-    return Array.from(byMonth.values()).sort((a, b) => a.sortKey.localeCompare(b.sortKey))
-  }, [data])
+  }, [t])
 
-  const categoryChartData = useMemo(() => {
-    if (!data) return []
-    const counts = new Map<ProductCategory, number>()
-    for (const order of data.orders) {
-      for (const item of order.items) {
-        counts.set(item.category, (counts.get(item.category) ?? 0) + item.quantity)
-      }
-    }
-    return Array.from(counts.entries()).map(([category, count]) => ({
-      category,
-      label: t(`nav.megamenu.${category}`),
-      count,
-    }))
-  }, [data, t])
-
-  const topProducts = useMemo(() => {
-    if (!data) return []
-    const byProduct = new Map<
-      string,
-      { productId: string; productName: string; quantity: number }
-    >()
-    for (const order of data.orders) {
-      for (const item of order.items) {
-        const entry = byProduct.get(item.productId) ?? {
-          productId: item.productId,
-          productName: item.productName,
-          quantity: 0,
-        }
-        entry.quantity += item.quantity
-        byProduct.set(item.productId, entry)
-      }
-    }
-    return Array.from(byProduct.values())
-      .sort((a, b) => b.quantity - a.quantity)
-      .slice(0, 5)
-  }, [data])
-
-  const recentOrders = useMemo(() => (data ? data.orders.slice(0, 5) : []), [data])
+  useEffect(() => {
+    loadOrderStats()
+  }, [loadOrderStats])
 
   if (!data) {
     return (
@@ -180,16 +121,11 @@ export function AdminDashboardPage() {
         {t('admin.dashboard.title')}
       </h1>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard
-          icon={<DollarSign className="size-5" />}
-          label={t('admin.dashboard.totalRevenue')}
-          value={formatCurrency(totalRevenue, locale)}
-        />
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <StatCard
           icon={<ShoppingBag className="size-5" />}
           label={t('admin.dashboard.totalOrders')}
-          value={data.orders.length.toLocaleString('vi-VN')}
+          value={ordersTotal === null ? '-' : ordersTotal.toLocaleString('vi-VN')}
         />
         <StatCard
           icon={<Users className="size-5" />}
@@ -201,71 +137,6 @@ export function AdminDashboardPage() {
           label={t('admin.dashboard.activeServices')}
           value={data.activeServiceCount.toLocaleString('vi-VN')}
         />
-      </div>
-
-      <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <div className="rounded-2xl border border-border p-5">
-          <h2 className="mb-4 text-base font-semibold text-text-primary">
-            {t('admin.dashboard.revenueChart')}
-          </h2>
-          <div className="h-72">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={revenueChartData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
-                <XAxis dataKey="label" stroke="var(--color-text-secondary)" fontSize={12} />
-                <YAxis
-                  stroke="var(--color-text-secondary)"
-                  fontSize={12}
-                  tickFormatter={(v: number) => `${(v / 1_000_000).toFixed(0)}tr`}
-                />
-                <Tooltip
-                  formatter={(value) => formatCurrency(Number(value), locale)}
-                  contentStyle={{
-                    background: 'var(--color-background)',
-                    border: '1px solid var(--color-border)',
-                    borderRadius: 12,
-                    color: 'var(--color-text-primary)',
-                  }}
-                />
-                <Bar dataKey="total" fill="var(--color-primary)" radius={[6, 6, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        <div className="rounded-2xl border border-border p-5">
-          <h2 className="mb-4 text-base font-semibold text-text-primary">
-            {t('admin.dashboard.categoryChart')}
-          </h2>
-          <div className="h-72">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={categoryChartData}
-                  dataKey="count"
-                  nameKey="label"
-                  innerRadius={55}
-                  outerRadius={90}
-                  paddingAngle={2}
-                  isAnimationActive={false}
-                >
-                  {categoryChartData.map((entry) => (
-                    <Cell key={entry.category} fill={CATEGORY_COLORS[entry.category]} />
-                  ))}
-                </Pie>
-                <Legend />
-                <Tooltip
-                  contentStyle={{
-                    background: 'var(--color-background)',
-                    border: '1px solid var(--color-border)',
-                    borderRadius: 12,
-                    color: 'var(--color-text-primary)',
-                  }}
-                />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
       </div>
 
       {data.lowStockProducts.length > 0 && (
@@ -284,56 +155,70 @@ export function AdminDashboardPage() {
         </div>
       )}
 
-      <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <div className="rounded-2xl border border-border p-5">
-          <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-base font-semibold text-text-primary">
-              {t('admin.dashboard.recentOrders')}
-            </h2>
-            <Link
-              to={ROUTES.ADMIN_ORDERS}
-              className="text-sm font-medium text-primary hover:underline"
-            >
-              {t('common.seeAll')}
-            </Link>
-          </div>
+      <div className="mt-6 rounded-2xl border border-border p-5">
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="text-base font-semibold text-text-primary">
+            {t('admin.dashboard.recentOrders')}
+          </h2>
+          <Link to={ROUTES.ADMIN_ORDERS} className="text-sm font-medium text-primary hover:underline">
+            {t('common.seeAll')}
+          </Link>
+        </div>
+        {ordersError ? (
+          <EmptyState
+            icon={<AlertCircle className="size-6" />}
+            title={t('common.error')}
+            description={ordersError}
+            action={
+              <button
+                type="button"
+                onClick={loadOrderStats}
+                className="rounded-xl bg-primary px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-dark"
+              >
+                {t('common.tryAgain')}
+              </button>
+            }
+          />
+        ) : (
           <DataTable
             data={recentOrders}
+            isLoading={ordersLoading}
+            emptyTitle={t('admin.orders.noOrders')}
             rowKey={(o) => o.id}
             columns={[
               { key: 'code', header: t('admin.orders.orderCode'), render: (o) => o.orderCode },
-              {
-                key: 'customer',
-                header: t('admin.orders.customer'),
-                render: (o) => o.customerInfo.fullName,
-              },
+              { key: 'customer', header: t('admin.orders.customer'), render: (o) => o.customerName },
               {
                 key: 'total',
                 header: t('admin.orders.total'),
-                render: (o) => formatCurrency(o.total, locale),
+                render: (o) => formatCurrency(o.totalAmount, locale),
               },
               {
                 key: 'status',
                 header: t('admin.orders.status'),
-                render: (o) => <OrderStatusBadge status={o.orderStatus} />,
+                render: (o) => <BackendOrderStatusBadge status={o.status} />,
+              },
+              {
+                key: 'date',
+                header: t('admin.orders.date'),
+                render: (o) => formatDateTime(o.createdDate, locale),
+              },
+              {
+                key: 'actions',
+                header: '',
+                className: 'text-right',
+                render: (o) => (
+                  <Link
+                    to={ROUTES.ADMIN_ORDER_DETAIL(o.id)}
+                    className="text-sm font-medium text-primary hover:underline"
+                  >
+                    {t('common.viewDetails')}
+                  </Link>
+                ),
               },
             ]}
           />
-        </div>
-
-        <div className="rounded-2xl border border-border p-5">
-          <h2 className="mb-3 text-base font-semibold text-text-primary">
-            {t('admin.dashboard.topProducts')}
-          </h2>
-          <DataTable
-            data={topProducts}
-            rowKey={(p) => p.productId}
-            columns={[
-              { key: 'name', header: t('admin.products.name'), render: (p) => p.productName },
-              { key: 'qty', header: t('common.quantity'), render: (p) => p.quantity },
-            ]}
-          />
-        </div>
+        )}
       </div>
     </div>
   )

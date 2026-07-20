@@ -9,7 +9,7 @@ interface AuthState {
   isAuthenticated: boolean
   login: (email: string, password: string) => Promise<PublicUser>
   register: (input: RegisterInput) => Promise<PublicUser>
-  logout: () => void
+  logout: () => Promise<void>
   updateProfile: (updates: Partial<PublicUser>) => Promise<void>
 }
 
@@ -26,12 +26,15 @@ export const useAuthStore = create<AuthState>()(
       },
 
       register: async (input) => {
-        const user = await authService.register(input)
-        set({ currentUser: user, isAuthenticated: true })
-        return user
+        // Backend register does not issue JWT tokens — caller must navigate
+        // to login afterwards instead of relying on this to authenticate.
+        return authService.register(input)
       },
 
-      logout: () => set({ currentUser: null, isAuthenticated: false }),
+      logout: async () => {
+        await authService.logout()
+        set({ currentUser: null, isAuthenticated: false })
+      },
 
       updateProfile: async (updates) => {
         const current = get().currentUser

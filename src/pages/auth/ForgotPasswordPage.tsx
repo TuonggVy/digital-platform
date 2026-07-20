@@ -24,6 +24,8 @@ type ForgotPasswordFormValues = z.infer<ReturnType<typeof buildForgotPasswordSch
 export function ForgotPasswordPage() {
   const { t } = useTranslation()
   const [submitted, setSubmitted] = useState(false)
+  const [devResetUrl, setDevResetUrl] = useState<string | null>(null)
+  const [formError, setFormError] = useState<string | null>(null)
 
   const schema = useMemo(() => buildForgotPasswordSchema(t), [t])
 
@@ -37,8 +39,18 @@ export function ForgotPasswordPage() {
   })
 
   async function onSubmit(data: ForgotPasswordFormValues) {
-    await authService.requestPasswordReset(data.email)
-    setSubmitted(true)
+    setFormError(null)
+    try {
+      const result = await authService.forgotPassword(data.email)
+      // Backend only includes debugResetUrl when NODE_ENV !== production — safe to
+      // surface here since it simply won't be present in a real production response.
+      if (import.meta.env.DEV && result.debugResetUrl) {
+        setDevResetUrl(result.debugResetUrl)
+      }
+      setSubmitted(true)
+    } catch {
+      setFormError(t('toast.genericError'))
+    }
   }
 
   return (
@@ -61,6 +73,17 @@ export function ForgotPasswordPage() {
                   {t('auth.forgotPassword.title')}
                 </h1>
                 <p className="text-sm text-text-secondary">{t('auth.forgotPassword.success')}</p>
+                {devResetUrl && (
+                  <div className="w-full rounded-lg border border-dashed border-amber-400 bg-amber-50 p-3 text-left text-xs text-amber-900 dark:bg-amber-950/40 dark:text-amber-200">
+                    <p className="font-medium">{t('auth.forgotPassword.devLinkLabel')}</p>
+                    <a
+                      href={devResetUrl}
+                      className="mt-1 block break-all font-mono underline underline-offset-2"
+                    >
+                      {devResetUrl}
+                    </a>
+                  </div>
+                )}
                 <Link
                   to={ROUTES.LOGIN}
                   className="mt-2 inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
@@ -93,6 +116,8 @@ export function ForgotPasswordPage() {
                     error={errors.email?.message}
                     {...register('email')}
                   />
+
+                  {formError && <p className="text-sm text-red-500">{formError}</p>}
 
                   <Button type="submit" size="lg" isLoading={isSubmitting} className="mt-2 w-full">
                     {t('auth.forgotPassword.submit')}

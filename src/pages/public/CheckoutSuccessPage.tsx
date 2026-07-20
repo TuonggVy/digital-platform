@@ -1,49 +1,62 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { CheckCircle2 } from 'lucide-react'
-import { useOrderStore } from '@/stores/orderStore'
+import { orderApiService } from '@/services/orderApiService'
+import type { BackendOrder } from '@/services/orderApiService'
 import { useLocale } from '@/hooks/useLocale'
-import { formatCurrency } from '@/utils/formatters'
+import { formatCurrency, formatDateTime } from '@/utils/formatters'
+import { localize } from '@/utils/localize'
 import { ROUTES } from '@/constants/routes'
-import type { Order } from '@/types'
 import { Seo } from '@/components/common/Seo'
 import { Button } from '@/components/common/Button'
-import { OrderStatusBadge } from '@/components/common/OrderStatusBadge'
+import { BackendOrderStatusBadge } from '@/components/common/BackendOrderStatusBadge'
 import { LoadingSpinner } from '@/components/common/LoadingSpinner'
 import { RevealOnScroll } from '@/components/animation/RevealOnScroll'
+
+interface CheckoutSuccessLocationState {
+  order?: BackendOrder
+}
 
 export function CheckoutSuccessPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const location = useLocation()
   const locale = useLocale()
-  const { orderCode } = useParams<{ orderCode: string }>()
-  const getOrderByCode = useOrderStore((s) => s.getOrderByCode)
+  // Route path is still `/checkout/success/:orderCode` (unchanged) — the segment
+  // now carries the backend Order's UUID `id`, needed by `getOrderDetail` on refresh.
+  const { orderCode: orderId } = useParams<{ orderCode: string }>()
 
-  const [order, setOrder] = useState<Order | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const stateOrder = (location.state as CheckoutSuccessLocationState | null)?.order ?? null
+  const [order, setOrder] = useState<BackendOrder | null>(stateOrder)
+  const [isLoading, setIsLoading] = useState(!stateOrder)
 
   useEffect(() => {
-    if (!orderCode) {
+    if (stateOrder) return
+    if (!orderId) {
       navigate(ROUTES.HOME, { replace: true })
       return
     }
 
     let isActive = true
-    getOrderByCode(orderCode).then((result) => {
-      if (!isActive) return
-      if (!result) {
+    orderApiService
+      .getOrderDetail(orderId)
+      .then((result) => {
+        if (!isActive) return
+        setOrder(result)
+        setIsLoading(false)
+      })
+      .catch(() => {
+        if (!isActive) return
         navigate(ROUTES.HOME, { replace: true })
-        return
-      }
-      setOrder(result)
-      setIsLoading(false)
-    })
+      })
 
     return () => {
       isActive = false
     }
-  }, [orderCode, getOrderByCode, navigate])
+    // Only re-run if the URL id changes — `stateOrder`/`navigate` are stable for this purpose.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [orderId])
 
   if (isLoading || !order) {
     return (
@@ -67,7 +80,7 @@ export function CheckoutSuccessPage() {
             {t('checkout.success.title')}
           </h1>
 
-          <OrderStatusBadge status={order.orderStatus} />
+          <BackendOrderStatusBadge status={order.status} />
 
           <div className="mt-4 w-full rounded-xl border border-border bg-background p-5 text-left text-sm">
             <div className="flex items-center justify-between border-b border-border py-2.5">
@@ -75,26 +88,61 @@ export function CheckoutSuccessPage() {
               <span className="font-semibold text-text-primary">{order.orderCode}</span>
             </div>
             <div className="flex items-center justify-between border-b border-border py-2.5">
+              <span className="text-text-secondary">{t('checkout.customerInfo.fullName')}</span>
+              <span className="text-text-primary">{order.customerName}</span>
+            </div>
+            <div className="flex items-center justify-between border-b border-border py-2.5">
+              <span className="text-text-secondary">{t('checkout.customerInfo.email')}</span>
+              <span className="text-text-primary">{order.customerEmail}</span>
+            </div>
+            <div className="flex items-center justify-between border-b border-border py-2.5">
+              <span className="text-text-secondary">{t('checkout.customerInfo.phone')}</span>
+              <span className="text-text-primary">{order.customerPhone}</span>
+            </div>
+            <div className="flex items-center justify-between border-b border-border py-2.5">
+              <span className="text-text-secondary">{t('cart.subtotal')}</span>
+              <span className="text-text-primary">{formatCurrency(order.subtotal, locale)}</span>
+            </div>
+            <div className="flex items-center justify-between border-b border-border py-2.5">
               <span className="text-text-secondary">{t('checkout.success.total')}</span>
               <span className="font-semibold text-primary">
-                {formatCurrency(order.total, locale)}
+                {formatCurrency(order.totalAmount, locale)}
               </span>
             </div>
             <div className="flex items-center justify-between py-2.5">
-              <span className="text-text-secondary">
-                {t('checkout.success.paymentMethodLabel')}
-              </span>
-              <span className="font-medium text-text-primary">
-                {t(`checkout.paymentMethod.${order.paymentMethod}`)}
-              </span>
+              <span className="text-text-secondary">{t('checkout.success.createdAt')}</span>
+              <span className="text-text-primary">{formatDateTime(order.createdDate, locale)}</span>
             </div>
           </div>
+
+          {order.items && order.items.length > 0 && (
+            <div className="w-full divide-y divide-border rounded-xl border border-border text-left text-sm">
+              {order.items.map((item) => (
+                <div key={item.id} className="flex items-center justify-between px-4 py-3">
+                  <div>
+                    <p className="font-medium text-text-primary">
+                      {localize(item.productName, locale)}
+                    </p>
+                    {item.packageName && (
+                      <p className="text-xs text-text-secondary">
+                        {localize(item.packageName, locale)}
+                      </p>
+                    )}
+                    <p className="text-xs text-text-secondary">×{item.quantity}</p>
+                  </div>
+                  <p className="whitespace-nowrap font-medium text-text-primary">
+                    {formatCurrency(item.totalPrice, locale)}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
 
           <div className="mt-4 flex w-full flex-col gap-3 sm:flex-row">
             <Button
               variant="outline"
               className="flex-1"
-              onClick={() => navigate(ROUTES.ACCOUNT_ORDER_DETAIL(order.orderCode))}
+              onClick={() => navigate(ROUTES.ACCOUNT_ORDER_DETAIL(order.id))}
             >
               {t('checkout.success.viewOrder')}
             </Button>
