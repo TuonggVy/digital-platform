@@ -1,6 +1,7 @@
 export * from './productService'
 export * from './authService'
 export * from './orderService'
+export * from './orderApiService'
 export * from './serviceService'
 export * from './ticketService'
 export * from './contentService'

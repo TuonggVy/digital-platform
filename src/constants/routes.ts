@@ -18,6 +18,7 @@ export const ROUTES = {
   LOGIN: '/login',
   REGISTER: '/register',
   FORGOT_PASSWORD: '/forgot-password',
+  RESET_PASSWORD: '/reset-password',
 
   CART: '/cart',
   CHECKOUT: '/checkout',
@@ -25,7 +26,7 @@ export const ROUTES = {
 
   ACCOUNT: '/account',
   ACCOUNT_ORDERS: '/account/orders',
-  ACCOUNT_ORDER_DETAIL: (code: string) => `/account/orders/${code}`,
+  ACCOUNT_ORDER_DETAIL: (orderId: string) => `/account/orders/${orderId}`,
   ACCOUNT_SERVICES: '/account/services',
   ACCOUNT_SERVICE_DETAIL: (id: string) => `/account/services/${id}`,
   ACCOUNT_TICKETS: '/account/tickets',
@@ -38,6 +39,7 @@ export const ROUTES = {
   ADMIN_PRODUCT_NEW: '/admin/products/new',
   ADMIN_PRODUCT_EDIT: (id: string) => `/admin/products/${id}/edit`,
   ADMIN_ORDERS: '/admin/orders',
+  ADMIN_ORDER_DETAIL: (orderId: string) => `/admin/orders/${orderId}`,
   ADMIN_CUSTOMERS: '/admin/customers',
   ADMIN_SERVICES: '/admin/services',
   ADMIN_LICENSES: '/admin/licenses',

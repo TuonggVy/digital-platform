@@ -29,6 +29,7 @@ import { CheckoutSuccessPage } from '@/pages/public/CheckoutSuccessPage'
 import { LoginPage } from '@/pages/auth/LoginPage'
 import { RegisterPage } from '@/pages/auth/RegisterPage'
 import { ForgotPasswordPage } from '@/pages/auth/ForgotPasswordPage'
+import { ResetPasswordPage } from '@/pages/auth/ResetPasswordPage'
 
 import { DashboardPage } from '@/pages/customer/DashboardPage'
 import { OrdersPage } from '@/pages/customer/OrdersPage'
@@ -44,6 +45,7 @@ import { AdminDashboardPage } from '@/pages/admin/AdminDashboardPage'
 import { AdminProductsPage } from '@/pages/admin/AdminProductsPage'
 import { AdminProductFormPage } from '@/pages/admin/AdminProductFormPage'
 import { AdminOrdersPage } from '@/pages/admin/AdminOrdersPage'
+import { AdminOrderDetailPage } from '@/pages/admin/AdminOrderDetailPage'
 import { AdminCustomersPage } from '@/pages/admin/AdminCustomersPage'
 import { AdminServicesPage } from '@/pages/admin/AdminServicesPage'
 import { AdminLicensesPage } from '@/pages/admin/AdminLicensesPage'
@@ -78,6 +80,7 @@ export function AppRoutes() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
         </Route>
 
         <Route path="*" element={<NotFoundPage />} />
@@ -87,7 +90,7 @@ export function AppRoutes() {
         <Route element={<CustomerLayout />}>
           <Route path="/account" element={<DashboardPage />} />
           <Route path="/account/orders" element={<OrdersPage />} />
-          <Route path="/account/orders/:orderCode" element={<OrderDetailPage />} />
+          <Route path="/account/orders/:orderId" element={<OrderDetailPage />} />
           <Route path="/account/services" element={<ServicesPage />} />
           <Route path="/account/services/:serviceId" element={<ServiceDetailPage />} />
           <Route path="/account/tickets" element={<TicketsPage />} />
@@ -104,6 +107,7 @@ export function AppRoutes() {
           <Route path="/admin/products/new" element={<AdminProductFormPage />} />
           <Route path="/admin/products/:id/edit" element={<AdminProductFormPage />} />
           <Route path="/admin/orders" element={<AdminOrdersPage />} />
+          <Route path="/admin/orders/:orderId" element={<AdminOrderDetailPage />} />
           <Route path="/admin/customers" element={<AdminCustomersPage />} />
           <Route path="/admin/services" element={<AdminServicesPage />} />
           <Route path="/admin/licenses" element={<AdminLicensesPage />} />

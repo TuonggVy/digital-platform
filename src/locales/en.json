@@ -32,6 +32,7 @@
     "delete": "Delete",
     "add": "Add new",
     "status": "Status",
+    "error": "Something went wrong",
     "all": "All",
     "yes": "Yes",
     "no": "No",
@@ -554,7 +555,21 @@
       "subtitle": "Enter your email to receive reset instructions",
       "email": "Email",
       "submit": "Send request",
-      "success": "Password reset instructions sent (demo, no real email is sent).",
+      "success": "If the email exists in our system, password reset instructions have been sent.",
+      "backToLogin": "Back to log in",
+      "devLinkLabel": "[Development only] Password reset link:"
+    },
+    "resetPassword": {
+      "title": "Reset password",
+      "subtitle": "Enter a new password for your account",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm new password",
+      "submit": "Reset password",
+      "success": "Password reset successfully. Please log in again.",
+      "invalidLinkTitle": "Invalid link",
+      "invalidLinkMessage": "This password reset link is invalid.",
+      "tokenErrorMessage": "This password reset link is invalid or has expired.",
+      "requestNewLink": "Request a new link",
       "backToLogin": "Back to log in"
     }
   },
@@ -615,12 +630,14 @@
     "orderSummary": "Order summary",
     "placeOrder": "Complete order",
     "processingOrder": "Processing your order...",
+    "couponNotAppliedYet": "Coupon discounts will be applied at the upcoming payment step — this order is created at full price.",
     "success": {
       "title": "Order placed successfully!",
       "orderCode": "Order code",
       "total": "Total",
       "paymentMethodLabel": "Payment method",
       "status": "Status",
+      "createdAt": "Created at",
       "viewOrder": "View order",
       "continueShopping": "Continue shopping"
     }
@@ -661,7 +678,13 @@
       "customerInfo": "Customer information",
       "paymentInfo": "Payment information",
       "downloadInvoice": "Download invoice",
-      "invoiceDemo": "This is a demo; invoice download isn't actually implemented."
+      "invoiceDemo": "This is a demo; invoice download isn't actually implemented.",
+      "notFound": "Order not found",
+      "tax": "Tax",
+      "cancelOrder": "Cancel order",
+      "cancelConfirmTitle": "Confirm order cancellation",
+      "cancelConfirmDescription": "Are you sure you want to cancel this order? This action cannot be undone.",
+      "cancelSuccess": "Order cancelled successfully"
     },
     "services": {
       "title": "My services",
@@ -722,8 +745,9 @@
       "sessions": "Login sessions",
       "currentSession": "Current session",
       "revoke": "Revoke",
-      "passwordChanged": "Password changed successfully",
-      "currentPasswordInvalid": "Current password is incorrect"
+      "passwordChanged": "Password changed successfully. Please sign in again.",
+      "currentPasswordInvalid": "Current password is incorrect",
+      "samePasswordError": "New password must be different from your current password"
     }
   },
   "status": {
@@ -751,6 +775,16 @@
     "payment": {
       "UNPAID": "Unpaid",
       "PAID": "Paid",
+      "REFUNDED": "Refunded"
+    },
+    "backendOrder": {
+      "PENDING": "Pending",
+      "AWAITING_PAYMENT": "Awaiting payment",
+      "PAID": "Paid",
+      "PROCESSING": "Processing",
+      "COMPLETED": "Completed",
+      "CANCELLED": "Cancelled",
+      "FAILED": "Failed",
       "REFUNDED": "Refunded"
     }
   },
@@ -855,7 +889,19 @@
       "items": "Order items",
       "customerInfo": "Customer information",
       "noOrders": "No orders yet",
-      "details": "Details"
+      "details": "Details",
+      "searchPlaceholder": "Search by order code, name, email, phone...",
+      "sortNewest": "Newest",
+      "sortOldest": "Oldest",
+      "sortTotalAsc": "Total (ascending)",
+      "sortTotalDesc": "Total (descending)",
+      "currentStatus": "Current status",
+      "newStatus": "New status",
+      "confirmStatusChangeTitle": "Confirm status change",
+      "confirmStatusChangeDescription": "Change order {{code}} status from {{from}} to {{to}}?",
+      "noValidNextStatus": "This is a terminal status — no valid next status",
+      "systemId": "System ID",
+      "modifiedDate": "Last updated"
     },
     "customers": {
       "title": "Manage customers",

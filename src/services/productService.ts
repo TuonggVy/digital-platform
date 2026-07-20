@@ -1,12 +1,5 @@
-import type { BillingCycle, Product, ProductCategory } from '@/types'
-import { allProducts } from '@/data/mocks/products'
-import { STORAGE_KEYS } from '@/constants/config'
-import { createRepository } from './repository'
-import { delay } from '@/utils/delay'
-import { simulateError } from '@/utils/simulateError'
-import { generateId } from '@/utils/generators'
-
-const repo = createRepository<Product>(STORAGE_KEYS.PRODUCTS, allProducts)
+import type { BillingCycle, LocalizedText, Product, ProductCategory } from '@/types'
+import { apiDelete, apiGet, apiPatch, apiPost } from './apiClient'
 
 export interface ProductFilters {
   category?: ProductCategory
@@ -23,112 +16,137 @@ export interface ProductFilters {
   sort?: 'featured' | 'price_asc' | 'price_desc'
 }
 
-function matchesFilters(product: Product, filters: ProductFilters): boolean {
-  if (filters.category && product.category !== filters.category) return false
-  if (filters.subCategory && product.subCategory !== filters.subCategory) return false
-  if (filters.search) {
-    const q = filters.search.toLowerCase()
-    const matchesName =
-      product.name.vi.toLowerCase().includes(q) || product.name.en.toLowerCase().includes(q)
-    if (!matchesName) return false
-  }
-  if (filters.minPrice !== undefined && product.startingPrice < filters.minPrice) return false
-  if (filters.maxPrice !== undefined && product.startingPrice > filters.maxPrice) return false
-  if (filters.billingCycle && !product.billingCycles.includes(filters.billingCycle)) return false
-  if (filters.region) {
-    const hasRegion = product.packages.some(
-      (pkg) => pkg.cloud?.regions.includes(filters.region!) || pkg.esim?.region === filters.region,
-    )
-    if (!hasRegion) return false
-  }
-  if (filters.days !== undefined) {
-    const hasDays = product.packages.some((pkg) => pkg.esim?.days === filters.days)
-    if (!hasDays) return false
-  }
-  if (filters.hotspot) {
-    const hasHotspot = product.packages.some((pkg) => pkg.esim?.hotspot)
-    if (!hasHotspot) return false
-  }
-  if (filters.userType) {
-    const hasUserType = product.packages.some((pkg) => pkg.kaspersky?.userType === filters.userType)
-    if (!hasUserType) return false
-  }
-  if (filters.devices !== undefined) {
-    const hasDevices = product.packages.some((pkg) => pkg.kaspersky?.devices === filters.devices)
-    if (!hasDevices) return false
-  }
-  return true
+interface BackendProduct {
+  id: string
+  slug: string
+  category: { code: string }
+  subCategory: string
+  name: LocalizedText
+  shortDescription: LocalizedText | null
+  description: LocalizedText | null
+  icon: string | null
+  badge: LocalizedText | null
+  startingPrice: number
+  currency: string
+  billingCycles: BillingCycle[]
+  features: LocalizedText[] | null
+  benefits: LocalizedText[] | null
+  howItWorks: LocalizedText[] | null
+  suitableFor: LocalizedText[] | null
+  faqs: Product['faqs'] | null
+  rating: number
+  reviewCount: number
+  isFeatured: boolean
+  statusId: number
+  packages: Product['packages']
+  relatedProductIds: string[]
+  createdDate: string
+  modifiedDate: string | null
 }
 
-function sortProducts(products: Product[], sort?: ProductFilters['sort']): Product[] {
-  const sorted = [...products]
-  if (sort === 'price_asc') sorted.sort((a, b) => a.startingPrice - b.startingPrice)
-  else if (sort === 'price_desc') sorted.sort((a, b) => b.startingPrice - a.startingPrice)
-  else sorted.sort((a, b) => Number(b.isFeatured) - Number(a.isFeatured))
-  return sorted
+export interface PaginatedResult<T> {
+  items: T[]
+  total: number
+  page: number
+  pageSize: number
+  totalPages: number
+}
+
+const EMPTY_TEXT: LocalizedText = { vi: '', en: '' }
+
+function mapBackendProduct(raw: BackendProduct): Product {
+  return {
+    id: raw.id,
+    slug: raw.slug,
+    category: raw.category.code as ProductCategory,
+    subCategory: raw.subCategory,
+    name: raw.name,
+    shortDescription: raw.shortDescription ?? EMPTY_TEXT,
+    description: raw.description ?? EMPTY_TEXT,
+    icon: raw.icon ?? '',
+    badge: raw.badge ?? undefined,
+    startingPrice: raw.startingPrice,
+    currency: 'VND',
+    billingCycles: raw.billingCycles,
+    features: raw.features ?? [],
+    benefits: raw.benefits ?? [],
+    howItWorks: raw.howItWorks ?? [],
+    suitableFor: raw.suitableFor ?? [],
+    faqs: raw.faqs ?? [],
+    rating: raw.rating,
+    reviewCount: raw.reviewCount,
+    isFeatured: raw.isFeatured,
+    isActive: true, // public/admin endpoints already filter out non-active except getAllForAdmin below
+    packages: raw.packages ?? [],
+    relatedProductIds: raw.relatedProductIds ?? [],
+    createdAt: raw.createdDate,
+    updatedAt: raw.modifiedDate ?? raw.createdDate,
+  }
 }
 
 export const productService = {
   async getProducts(filters: ProductFilters = {}): Promise<Product[]> {
-    await delay()
-    simulateError('products.getProducts')
-    const active = repo.getAll().filter((p) => p.isActive)
-    return sortProducts(
-      active.filter((p) => matchesFilters(p, filters)),
-      filters.sort,
+    const result = await apiGet<PaginatedResult<BackendProduct>>(
+      '/products',
+      filters as Record<string, unknown>,
     )
+    return result.items.map(mapBackendProduct)
   },
 
   async getProductBySlug(slug: string): Promise<Product | null> {
-    await delay()
-    simulateError('products.getProductBySlug')
-    return repo.getAll().find((p) => p.slug === slug) ?? null
+    try {
+      const raw = await apiGet<BackendProduct>(`/products/${encodeURIComponent(slug)}`)
+      return mapBackendProduct(raw)
+    } catch {
+      return null
+    }
   },
 
   async getFeaturedProducts(limit = 6): Promise<Product[]> {
-    await delay()
-    return repo
-      .getAll()
-      .filter((p) => p.isActive && p.isFeatured)
-      .slice(0, limit)
+    const raw = await apiGet<BackendProduct[]>('/products/featured', { limit })
+    return raw.map(mapBackendProduct)
   },
 
   async getRelatedProducts(product: Product): Promise<Product[]> {
-    await delay()
-    const all = repo.getAll()
-    return product.relatedProductIds
-      .map((id) => all.find((p) => p.id === id))
-      .filter((p): p is Product => !!p)
+    const raw = await apiGet<BackendProduct[]>(`/products/${encodeURIComponent(product.slug)}/related`)
+    return raw.map(mapBackendProduct)
   },
 
   async getAllForAdmin(): Promise<Product[]> {
-    await delay()
-    return repo.getAll()
+    const raw = await apiGet<BackendProduct[]>('/admin/products')
+    return raw.map((p) => ({ ...mapBackendProduct(p), isActive: p.statusId === 1 }))
   },
 
   async createProduct(input: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>): Promise<Product> {
-    await delay()
-    const now = new Date().toISOString()
-    const product: Product = { ...input, id: generateId('product'), createdAt: now, updatedAt: now }
-    const all = repo.getAll()
-    repo.saveAll([product, ...all])
-    return product
+    const raw = await apiPost<BackendProduct>('/admin/products', {
+      category: input.category,
+      subCategory: input.subCategory,
+      slug: input.slug,
+      name: input.name,
+      shortDescription: input.shortDescription,
+      description: input.description,
+      icon: input.icon,
+      badge: input.badge,
+      startingPrice: input.startingPrice,
+      billingCycles: input.billingCycles,
+      features: input.features,
+      benefits: input.benefits,
+      howItWorks: input.howItWorks,
+      suitableFor: input.suitableFor,
+      faqs: input.faqs,
+      isFeatured: input.isFeatured,
+      packages: input.packages,
+      relatedProductIds: input.relatedProductIds,
+    })
+    return mapBackendProduct(raw)
   },
 
   async updateProduct(id: string, input: Partial<Product>): Promise<Product> {
-    await delay()
-    const all = repo.getAll()
-    const index = all.findIndex((p) => p.id === id)
-    if (index === -1) throw new Error('Product not found')
-    const updated: Product = { ...all[index], ...input, id, updatedAt: new Date().toISOString() }
-    all[index] = updated
-    repo.saveAll(all)
-    return updated
+    const raw = await apiPatch<BackendProduct>(`/admin/products/${id}`, input)
+    return mapBackendProduct(raw)
   },
 
   async deleteProduct(id: string): Promise<void> {
-    await delay()
-    const all = repo.getAll().filter((p) => p.id !== id)
-    repo.saveAll(all)
+    await apiDelete(`/admin/products/${id}`)
   },
 }

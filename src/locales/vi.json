@@ -32,6 +32,7 @@
     "delete": "Xóa",
     "add": "Thêm mới",
     "status": "Trạng thái",
+    "error": "Đã có lỗi xảy ra",
     "all": "Tất cả",
     "yes": "Có",
     "no": "Không",
@@ -554,7 +555,21 @@
       "subtitle": "Nhập email để nhận hướng dẫn đặt lại mật khẩu",
       "email": "Email",
       "submit": "Gửi yêu cầu",
-      "success": "Đã gửi email hướng dẫn đặt lại mật khẩu (demo, không có email thật được gửi).",
+      "success": "Nếu email tồn tại trong hệ thống, hướng dẫn đặt lại mật khẩu đã được gửi.",
+      "backToLogin": "Quay lại đăng nhập",
+      "devLinkLabel": "[Chỉ dành cho development] Liên kết đặt lại mật khẩu:"
+    },
+    "resetPassword": {
+      "title": "Đặt lại mật khẩu",
+      "subtitle": "Nhập mật khẩu mới cho tài khoản của bạn",
+      "newPassword": "Mật khẩu mới",
+      "confirmPassword": "Xác nhận mật khẩu mới",
+      "submit": "Đặt lại mật khẩu",
+      "success": "Đặt lại mật khẩu thành công. Vui lòng đăng nhập lại.",
+      "invalidLinkTitle": "Liên kết không hợp lệ",
+      "invalidLinkMessage": "Liên kết đặt lại mật khẩu không hợp lệ.",
+      "tokenErrorMessage": "Liên kết đặt lại mật khẩu không hợp lệ hoặc đã hết hạn.",
+      "requestNewLink": "Yêu cầu liên kết mới",
       "backToLogin": "Quay lại đăng nhập"
     }
   },
@@ -615,12 +630,14 @@
     "orderSummary": "Tóm tắt đơn hàng",
     "placeOrder": "Hoàn tất đơn hàng",
     "processingOrder": "Đang xử lý đơn hàng...",
+    "couponNotAppliedYet": "Mã giảm giá sẽ được áp dụng ở bước thanh toán tiếp theo — đơn hàng hiện được tạo theo giá gốc.",
     "success": {
       "title": "Đặt hàng thành công!",
       "orderCode": "Mã đơn hàng",
       "total": "Tổng tiền",
       "paymentMethodLabel": "Phương thức thanh toán",
       "status": "Trạng thái",
+      "createdAt": "Thời gian tạo",
       "viewOrder": "Xem đơn hàng",
       "continueShopping": "Tiếp tục mua sắm"
     }
@@ -661,7 +678,13 @@
       "customerInfo": "Thông tin khách hàng",
       "paymentInfo": "Thông tin thanh toán",
       "downloadInvoice": "Tải hóa đơn",
-      "invoiceDemo": "Đây là bản demo, chức năng tải hóa đơn chưa được tích hợp thật."
+      "invoiceDemo": "Đây là bản demo, chức năng tải hóa đơn chưa được tích hợp thật.",
+      "notFound": "Không tìm thấy đơn hàng",
+      "tax": "Thuế",
+      "cancelOrder": "Huỷ đơn hàng",
+      "cancelConfirmTitle": "Xác nhận huỷ đơn hàng",
+      "cancelConfirmDescription": "Bạn có chắc chắn muốn huỷ đơn hàng này? Hành động này không thể hoàn tác.",
+      "cancelSuccess": "Đã huỷ đơn hàng thành công"
     },
     "services": {
       "title": "Dịch vụ của tôi",
@@ -722,8 +745,9 @@
       "sessions": "Phiên đăng nhập",
       "currentSession": "Phiên hiện tại",
       "revoke": "Thu hồi",
-      "passwordChanged": "Đổi mật khẩu thành công",
-      "currentPasswordInvalid": "Mật khẩu hiện tại không đúng"
+      "passwordChanged": "Đổi mật khẩu thành công. Vui lòng đăng nhập lại.",
+      "currentPasswordInvalid": "Mật khẩu hiện tại không đúng",
+      "samePasswordError": "Mật khẩu mới phải khác mật khẩu hiện tại"
     }
   },
   "status": {
@@ -751,6 +775,16 @@
     "payment": {
       "UNPAID": "Chưa thanh toán",
       "PAID": "Đã thanh toán",
+      "REFUNDED": "Đã hoàn tiền"
+    },
+    "backendOrder": {
+      "PENDING": "Chờ xử lý",
+      "AWAITING_PAYMENT": "Chờ thanh toán",
+      "PAID": "Đã thanh toán",
+      "PROCESSING": "Đang xử lý",
+      "COMPLETED": "Hoàn tất",
+      "CANCELLED": "Đã hủy",
+      "FAILED": "Thất bại",
       "REFUNDED": "Đã hoàn tiền"
     }
   },
@@ -855,7 +889,19 @@
       "items": "Sản phẩm trong đơn",
       "customerInfo": "Thông tin khách hàng",
       "noOrders": "Chưa có đơn hàng nào",
-      "details": "Chi tiết"
+      "details": "Chi tiết",
+      "searchPlaceholder": "Tìm theo mã đơn, tên, email, số điện thoại...",
+      "sortNewest": "Mới nhất",
+      "sortOldest": "Cũ nhất",
+      "sortTotalAsc": "Tổng tiền tăng dần",
+      "sortTotalDesc": "Tổng tiền giảm dần",
+      "currentStatus": "Trạng thái hiện tại",
+      "newStatus": "Trạng thái mới",
+      "confirmStatusChangeTitle": "Xác nhận đổi trạng thái",
+      "confirmStatusChangeDescription": "Xác nhận đổi trạng thái đơn hàng {{code}} từ {{from}} sang {{to}}?",
+      "noValidNextStatus": "Đây là trạng thái cuối, không có trạng thái tiếp theo hợp lệ",
+      "systemId": "Mã hệ thống",
+      "modifiedDate": "Cập nhật lần cuối"
     },
     "customers": {
       "title": "Quản lý khách hàng",

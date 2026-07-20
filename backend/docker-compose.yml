@@ -1,0 +1,27 @@
+services:
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    # No native arm64 image exists for mssql/server yet; emulate amd64 via Rosetta on Apple Silicon.
+    platform: linux/amd64
+    container_name: digital-platform-mssql
+    environment:
+      ACCEPT_EULA: 'Y'
+      MSSQL_SA_PASSWORD: '${DB_PASSWORD:-YourStrong@Passw0rd}'
+      MSSQL_PID: 'Developer'
+    ports:
+      - '1433:1433'
+    volumes:
+      - mssql_data:/var/opt/mssql
+    healthcheck:
+      test:
+        [
+          'CMD-SHELL',
+          '/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "$$MSSQL_SA_PASSWORD" -Q "SELECT 1" || exit 1',
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+volumes:
+  mssql_data:

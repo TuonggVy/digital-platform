@@ -32,7 +32,7 @@ function buildRegisterSchema(t: TFunction) {
       password: z
         .string()
         .min(1, t('validation.required'))
-        .min(6, t('validation.minLength', { count: 6 })),
+        .min(8, t('validation.minLength', { count: 8 })),
       confirmPassword: z.string().min(1, t('validation.required')),
       agreeTerms: z
         .boolean()
@@ -81,7 +81,7 @@ export function RegisterPage() {
         password: data.password,
       })
       showToast(t('toast.registerSuccess'), 'success')
-      navigate(ROUTES.ACCOUNT, { replace: true })
+      navigate(ROUTES.LOGIN, { replace: true })
     } catch (error) {
       if (error instanceof Error && error.message === 'EMAIL_EXISTS') {
         setFormError(t('auth.register.emailExists'))
