@@ -127,7 +127,10 @@ export function CheckoutPage() {
       const order = await orderApiService.createOrder(payload)
       setOrderPlaced(true)
       clearCart()
-      navigate(ROUTES.CHECKOUT_SUCCESS(order.id), { replace: true, state: { order } })
+      // Order creation only reserves the order (status PENDING) — payment is a
+      // separate step handled by the Payment domain (see PaymentPage), not implied
+      // by checkout completing.
+      navigate(ROUTES.CHECKOUT_PAYMENT(order.id), { replace: true })
     } catch (error) {
       const message = error instanceof Error ? error.message : t('toast.genericError')
       showToast(message, 'error')

@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useState } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { AlertCircle } from 'lucide-react'
 import { orderApiService } from '@/services/orderApiService'
 import type { BackendOrder, OrderStatus as BackendOrderStatus } from '@/services/orderApiService'
+import { paymentApiService, TERMINAL_PAYMENT_STATUSES } from '@/services/paymentApiService'
+import type { BackendPayment } from '@/services/paymentApiService'
 import { Seo } from '@/components/common/Seo'
 import { Breadcrumb } from '@/components/common/Breadcrumb'
 import { Button } from '@/components/common/Button'
@@ -11,6 +13,7 @@ import { EmptyState } from '@/components/common/EmptyState'
 import { LoadingSpinner } from '@/components/common/LoadingSpinner'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { BackendOrderStatusBadge } from '@/components/common/BackendOrderStatusBadge'
+import { PaymentStatusBadge } from '@/components/common/PaymentStatusBadge'
 import { RevealOnScroll } from '@/components/animation/RevealOnScroll'
 import { useUiStore } from '@/stores/uiStore'
 import { useLocale } from '@/hooks/useLocale'
@@ -19,14 +22,17 @@ import { localize } from '@/utils/localize'
 import { ROUTES } from '@/constants/routes'
 
 const CANCELLABLE_STATUSES: BackendOrderStatus[] = ['PENDING', 'AWAITING_PAYMENT']
+const UNSETTLED_ORDER_STATUSES: BackendOrderStatus[] = ['PENDING', 'AWAITING_PAYMENT']
 
 export function OrderDetailPage() {
   const { orderId } = useParams<{ orderId: string }>()
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const locale = useLocale()
   const showToast = useUiStore((s) => s.showToast)
 
   const [order, setOrder] = useState<BackendOrder | null>(null)
+  const [payments, setPayments] = useState<BackendPayment[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [isCancelling, setIsCancelling] = useState(false)
@@ -37,8 +43,14 @@ export function OrderDetailPage() {
       setIsLoading(true)
       setError(null)
       try {
-        const result = await orderApiService.getOrderDetail(id)
+        const [result, paymentsResult] = await Promise.all([
+          orderApiService.getOrderDetail(id),
+          // Payment history is supplementary — an order predating the Payment
+          // domain, or a transient error here, shouldn't block the whole page.
+          paymentApiService.getPaymentsForOrder(id).catch(() => []),
+        ])
         setOrder(result)
+        setPayments(paymentsResult)
       } catch (err) {
         setError(err instanceof Error ? err.message : t('toast.genericError'))
       } finally {
@@ -93,6 +105,11 @@ export function OrderDetailPage() {
   }
 
   const canCancel = CANCELLABLE_STATUSES.includes(order.status)
+  const latestPayment = payments[0] ?? null
+  const needsPaymentAction =
+    UNSETTLED_ORDER_STATUSES.includes(order.status) &&
+    (!latestPayment || TERMINAL_PAYMENT_STATUSES.includes(latestPayment.status))
+  const paymentCtaLabel = !latestPayment ? t('payment.payNow') : t('payment.retry')
 
   return (
     <div className="flex flex-col gap-6">
@@ -191,6 +208,64 @@ export function OrderDetailPage() {
               <span>{formatCurrency(order.totalAmount, locale)}</span>
             </div>
           </div>
+        </div>
+      </RevealOnScroll>
+
+      <RevealOnScroll>
+        <div className="rounded-2xl border border-border p-5">
+          <h2 className="mb-4 text-lg font-semibold text-text-primary">{t('payment.title')}</h2>
+          {latestPayment ? (
+            <dl className="flex flex-col gap-3 text-sm">
+              <div className="flex justify-between gap-3">
+                <dt className="text-text-secondary">{t('payment.paymentCode')}</dt>
+                <dd className="text-right font-medium text-text-primary">{latestPayment.paymentCode}</dd>
+              </div>
+              <div className="flex justify-between gap-3">
+                <dt className="text-text-secondary">{t('payment.method.label')}</dt>
+                <dd className="text-right font-medium text-text-primary">
+                  {t(`payment.method.${latestPayment.method === 'SANDBOX' ? 'sandbox' : 'bankTransfer'}`)}
+                </dd>
+              </div>
+              <div className="flex justify-between gap-3">
+                <dt className="text-text-secondary">{t('payment.status')}</dt>
+                <dd className="text-right">
+                  <PaymentStatusBadge status={latestPayment.status} />
+                </dd>
+              </div>
+              <div className="flex justify-between gap-3">
+                <dt className="text-text-secondary">{t('payment.amount')}</dt>
+                <dd className="text-right font-medium text-text-primary">
+                  {formatCurrency(latestPayment.amount, locale)}
+                </dd>
+              </div>
+              {latestPayment.paidAt && (
+                <div className="flex justify-between gap-3">
+                  <dt className="text-text-secondary">{t('payment.paidAt')}</dt>
+                  <dd className="text-right font-medium text-text-primary">
+                    {formatDateTime(latestPayment.paidAt, locale)}
+                  </dd>
+                </div>
+              )}
+              {latestPayment.failureReason && (
+                <div className="flex justify-between gap-3">
+                  <dt className="text-text-secondary">{t('payment.failureReason')}</dt>
+                  <dd className="text-right font-medium text-text-primary">
+                    {latestPayment.failureReason}
+                  </dd>
+                </div>
+              )}
+            </dl>
+          ) : (
+            <p className="text-sm text-text-secondary">{t('payment.noPaymentYet')}</p>
+          )}
+          {needsPaymentAction && (
+            <Button
+              className="mt-4 w-full sm:w-auto"
+              onClick={() => navigate(ROUTES.CHECKOUT_PAYMENT(order.id))}
+            >
+              {paymentCtaLabel}
+            </Button>
+          )}
         </div>
       </RevealOnScroll>
 

@@ -642,6 +642,35 @@
       "continueShopping": "Tiếp tục mua sắm"
     }
   },
+  "payment": {
+    "title": "Thanh toán",
+    "notFound": "Không tìm thấy giao dịch thanh toán",
+    "amount": "Số tiền",
+    "currency": "Đơn vị tiền tệ",
+    "chooseMethod": "Chọn phương thức thanh toán",
+    "method": {
+      "label": "Phương thức",
+      "sandbox": "Sandbox (thử nghiệm)",
+      "bankTransfer": "Chuyển khoản ngân hàng"
+    },
+    "createPayment": "Tạo giao dịch thanh toán",
+    "retry": "Thanh toán lại",
+    "retryNotice": "Giao dịch trước đó không thành công. Tạo giao dịch mới để thử lại.",
+    "sandboxInstructions": "Đây là môi trường thử nghiệm (sandbox). Nhấn một trong các nút bên dưới để giả lập kết quả thanh toán.",
+    "sandboxSuccess": "Giả lập: Thanh toán thành công",
+    "sandboxFailure": "Giả lập: Thanh toán thất bại",
+    "sandboxCancel": "Giả lập: Huỷ giao dịch",
+    "viewOrder": "Xem chi tiết đơn hàng",
+    "orderSettled": "Đơn hàng này đã hoàn tất hoặc không còn cần thanh toán.",
+    "payNow": "Thanh toán ngay",
+    "paymentCode": "Mã giao dịch",
+    "status": "Trạng thái",
+    "paidAt": "Thời gian thanh toán",
+    "failureReason": "Lý do thất bại",
+    "noPaymentYet": "Chưa có giao dịch thanh toán nào",
+    "provider": "Nhà cung cấp",
+    "transactionId": "Mã giao dịch nhà cung cấp"
+  },
   "account": {
     "sidebar": {
       "dashboard": "Tổng quan",
@@ -786,6 +815,14 @@
       "CANCELLED": "Đã hủy",
       "FAILED": "Thất bại",
       "REFUNDED": "Đã hoàn tiền"
+    },
+    "backendPayment": {
+      "PENDING": "Chờ xử lý",
+      "PROCESSING": "Đang xử lý",
+      "SUCCEEDED": "Thành công",
+      "FAILED": "Thất bại",
+      "CANCELLED": "Đã huỷ",
+      "EXPIRED": "Đã hết hạn"
     }
   },
   "admin": {

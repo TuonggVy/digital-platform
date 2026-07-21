@@ -25,6 +25,7 @@ import { NotFoundPage } from '@/pages/public/NotFoundPage'
 import { CartPage } from '@/pages/public/CartPage'
 import { CheckoutPage } from '@/pages/public/CheckoutPage'
 import { CheckoutSuccessPage } from '@/pages/public/CheckoutSuccessPage'
+import { PaymentPage } from '@/pages/public/PaymentPage'
 
 import { LoginPage } from '@/pages/auth/LoginPage'
 import { RegisterPage } from '@/pages/auth/RegisterPage'
@@ -75,6 +76,7 @@ export function AppRoutes() {
         <Route path="/cart" element={<CartPage />} />
         <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="/checkout/success/:orderCode" element={<CheckoutSuccessPage />} />
+        <Route path="/checkout/payment/:orderId" element={<PaymentPage />} />
 
         <Route element={<GuestRoute />}>
           <Route path="/login" element={<LoginPage />} />
