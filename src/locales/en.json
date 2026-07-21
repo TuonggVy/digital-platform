@@ -642,6 +642,35 @@
       "continueShopping": "Continue shopping"
     }
   },
+  "payment": {
+    "title": "Payment",
+    "notFound": "Payment not found",
+    "amount": "Amount",
+    "currency": "Currency",
+    "chooseMethod": "Choose a payment method",
+    "method": {
+      "label": "Method",
+      "sandbox": "Sandbox (test)",
+      "bankTransfer": "Bank transfer"
+    },
+    "createPayment": "Create payment",
+    "retry": "Retry payment",
+    "retryNotice": "Your previous attempt was not successful. Create a new payment to try again.",
+    "sandboxInstructions": "This is a sandbox test environment. Click one of the buttons below to simulate a payment result.",
+    "sandboxSuccess": "Simulate: Payment succeeded",
+    "sandboxFailure": "Simulate: Payment failed",
+    "sandboxCancel": "Simulate: Cancel payment",
+    "viewOrder": "View order detail",
+    "orderSettled": "This order is already settled or no longer requires payment.",
+    "payNow": "Pay now",
+    "paymentCode": "Payment code",
+    "status": "Status",
+    "paidAt": "Paid at",
+    "failureReason": "Failure reason",
+    "noPaymentYet": "No payment yet",
+    "provider": "Provider",
+    "transactionId": "Provider transaction ID"
+  },
   "account": {
     "sidebar": {
       "dashboard": "Overview",
@@ -786,6 +815,14 @@
       "CANCELLED": "Cancelled",
       "FAILED": "Failed",
       "REFUNDED": "Refunded"
+    },
+    "backendPayment": {
+      "PENDING": "Pending",
+      "PROCESSING": "Processing",
+      "SUCCEEDED": "Succeeded",
+      "FAILED": "Failed",
+      "CANCELLED": "Cancelled",
+      "EXPIRED": "Expired"
     }
   },
   "admin": {

@@ -14,6 +14,7 @@ import { AuthModule } from './features/auth/auth.module';
 import { CategoriesModule } from './features/categories/categories.module';
 import { ProductsModule } from './features/products/products.module';
 import { OrdersModule } from './features/orders/orders.module';
+import { PaymentsModule } from './features/payments/payments.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { OrdersModule } from './features/orders/orders.module';
     CategoriesModule,
     ProductsModule,
     OrdersModule,
+    PaymentsModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: JwtAuthGuard },

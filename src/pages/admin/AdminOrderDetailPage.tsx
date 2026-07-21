@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next'
 import { AlertCircle } from 'lucide-react'
 import { orderApiService } from '@/services/orderApiService'
 import type { BackendOrder, OrderStatus as BackendOrderStatus } from '@/services/orderApiService'
+import { paymentApiService } from '@/services/paymentApiService'
+import type { BackendPayment } from '@/services/paymentApiService'
 import { Seo } from '@/components/common/Seo'
 import { Breadcrumb } from '@/components/common/Breadcrumb'
 import { Button } from '@/components/common/Button'
@@ -12,6 +14,7 @@ import { EmptyState } from '@/components/common/EmptyState'
 import { LoadingSpinner } from '@/components/common/LoadingSpinner'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { BackendOrderStatusBadge } from '@/components/common/BackendOrderStatusBadge'
+import { PaymentStatusBadge } from '@/components/common/PaymentStatusBadge'
 import { useLocale } from '@/hooks/useLocale'
 import { useUiStore } from '@/stores/uiStore'
 import { formatCurrency, formatDateTime } from '@/utils/formatters'
@@ -41,6 +44,7 @@ export function AdminOrderDetailPage() {
   const showToast = useUiStore((s) => s.showToast)
 
   const [order, setOrder] = useState<BackendOrder | null>(null)
+  const [payments, setPayments] = useState<BackendPayment[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -53,8 +57,12 @@ export function AdminOrderDetailPage() {
       setIsLoading(true)
       setError(null)
       try {
-        const result = await orderApiService.getAdminOrderDetail(id)
+        const [result, paymentsResult] = await Promise.all([
+          orderApiService.getAdminOrderDetail(id),
+          paymentApiService.getPaymentsForOrder(id).catch(() => []),
+        ])
         setOrder(result)
+        setPayments(paymentsResult)
       } catch (err) {
         setError(err instanceof Error ? err.message : t('toast.genericError'))
       } finally {
@@ -221,6 +229,68 @@ export function AdminOrderDetailPage() {
             <span>{formatCurrency(order.totalAmount, locale)}</span>
           </div>
         </div>
+      </div>
+
+      <div className="rounded-2xl border border-border p-5">
+        <h2 className="mb-4 text-lg font-semibold text-text-primary">{t('payment.title')}</h2>
+        {payments.length === 0 ? (
+          <p className="text-sm text-text-secondary">{t('payment.noPaymentYet')}</p>
+        ) : (
+          <div className="flex flex-col divide-y divide-border">
+            {payments.map((payment) => (
+              <dl key={payment.id} className="grid grid-cols-1 gap-2 py-3 text-sm sm:grid-cols-2">
+                <div className="flex justify-between gap-3">
+                  <dt className="text-text-secondary">{t('payment.paymentCode')}</dt>
+                  <dd className="text-right font-medium text-text-primary">{payment.paymentCode}</dd>
+                </div>
+                <div className="flex justify-between gap-3">
+                  <dt className="text-text-secondary">{t('payment.method.label')}</dt>
+                  <dd className="text-right font-medium text-text-primary">
+                    {t(`payment.method.${payment.method === 'SANDBOX' ? 'sandbox' : 'bankTransfer'}`)}
+                  </dd>
+                </div>
+                <div className="flex justify-between gap-3">
+                  <dt className="text-text-secondary">{t('payment.status')}</dt>
+                  <dd className="text-right">
+                    <PaymentStatusBadge status={payment.status} />
+                  </dd>
+                </div>
+                <div className="flex justify-between gap-3">
+                  <dt className="text-text-secondary">{t('payment.amount')}</dt>
+                  <dd className="text-right font-medium text-text-primary">
+                    {formatCurrency(payment.amount, locale)}
+                  </dd>
+                </div>
+                <div className="flex justify-between gap-3">
+                  <dt className="text-text-secondary">{t('payment.provider')}</dt>
+                  <dd className="text-right font-medium text-text-primary">{payment.provider}</dd>
+                </div>
+                {payment.providerTransactionId && (
+                  <div className="flex justify-between gap-3">
+                    <dt className="text-text-secondary">{t('payment.transactionId')}</dt>
+                    <dd className="text-right font-medium text-text-primary">
+                      {payment.providerTransactionId}
+                    </dd>
+                  </div>
+                )}
+                {payment.paidAt && (
+                  <div className="flex justify-between gap-3">
+                    <dt className="text-text-secondary">{t('payment.paidAt')}</dt>
+                    <dd className="text-right font-medium text-text-primary">
+                      {formatDateTime(payment.paidAt, locale)}
+                    </dd>
+                  </div>
+                )}
+                {payment.failureReason && (
+                  <div className="flex justify-between gap-3">
+                    <dt className="text-text-secondary">{t('payment.failureReason')}</dt>
+                    <dd className="text-right font-medium text-text-primary">{payment.failureReason}</dd>
+                  </div>
+                )}
+              </dl>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="rounded-2xl border border-border p-5">
