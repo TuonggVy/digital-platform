@@ -1,5 +1,13 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOkResponse,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
@@ -17,6 +25,13 @@ export class AuthController {
 
   @Public()
   @Post('login')
+  @ApiOperation({
+    summary: 'Đăng nhập',
+    description: 'Xác thực tài khoản bằng email + password, trả về access token và refresh token.',
+  })
+  @ApiBody({ type: LoginDto, description: 'Thông tin đăng nhập' })
+  @ApiOkResponse({ description: 'Đăng nhập thành công, trả về accessToken, refreshToken và thông tin user' })
+  @ApiUnauthorizedResponse({ description: 'Email hoặc mật khẩu không đúng, hoặc tài khoản không còn hoạt động' })
   login(@Body() dto: LoginDto) {
     return this.authService.login(dto.email, dto.password);
   }
