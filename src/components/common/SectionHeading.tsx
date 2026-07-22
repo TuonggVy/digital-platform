@@ -30,7 +30,7 @@ export function SectionHeading({
           className={cn(
             'relative inline-flex items-center gap-1.5 overflow-hidden rounded-full px-3.5 py-1.5 text-xs font-semibold uppercase tracking-widest',
             light
-              ? 'border border-white/[0.08] bg-[#070c18]/55 text-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]'
+              ? 'border border-white/[0.08] bg-home-ink/55 text-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]'
               : 'border border-primary/15 bg-primary/10 text-primary',
           )}
         >

@@ -5,12 +5,13 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { User, Mail, Phone, Lock } from 'lucide-react'
+import { User, Mail, Phone, Lock, Eye, EyeOff } from 'lucide-react'
 import { Button } from '@/components/common/Button'
 import { Input } from '@/components/common/Input'
 import { Checkbox } from '@/components/common/Checkbox'
 import { Seo } from '@/components/common/Seo'
-import { RevealOnScroll } from '@/components/animation/RevealOnScroll'
+import { AuthLayout } from '@/components/auth/AuthLayout'
+import { StaggerContainer, StaggerItem } from '@/components/animation/StaggerContainer'
 import { useAuthStore } from '@/stores/authStore'
 import { useUiStore } from '@/stores/uiStore'
 import { ROUTES } from '@/constants/routes'
@@ -52,6 +53,8 @@ export function RegisterPage() {
   const registerUser = useAuthStore((s) => s.register)
   const showToast = useUiStore((s) => s.showToast)
   const [formError, setFormError] = useState<string | null>(null)
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   const schema = useMemo(() => buildRegisterSchema(t), [t])
 
@@ -92,98 +95,149 @@ export function RegisterPage() {
   }
 
   return (
-    <div className="relative isolate overflow-hidden">
+    <>
       <Seo title={t('auth.register.title')} description={t('auth.register.subtitle')} />
 
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-grid opacity-40 [mask-image:radial-gradient(ellipse_at_center,black,transparent_75%)]" />
-      <div className="pointer-events-none absolute -left-24 top-10 -z-10 size-72 rounded-full bg-secondary/20 blur-3xl" />
-      <div className="pointer-events-none absolute -right-24 bottom-10 -z-10 size-72 rounded-full bg-primary/20 blur-3xl" />
-
-      <div className="mx-auto flex min-h-[70vh] max-w-md flex-col justify-center px-4 py-16">
-        <RevealOnScroll>
-          <div className="rounded-2xl border border-border bg-background p-8 shadow-sm">
-            <div className="text-center">
-              <h1 className="text-2xl font-semibold text-text-primary">
-                {t('auth.register.title')}
-              </h1>
-              <p className="mt-1 text-sm text-text-secondary">{t('auth.register.subtitle')}</p>
-            </div>
-
-            <form className="mt-8 flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)} noValidate>
+      <AuthLayout
+        title={t('auth.register.title')}
+        subtitle={t('auth.register.subtitle')}
+        formError={formError}
+        backLink={{ label: t('auth.backToLogin'), to: ROUTES.LOGIN }}
+        footer={
+          <>
+            {t('auth.register.haveAccount')}{' '}
+            <Link to={ROUTES.LOGIN} className="font-medium text-accent hover:underline">
+              {t('auth.register.loginNow')}
+            </Link>
+          </>
+        }
+      >
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)} noValidate>
+          <StaggerContainer className="flex flex-col gap-4">
+            <StaggerItem>
               <Input
+                tone="dark"
                 label={t('auth.register.fullName')}
                 type="text"
                 autoComplete="name"
+                placeholder={t('auth.register.fullNamePlaceholder')}
                 leftIcon={<User className="size-4" />}
                 error={errors.fullName?.message}
                 {...register('fullName')}
               />
+            </StaggerItem>
+            <StaggerItem>
               <Input
+                tone="dark"
                 label={t('auth.register.email')}
                 type="email"
                 autoComplete="email"
+                placeholder={t('auth.register.emailPlaceholder')}
                 leftIcon={<Mail className="size-4" />}
                 error={errors.email?.message}
                 {...register('email')}
               />
+            </StaggerItem>
+            <StaggerItem>
               <Input
+                tone="dark"
                 label={t('auth.register.phone')}
                 type="tel"
                 autoComplete="tel"
+                placeholder={t('auth.register.phonePlaceholder')}
                 leftIcon={<Phone className="size-4" />}
                 error={errors.phone?.message}
                 {...register('phone')}
               />
+            </StaggerItem>
+            <StaggerItem>
               <Input
+                tone="dark"
                 label={t('auth.register.password')}
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 autoComplete="new-password"
+                placeholder={t('auth.register.passwordPlaceholder')}
                 leftIcon={<Lock className="size-4" />}
+                hint={!errors.password ? t('validation.minLength', { count: 8 }) : undefined}
                 error={errors.password?.message}
+                rightIcon={
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((v) => !v)}
+                    aria-label={t(showPassword ? 'auth.hidePassword' : 'auth.showPassword')}
+                    aria-pressed={showPassword}
+                    className="flex items-center rounded-sm text-white/50 hover:text-white/80 focus-ring"
+                  >
+                    {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                  </button>
+                }
                 {...register('password')}
               />
+            </StaggerItem>
+            <StaggerItem>
               <Input
+                tone="dark"
                 label={t('auth.register.confirmPassword')}
-                type="password"
+                type={showConfirmPassword ? 'text' : 'password'}
                 autoComplete="new-password"
+                placeholder={t('auth.register.confirmPasswordPlaceholder')}
                 leftIcon={<Lock className="size-4" />}
                 error={errors.confirmPassword?.message}
+                rightIcon={
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword((v) => !v)}
+                    aria-label={t(showConfirmPassword ? 'auth.hidePassword' : 'auth.showPassword')}
+                    aria-pressed={showConfirmPassword}
+                    className="flex items-center rounded-sm text-white/50 hover:text-white/80 focus-ring"
+                  >
+                    {showConfirmPassword ? (
+                      <EyeOff className="size-4" />
+                    ) : (
+                      <Eye className="size-4" />
+                    )}
+                  </button>
+                }
                 {...register('confirmPassword')}
               />
+            </StaggerItem>
 
+            <StaggerItem>
               <Checkbox
+                tone="dark"
                 label={
                   <span>
                     {t('auth.register.agreeTermsPrefix')}{' '}
                     <Link
                       to={ROUTES.TERMS}
-                      className="font-medium text-primary underline underline-offset-2"
+                      className="font-medium text-accent underline underline-offset-2"
                       onClick={(e) => e.stopPropagation()}
                     >
                       {t('auth.register.agreeTermsLink')}
+                    </Link>{' '}
+                    {t('auth.register.agreeTermsAnd')}{' '}
+                    <Link
+                      to={ROUTES.PRIVACY}
+                      className="font-medium text-accent underline underline-offset-2"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {t('legal.privacyTitle')}
                     </Link>
                   </span>
                 }
                 error={errors.agreeTerms?.message}
                 {...register('agreeTerms')}
               />
+            </StaggerItem>
 
-              {formError && <p className="text-sm text-red-500">{formError}</p>}
-
-              <Button type="submit" size="lg" isLoading={isSubmitting} className="mt-2 w-full">
+            <StaggerItem>
+              <Button type="submit" size="lg" isLoading={isSubmitting} shine className="mt-2 w-full">
                 {t('auth.register.submit')}
               </Button>
-            </form>
-
-            <p className="mt-6 text-center text-sm text-text-secondary">
-              {t('auth.register.haveAccount')}{' '}
-              <Link to={ROUTES.LOGIN} className="font-medium text-primary hover:underline">
-                {t('auth.register.loginNow')}
-              </Link>
-            </p>
-          </div>
-        </RevealOnScroll>
-      </div>
-    </div>
+            </StaggerItem>
+          </StaggerContainer>
+        </form>
+      </AuthLayout>
+    </>
   )
 }

@@ -1,11 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { motion, useReducedMotion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { ArrowRight, Star, CheckCircle2 } from 'lucide-react'
 import { Seo } from '@/components/common/Seo'
-import { SectionHeading } from '@/components/common/SectionHeading'
-import { ContactCTA } from '@/components/common/ContactCTA'
 import { Accordion } from '@/components/common/Accordion'
 import { Tabs } from '@/components/common/Tabs'
 import { DynamicIcon } from '@/components/common/DynamicIcon'
@@ -15,20 +13,23 @@ import { RevealOnScroll } from '@/components/animation/RevealOnScroll'
 import { StaggerContainer, StaggerItem } from '@/components/animation/StaggerContainer'
 import { AnimatedCounter } from '@/components/animation/AnimatedCounter'
 import { Hero } from '@/components/home/Hero'
-import { CyberSecurityRadar } from '@/components/home/CyberSecurityRadar'
-import { SpotlightCard } from '@/components/ui/SpotlightCard'
+import { CloudInfrastructureVisual } from '@/components/visuals/cloud3d/CloudInfrastructureVisual'
+import { SecurityPerimeterVisual } from '@/components/visuals/security3d/SecurityPerimeterVisual'
+import { EsimConnectionVisual } from '@/components/visuals/esim3d/EsimConnectionVisual'
+import { SWEEP_EXIT_X } from '@/components/home/HeroBackground'
 import { productService } from '@/services/productService'
 import { contentService } from '@/services/contentService'
 import { useLocale } from '@/hooks/useLocale'
 import { localize } from '@/utils/localize'
+import { cn } from '@/utils/cn'
 import { ROUTES } from '@/constants/routes'
 import { mockPartners } from '@/data/mocks/partners'
 import type { Faq, Product, Testimonial } from '@/types'
 
 const CATEGORIES = [
-  { key: 'cloud', icon: 'Cloud', href: ROUTES.PRODUCTS_CLOUD },
-  { key: 'kaspersky', icon: 'ShieldCheck', href: ROUTES.PRODUCTS_KASPERSKY },
-  { key: 'esim', icon: 'Wifi', href: ROUTES.PRODUCTS_ESIM },
+  { key: 'cloud', icon: 'Cloud', href: ROUTES.PRODUCTS_CLOUD, code: 'CLOUD' },
+  { key: 'kaspersky', icon: 'ShieldCheck', href: ROUTES.PRODUCTS_KASPERSKY, code: 'SECURITY' },
+  { key: 'esim', icon: 'Wifi', href: ROUTES.PRODUCTS_ESIM, code: 'ESIM' },
 ] as const
 
 const WHY_US = [
@@ -68,10 +69,64 @@ const ESIM_FEATURES = [
 
 type FeaturedTab = 'all' | 'cloud' | 'kaspersky' | 'esim'
 
+function Eyebrow({ children, dark = false }: { children: string; dark?: boolean }) {
+  return (
+    <span
+      className={cn(
+        'inline-flex items-center gap-2 font-data text-xs uppercase tracking-[0.16em]',
+        dark ? 'text-home-wire' : 'text-home-beacon',
+      )}
+    >
+      <span className={cn('size-1.5 rounded-full', dark ? 'bg-home-wire' : 'bg-home-beacon')} />
+      // {children}
+    </span>
+  )
+}
+
+function ReadoutHeading({
+  eyebrow,
+  title,
+  subtitle,
+  align = 'center',
+  dark = false,
+  className,
+}: {
+  eyebrow: string
+  title: string
+  subtitle?: string
+  align?: 'left' | 'center'
+  dark?: boolean
+  className?: string
+}) {
+  return (
+    <div
+      className={cn(
+        'flex flex-col gap-3',
+        align === 'center' ? 'items-center text-center' : 'items-start text-left',
+        className,
+      )}
+    >
+      <Eyebrow dark={dark}>{eyebrow}</Eyebrow>
+      <h2
+        className={cn(
+          'font-display max-w-2xl text-3xl font-semibold tracking-tight sm:text-4xl',
+          dark ? 'text-home-paper' : 'text-home-graphite',
+        )}
+      >
+        {title}
+      </h2>
+      {subtitle && (
+        <p className={cn('max-w-xl text-base leading-7', dark ? 'text-home-paper/60' : 'text-home-graphite-soft')}>
+          {subtitle}
+        </p>
+      )}
+    </div>
+  )
+}
+
 export function HomePage() {
   const { t } = useTranslation()
   const locale = useLocale()
-  const prefersReducedMotion = useReducedMotion()
 
   const [featuredTab, setFeaturedTab] = useState<FeaturedTab>('all')
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([])
@@ -104,51 +159,82 @@ export function HomePage() {
   }, [])
 
   return (
-    <div>
+    <div className="font-plex">
       <Seo title={t('home.hero.title')} description={t('home.hero.subtitle')} />
 
-      {/* ============ 1. HERO — premium SaaS hero with dashboard + floating cards ============ */}
+      {/* ============ 1. HERO — "Signal Sweep" signature ============ */}
       <Hero />
 
-      {/* ============ 2. TRUSTED BY — premium badge + gradient heading + logo marquee ============ */}
-      <section className="relative overflow-hidden bg-background px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
-        <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-          <div className="absolute left-1/2 top-0 h-[360px] w-[760px] -translate-x-1/2 rounded-full bg-primary/[0.08] blur-3xl" />
-          <div className="absolute -left-32 top-20 size-72 rounded-full bg-primary/[0.06] blur-3xl" />
-          <div className="absolute -right-32 top-10 size-72 rounded-full bg-accent/[0.06] blur-3xl" />
-          <div className="absolute inset-0 bg-grid opacity-[0.02]" />
-        </div>
+      {/* ============ 2. TRUSTED BY — receives the Hero's signal sweep ============ */}
+      <section className="relative overflow-hidden border-b border-home-line bg-home-paper px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+        <div
+          className="pointer-events-none absolute inset-x-0 top-0 h-40"
+          style={{
+            background:
+              'radial-gradient(ellipse 60% 100% at 50% 0%, rgba(0,102,179,0.07) 0%, transparent 75%)',
+          }}
+          aria-hidden
+        />
+        <svg
+          viewBox="0 0 1440 160"
+          preserveAspectRatio="none"
+          className="pointer-events-none absolute inset-x-0 top-0 h-40 w-full"
+          aria-hidden
+        >
+          <defs>
+            <linearGradient id="sweep-landing-right" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="var(--color-primary)" />
+              <stop offset="100%" stopColor="var(--color-primary)" stopOpacity="0" />
+            </linearGradient>
+            <linearGradient id="sweep-landing-left" x1="100%" y1="0%" x2="0%" y2="0%">
+              <stop offset="0%" stopColor="var(--color-primary)" />
+              <stop offset="100%" stopColor="var(--color-primary)" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+          <motion.path
+            d={`M${SWEEP_EXIT_X},0 C${SWEEP_EXIT_X},60 820,75 960,76 L1220,76`}
+            fill="none"
+            stroke="url(#sweep-landing-right)"
+            strokeWidth={2}
+            strokeLinecap="round"
+            initial={{ pathLength: 0, opacity: 0 }}
+            animate={{ pathLength: 1, opacity: 0.7 }}
+            transition={{ duration: 1.1, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          />
+          <motion.path
+            d={`M${SWEEP_EXIT_X},0 C${SWEEP_EXIT_X},60 620,75 480,76 L220,76`}
+            fill="none"
+            stroke="url(#sweep-landing-left)"
+            strokeWidth={2}
+            strokeLinecap="round"
+            initial={{ pathLength: 0, opacity: 0 }}
+            animate={{ pathLength: 1, opacity: 0.7 }}
+            transition={{ duration: 1.1, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          />
+        </svg>
 
         <div className="relative mx-auto max-w-7xl">
-          <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
+          <div className="mx-auto flex max-w-2xl flex-col items-center text-center">
             <RevealOnScroll>
-              <h2 className="max-w-4xl text-balance text-3xl font-bold leading-tight tracking-tight text-text-primary sm:text-4xl lg:text-5xl">
+              <h2 className="font-display text-balance text-2xl font-semibold leading-tight tracking-tight text-home-graphite sm:text-3xl">
                 {t('home.partners.titlePrefix')}{' '}
-                <span className="text-primary">{t('home.partners.titleHighlight')}</span>
+                <span className="text-home-beacon">{t('home.partners.titleHighlight')}</span>
               </h2>
             </RevealOnScroll>
-
             <RevealOnScroll delay={0.08}>
-              <p className="mt-5 max-w-2xl text-base leading-7 text-text-secondary sm:text-lg sm:leading-8">
+              <p className="mt-4 text-sm leading-6 text-home-graphite-soft sm:text-base">
                 {t('home.partners.description')}
               </p>
             </RevealOnScroll>
-
-            <RevealOnScroll delay={0.16} direction="scale">
-              <div className="mt-8 flex items-center justify-center gap-3">
-                <span className="h-px w-16 bg-gradient-to-r from-transparent to-primary/30 sm:w-24" />
-                <span className="h-px w-16 bg-gradient-to-l from-transparent to-primary/30 sm:w-24" />
-              </div>
-            </RevealOnScroll>
           </div>
 
-          <RevealOnScroll delay={0.22} className="mt-10 sm:mt-12">
+          <RevealOnScroll delay={0.16} className="mt-10 border-t border-home-line pt-10 sm:mt-12">
             <Marquee
               gapClassName="gap-x-14 sm:gap-x-20 lg:gap-x-24"
               items={mockPartners}
               getKey={(partner) => partner.id}
               renderItem={(partner) => (
-                <span className="whitespace-nowrap text-2xl font-semibold tracking-tight text-text-secondary/50 grayscale transition-all duration-300 ease-out hover:scale-105 hover:text-text-primary hover:grayscale-0 sm:text-3xl lg:text-[2rem]">
+                <span className="font-display whitespace-nowrap text-xl font-semibold tracking-tight text-home-graphite/35 transition-colors duration-300 hover:text-home-graphite sm:text-2xl">
                   {partner.name}
                 </span>
               )}
@@ -157,63 +243,64 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* ============ 3. PRODUCT CATEGORIES — light gray, blurred blob, lifting cards ============ */}
-      <section className="relative overflow-hidden bg-surface px-4 py-28 sm:px-6 lg:px-8">
-        <div className="pointer-events-none absolute left-1/2 top-0 -z-10 size-[600px] -translate-x-1/2 -translate-y-1/3 rounded-full bg-primary/10 blur-3xl" />
+      {/* ============ 3. PRODUCT CATEGORIES — status-board cards ============ */}
+      <section className="border-b border-home-line bg-home-paper px-4 py-24 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <RevealOnScroll>
-            <SectionHeading
+            <ReadoutHeading
               eyebrow={t('home.categories.eyebrow')}
               title={t('home.categories.title')}
               subtitle={t('home.categories.subtitle')}
-              className="mb-16"
+              className="mb-14"
             />
           </RevealOnScroll>
-          <StaggerContainer className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <StaggerContainer className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {CATEGORIES.map((category) => (
               <StaggerItem key={category.key}>
-                <SpotlightCard
-                  tone="none"
-                  className="flex h-full flex-col gap-4 border border-border/60 bg-background/60 p-7 transition-all duration-300 hover:-translate-y-1 hover:border-primary/25 hover:shadow-lg hover:shadow-primary/10"
+                <Link
+                  to={category.href}
+                  className="group flex h-full flex-col gap-4 border border-home-line bg-white/40 p-7 transition-colors duration-200 hover:border-home-wire/50"
                 >
-                  <span className="flex size-14 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-transform duration-300 group-hover:scale-110">
-                    <DynamicIcon name={category.icon} className="size-7" />
-                  </span>
+                  <div className="flex items-center justify-between">
+                    <span className="flex size-11 items-center justify-center rounded-md bg-home-ink text-home-wire">
+                      <DynamicIcon name={category.icon} className="size-5" />
+                    </span>
+                    <span className="font-data text-[11px] tracking-[0.1em] text-home-graphite-soft">
+                      {category.code}
+                    </span>
+                  </div>
                   <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-text-primary">
+                    <h3 className="font-display text-lg font-semibold text-home-graphite">
                       {t(`home.categories.${category.key}.name`)}
                     </h3>
-                    <p className="mt-2 text-sm text-text-secondary">
+                    <p className="mt-2 text-sm leading-6 text-home-graphite-soft">
                       {t(`home.categories.${category.key}.desc`)}
                     </p>
                     <ul className="mt-4 flex flex-col gap-1.5">
                       {(['b1', 'b2', 'b3'] as const).map((b) => (
-                        <li key={b} className="flex items-start gap-2 text-sm text-text-secondary">
-                          <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary" />
+                        <li key={b} className="flex items-start gap-2 text-sm text-home-graphite-soft">
+                          <span className="mt-1.5 size-1 shrink-0 rounded-full bg-home-wire" />
                           {t(`home.categories.${category.key}.${b}`)}
                         </li>
                       ))}
                     </ul>
                   </div>
-                  <Link
-                    to={category.href}
-                    className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:gap-2.5 transition-all"
-                  >
+                  <span className="inline-flex items-center gap-1.5 text-sm font-medium text-home-graphite group-hover:gap-2.5 transition-[gap]">
                     {t('common.learnMore')}
-                    <ArrowRight className="size-4" />
-                  </Link>
-                </SpotlightCard>
+                    <ArrowRight className="size-4 text-home-beacon" />
+                  </span>
+                </Link>
               </StaggerItem>
             ))}
           </StaggerContainer>
         </div>
       </section>
 
-      {/* ============ 4. WHY CHOOSE US — white, text left / dashboard mockup right ============ */}
-      <section className="relative overflow-hidden bg-background px-4 py-28 sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-16 lg:grid-cols-2">
+      {/* ============ 4. WHY CHOOSE US ============ */}
+      <section className="border-b border-home-line bg-home-paper px-4 py-24 sm:px-6 lg:px-8">
+        <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-14 lg:grid-cols-2">
           <RevealOnScroll direction="left">
-            <SectionHeading
+            <ReadoutHeading
               align="left"
               eyebrow={t('home.whyUs.eyebrow')}
               title={t('home.whyUs.title')}
@@ -222,124 +309,92 @@ export function HomePage() {
             />
             <Link
               to={ROUTES.ABOUT}
-              className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:gap-2.5 transition-all"
+              className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-home-graphite hover:gap-2.5 transition-[gap]"
             >
               {t('common.learnMore')}
-              <ArrowRight className="size-4" />
+              <ArrowRight className="size-4 text-home-beacon" />
             </Link>
           </RevealOnScroll>
 
-          <RevealOnScroll direction="right" delay={0.1} className="relative">
-            <div className="pointer-events-none absolute -right-10 -top-10 -z-10 size-72 rounded-full bg-accent/15 blur-3xl" />
-            <div className="relative rounded-3xl border border-border bg-surface/70 p-3 shadow-2xl shadow-primary/10 backdrop-blur">
-              <div className="flex items-center gap-1.5 px-3 py-2">
-                <span className="size-2.5 rounded-full bg-red-400/70" />
-                <span className="size-2.5 rounded-full bg-amber-400/70" />
-                <span className="size-2.5 rounded-full bg-emerald-400/70" />
-              </div>
-              <StaggerContainer className="grid grid-cols-2 gap-3 p-2 pb-3">
-                {WHY_US.map((item) => (
-                  <StaggerItem key={item.key}>
-                    <div className="flex h-full flex-col gap-2.5 rounded-2xl bg-background p-4 shadow-sm">
-                      <span className="flex size-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                        <DynamicIcon name={item.icon} className="size-[18px]" />
-                      </span>
-                      <p className="text-sm font-semibold text-text-primary">
-                        {t(`home.whyUs.${item.key}.title`)}
-                      </p>
-                      <p className="line-clamp-2 text-xs text-text-secondary">
-                        {t(`home.whyUs.${item.key}.desc`)}
-                      </p>
-                    </div>
-                  </StaggerItem>
-                ))}
-              </StaggerContainer>
-            </div>
+          <RevealOnScroll direction="right" delay={0.1}>
+            <StaggerContainer className="grid grid-cols-2 gap-3">
+              {WHY_US.map((item) => (
+                <StaggerItem key={item.key}>
+                  <div className="flex h-full flex-col gap-2.5 border border-home-line border-l-2 border-l-home-wire bg-white/40 p-4">
+                    <span className="flex size-8 items-center justify-center rounded-md bg-home-ink text-home-wire">
+                      <DynamicIcon name={item.icon} className="size-4" />
+                    </span>
+                    <p className="font-display text-sm font-semibold text-home-graphite">
+                      {t(`home.whyUs.${item.key}.title`)}
+                    </p>
+                    <p className="line-clamp-2 text-xs leading-5 text-home-graphite-soft">
+                      {t(`home.whyUs.${item.key}.desc`)}
+                    </p>
+                  </div>
+                </StaggerItem>
+              ))}
+            </StaggerContainer>
           </RevealOnScroll>
         </div>
       </section>
 
-      {/* ============ 5. FEATURED PRODUCTS — soft gradient, floating tabs, elevated card panel ============ */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-primary/[0.04] via-background to-background px-4 py-28 sm:px-6 lg:px-8">
+      {/* ============ 5. FEATURED PRODUCTS ============ */}
+      <section className="border-b border-home-line bg-home-paper px-4 py-24 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <RevealOnScroll>
-            <SectionHeading
+            <ReadoutHeading
               eyebrow={t('home.featured.eyebrow')}
               title={t('home.featured.title')}
               subtitle={t('home.featured.subtitle')}
               className="mb-10"
             />
           </RevealOnScroll>
-          <RevealOnScroll delay={0.05} direction="scale" className="flex justify-center">
-            <div className="inline-flex rounded-2xl bg-background p-2 shadow-lg shadow-primary/10">
-              <Tabs
-                value={featuredTab}
-                onChange={(v) => setFeaturedTab(v as FeaturedTab)}
-                tabs={[
-                  { value: 'all', label: t('home.tabs.all') },
-                  { value: 'cloud', label: t('home.tabs.cloud') },
-                  { value: 'kaspersky', label: t('home.tabs.kaspersky') },
-                  { value: 'esim', label: t('home.tabs.esim') },
-                ]}
-              />
-            </div>
+          <RevealOnScroll delay={0.05} className="flex justify-center">
+            <Tabs
+              value={featuredTab}
+              onChange={(v) => setFeaturedTab(v as FeaturedTab)}
+              className="!border-home-line !bg-white/40"
+              activePillClassName="!bg-home-ink"
+              tabs={[
+                { value: 'all', label: t('home.tabs.all') },
+                { value: 'cloud', label: t('home.tabs.cloud') },
+                { value: 'kaspersky', label: t('home.tabs.kaspersky') },
+                { value: 'esim', label: t('home.tabs.esim') },
+              ]}
+            />
           </RevealOnScroll>
           <RevealOnScroll delay={0.1}>
-            <div className="mt-12 rounded-3xl bg-background p-6 shadow-2xl shadow-primary/[0.07] sm:p-10">
+            <div className="mt-10">
               <ProductGrid products={featuredProducts} isLoading={isFeaturedLoading} />
             </div>
           </RevealOnScroll>
         </div>
       </section>
 
-      {/* ============ 6. PURCHASE PROCESS — dark chapter, animated timeline, glow nodes ============ */}
-      <section className="relative overflow-hidden bg-[#070c18] px-4 py-28 text-white sm:px-6 lg:px-8">
-        <div className="pointer-events-none absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-b from-[#070c18] from-0% via-[#0a1630] via-38% to-[#070c18] to-75%" />
-
-          <div className="absolute left-1/2 top-20 h-[420px] w-[900px] -translate-x-1/2 bg-[radial-gradient(ellipse_at_center,rgba(37,99,235,0.20)_0%,rgba(34,211,238,0.08)_38%,transparent_72%)] blur-2xl" />
-
-          <div className="absolute inset-0 bg-grid opacity-[0.05]" />
-        </div>
+      {/* ============ 6. PURCHASE PROCESS — dark chapter, ordered steps ============ */}
+      <section className="relative overflow-hidden bg-home-ink px-4 py-24 text-home-paper sm:px-6 lg:px-8">
+        <div className="bg-grid-home-dark pointer-events-none absolute inset-0 opacity-50" aria-hidden />
         <div className="relative mx-auto max-w-3xl">
           <RevealOnScroll>
-            <SectionHeading
-              light
-              eyebrow={t('home.process.eyebrow')}
-              title={t('home.process.title')}
-              className="mb-20"
-            />
+            <ReadoutHeading dark eyebrow={t('home.process.eyebrow')} title={t('home.process.title')} className="mb-16" />
           </RevealOnScroll>
-          <div className="relative flex flex-col gap-12">
-            {prefersReducedMotion ? (
-              <div className="absolute left-6 top-2 h-[calc(100%-16px)] w-px bg-gradient-to-b from-primary via-accent to-transparent sm:left-8" />
-            ) : (
-              <motion.div
-                className="absolute left-6 top-2 w-px origin-top bg-gradient-to-b from-primary via-accent to-transparent sm:left-8"
-                style={{ height: 'calc(100% - 16px)' }}
-                initial={{ scaleY: 0 }}
-                whileInView={{ scaleY: 1 }}
-                viewport={{ once: true, margin: '-100px' }}
-                transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
-              />
-            )}
+          <div className="relative flex flex-col gap-10">
+            <div className="absolute left-[18px] top-2 h-[calc(100%-16px)] w-px bg-home-paper/10" />
             {PROCESS_STEPS.map((step, idx) => (
-              <RevealOnScroll key={step.key} delay={idx * 0.12}>
-                <div className="relative flex items-start gap-6 sm:gap-8">
-                  <span className="relative z-10 flex size-12 shrink-0 items-center justify-center rounded-full bg-primary text-white shadow-[0_0_30px_-2px_rgba(37,99,235,0.7)] sm:size-16">
-                    <DynamicIcon name={step.icon} className="size-5 sm:size-6" />
+              <RevealOnScroll key={step.key} delay={idx * 0.1}>
+                <div className="relative flex items-start gap-6">
+                  <span className="relative z-10 flex size-9 shrink-0 items-center justify-center rounded-full border border-home-wire/40 bg-home-ink font-data text-xs text-home-wire">
+                    {String(idx + 1).padStart(2, '0')}
                   </span>
-                  <SpotlightCard className="flex-1 p-5 sm:p-6">
-                    <p className="text-xs font-semibold uppercase tracking-widest text-accent">
-                      0{idx + 1}
-                    </p>
-                    <h3 className="mt-1 text-lg font-semibold text-white sm:text-xl">
+                  <div className="flex-1 border-b border-home-paper/10 pb-8">
+                    <p className="flex items-center gap-2 font-display text-lg font-semibold text-home-paper">
+                      <DynamicIcon name={step.icon} className="size-4 text-home-wire" />
                       {t(`home.process.${step.key}.title`)}
-                    </h3>
-                    <p className="mt-2 text-sm text-slate-300">
+                    </p>
+                    <p className="mt-2 text-sm leading-6 text-home-paper/55">
                       {t(`home.process.${step.key}.desc`)}
                     </p>
-                  </SpotlightCard>
+                  </div>
                 </div>
               </RevealOnScroll>
             ))}
@@ -347,91 +402,78 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* ============ 7. CLOUD SECTION — soft gradient, glass dashboard mockup ============ */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary/[0.06] via-accent/[0.05] to-background px-4 py-28 sm:px-6 lg:px-8">
+      {/* ============ 7. CLOUD SECTION ============ */}
+      <section className="border-b border-home-line bg-home-paper px-4 py-24 sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 lg:grid-cols-2">
           <RevealOnScroll direction="left">
-            <SectionHeading
+            <ReadoutHeading
               align="left"
               eyebrow={t('home.cloudSection.eyebrow')}
               title={t('home.cloudSection.title')}
               subtitle={t('home.cloudSection.subtitle')}
               className="mb-8"
             />
-            <StaggerContainer className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <StaggerContainer className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               {CLOUD_FEATURES.map((feature) => (
                 <StaggerItem key={feature.key}>
-                  <SpotlightCard
-                    tone="none"
-                    className="flex items-center gap-3 border border-border/60 bg-background/60 p-4 transition-all duration-300 hover:-translate-y-1 hover:border-primary/25 hover:shadow-lg hover:shadow-primary/10"
-                  >
-                    <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary transition-transform duration-300 group-hover:scale-110">
-                      <DynamicIcon name={feature.icon} className="size-5" />
+                  <div className="flex items-center gap-3 border border-home-line bg-white/40 p-4">
+                    <span className="flex size-8 shrink-0 items-center justify-center rounded-md bg-home-ink text-home-wire">
+                      <DynamicIcon name={feature.icon} className="size-4" />
                     </span>
-                    <p className="text-sm text-text-secondary">
-                      {t(`home.cloudSection.${feature.key}`)}
-                    </p>
-                  </SpotlightCard>
+                    <p className="text-sm text-home-graphite-soft">{t(`home.cloudSection.${feature.key}`)}</p>
+                  </div>
                 </StaggerItem>
               ))}
             </StaggerContainer>
           </RevealOnScroll>
 
           <RevealOnScroll delay={0.1} direction="right">
-            <div className="rounded-3xl border border-border bg-surface/70 p-6 shadow-2xl shadow-primary/10 backdrop-blur">
-              <div className="flex items-center justify-between">
-                <div className="flex gap-1.5">
-                  <span className="size-2.5 rounded-full bg-red-400/70" />
-                  <span className="size-2.5 rounded-full bg-amber-400/70" />
-                  <span className="size-2.5 rounded-full bg-emerald-400/70" />
-                </div>
-                <span className="text-xs text-text-secondary">cloud-server-01</span>
+            <div className="border border-home-line bg-home-ink p-4">
+              <div className="flex items-center justify-between border-b border-home-paper/10 pb-3">
+                <span className="font-data text-[11px] uppercase tracking-[0.12em] text-home-paper/50">
+                  cloud-region · uptime
+                </span>
+                <span className="inline-flex items-center gap-1.5 font-data text-[11px] text-home-wire">
+                  <span className="size-1.5 rounded-full bg-home-wire" />
+                  ONLINE
+                </span>
               </div>
-              <div className="mt-6 flex flex-col gap-4">
-                {[72, 45, 88, 60].map((value, idx) => (
-                  <div key={idx} className="flex items-center gap-3">
-                    <span className="w-16 shrink-0 text-xs text-text-secondary">CPU {idx + 1}</span>
-                    <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-border/60">
-                      <div
-                        className="h-full rounded-full bg-gradient-to-r from-primary to-accent"
-                        style={{ width: `${value}%` }}
-                      />
-                    </div>
-                    <span className="w-10 shrink-0 text-right text-xs text-text-secondary">
-                      {value}%
-                    </span>
-                  </div>
-                ))}
-              </div>
+              <CloudInfrastructureVisual className="mt-2 aspect-[620/380] w-full" />
             </div>
           </RevealOnScroll>
         </div>
       </section>
 
-      {/* ============ 8. KASPERSKY — white, illustration left / text right ============ */}
-      <section className="relative overflow-hidden bg-background px-4 py-28 sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-16 lg:grid-cols-2">
-          <RevealOnScroll direction="left" className="relative order-2 lg:order-1">
-            <div className="pointer-events-none absolute -left-10 top-1/2 -z-10 size-72 -translate-y-1/2 rounded-full bg-secondary/15 blur-3xl" />
-            <CyberSecurityRadar />
-          </RevealOnScroll>
+      {/* ============ 8. KASPERSKY ============ */}
+      <section className="border-b border-home-line bg-home-paper px-4 py-24 sm:px-6 lg:px-8">
+        <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-14 lg:grid-cols-2">
+          <div className="order-2 border border-home-line bg-home-ink p-4 lg:order-1">
+            <div className="flex items-center justify-between border-b border-home-paper/10 pb-3">
+              <span className="font-data text-[11px] uppercase tracking-[0.12em] text-home-paper/50">
+                endpoint · posture
+              </span>
+              <span className="inline-flex items-center gap-1.5 font-data text-[11px] text-home-wire">
+                <span className="size-1.5 rounded-full bg-home-wire" />
+                PROTECTED
+              </span>
+            </div>
+            <SecurityPerimeterVisual className="mt-2 aspect-[620/380] w-full" />
+          </div>
 
           <RevealOnScroll direction="right" delay={0.1} className="order-1 lg:order-2">
-            <SectionHeading
+            <ReadoutHeading
               align="left"
               eyebrow={t('home.kasperskySection.eyebrow')}
               title={t('home.kasperskySection.title')}
               subtitle={t('home.kasperskySection.subtitle')}
               className="mb-8"
             />
-            <StaggerContainer className="flex flex-col gap-4">
+            <StaggerContainer className="flex flex-col gap-3">
               {KASPERSKY_FEATURES.map((feature) => (
                 <StaggerItem key={feature.key}>
                   <div className="flex items-start gap-3">
-                    <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-secondary/10 text-secondary">
-                      <CheckCircle2 className="size-4" />
-                    </span>
-                    <span className="text-sm text-text-secondary">
+                    <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-home-beacon" />
+                    <span className="text-sm text-home-graphite-soft">
                       {t(`home.kasperskySection.${feature.key}`)}
                     </span>
                   </div>
@@ -442,25 +484,23 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* ============ 9. eSIM — blue gradient, phone mockup + floating QR, diagonal accent ============ */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary/[0.06] via-accent/[0.05] to-background px-4 py-28 sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-16 lg:grid-cols-2">
+      {/* ============ 9. eSIM ============ */}
+      <section className="border-b border-home-line bg-home-paper px-4 py-24 sm:px-6 lg:px-8">
+        <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-14 lg:grid-cols-2">
           <RevealOnScroll direction="left">
-            <SectionHeading
+            <ReadoutHeading
               align="left"
               eyebrow={t('home.esimSection.eyebrow')}
               title={t('home.esimSection.title')}
               subtitle={t('home.esimSection.subtitle')}
               className="mb-8"
             />
-            <StaggerContainer className="flex flex-col gap-4">
+            <StaggerContainer className="flex flex-col gap-3">
               {ESIM_FEATURES.map((feature) => (
                 <StaggerItem key={feature.key}>
                   <div className="flex items-start gap-3">
-                    <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-accent/10 text-accent">
-                      <CheckCircle2 className="size-4" />
-                    </span>
-                    <span className="text-sm text-text-secondary">
+                    <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-home-beacon" />
+                    <span className="text-sm text-home-graphite-soft">
                       {t(`home.esimSection.${feature.key}`)}
                     </span>
                   </div>
@@ -469,133 +509,76 @@ export function HomePage() {
             </StaggerContainer>
           </RevealOnScroll>
 
-          <RevealOnScroll direction="right" delay={0.1} className="relative flex justify-center">
-            <div className="pointer-events-none absolute inset-0 -z-10 flex items-center justify-center">
-              <div className="size-80 -rotate-6 rounded-[3rem] bg-gradient-to-br from-primary/10 to-accent/10" />
-            </div>
-            <div className="relative w-64 rounded-[2.5rem] border-8 border-background bg-surface shadow-2xl shadow-primary/10">
-              <div className="mx-auto h-6 w-24 rounded-b-2xl bg-background" />
-              <div className="flex flex-col gap-3 px-5 py-8">
-                <p className="text-xs font-semibold uppercase tracking-widest text-primary">
-                  eSIM VTC
-                </p>
-                {ESIM_FEATURES.slice(0, 3).map((feature) => (
-                  <div
-                    key={feature.key}
-                    className="flex items-center gap-2 rounded-xl bg-background p-3 shadow-sm"
-                  >
-                    <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-accent/10 text-accent">
-                      <DynamicIcon name={feature.icon} className="size-4" />
-                    </span>
-                    <span className="text-xs font-medium text-text-primary">
-                      {t(`home.esimSection.${feature.key}`)}
-                    </span>
-                  </div>
-                ))}
+          <RevealOnScroll direction="right" delay={0.1}>
+            <div className="border border-home-line bg-home-ink p-4">
+              <div className="flex items-center justify-between border-b border-home-paper/10 pb-3">
+                <span className="font-data text-[11px] uppercase tracking-[0.12em] text-home-paper/50">
+                  roaming · coverage
+                </span>
+                <span className="inline-flex items-center gap-1.5 font-data text-[11px] text-home-wire">
+                  <span className="size-1.5 rounded-full bg-home-wire" />
+                  CONNECTED
+                </span>
               </div>
-            </div>
-            <div
-              className="animate-float absolute -bottom-6 -right-2 flex size-20 items-center justify-center rounded-2xl border border-border bg-background shadow-xl sm:-right-6"
-              style={{ animationDelay: '0.5s' }}
-            >
-              <DynamicIcon name="QrCode" className="size-10 text-text-primary" />
+              <EsimConnectionVisual className="mt-2 aspect-[620/380] w-full" />
             </div>
           </RevealOnScroll>
         </div>
       </section>
 
-      {/* ============ 10. STATS — dark chapter matching Process section, animated counters ============ */}
-      <section className="relative overflow-hidden bg-[#070c18] px-4 py-20 text-white sm:px-6 lg:px-8">
-        <div className="pointer-events-none absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-b from-[#070c18] from-0% via-[#0a1630] via-38% to-[#070c18] to-75%" />
-          <div className="absolute left-1/2 top-20 h-[420px] w-[900px] -translate-x-1/2 bg-[radial-gradient(ellipse_at_center,rgba(37,99,235,0.20)_0%,rgba(34,211,238,0.08)_38%,transparent_72%)] blur-2xl" />
-          <div className="absolute inset-0 bg-grid opacity-[0.05]" />
-        </div>
+      {/* ============ 10. STATS — dark chapter ============ */}
+      <section className="relative overflow-hidden bg-home-ink px-4 py-20 text-home-paper sm:px-6 lg:px-8">
+        <div className="bg-grid-home-dark pointer-events-none absolute inset-0 opacity-50" aria-hidden />
         <StaggerContainer className="relative mx-auto grid max-w-7xl grid-cols-2 gap-8 text-center sm:grid-cols-4">
           <StaggerItem>
-            <div>
-              <AnimatedCounter
-                value={1500}
-                suffix="+"
-                className="text-3xl font-bold text-white sm:text-4xl"
-              />
-              <p className="mt-2 text-sm text-white/80">{t('home.stats.customers')}</p>
-            </div>
+            <AnimatedCounter value={1500} suffix="+" className="font-display block text-3xl font-semibold sm:text-4xl" />
+            <p className="mt-2 font-data text-xs uppercase tracking-[0.1em] text-home-paper/50">{t('home.stats.customers')}</p>
           </StaggerItem>
           <StaggerItem>
-            <div>
-              <AnimatedCounter
-                value={35}
-                suffix="+"
-                className="text-3xl font-bold text-white sm:text-4xl"
-              />
-              <p className="mt-2 text-sm text-white/80">{t('home.stats.countries')}</p>
-            </div>
+            <AnimatedCounter value={35} suffix="+" className="font-display block text-3xl font-semibold sm:text-4xl" />
+            <p className="mt-2 font-data text-xs uppercase tracking-[0.1em] text-home-paper/50">{t('home.stats.countries')}</p>
           </StaggerItem>
           <StaggerItem>
-            <div>
-              <AnimatedCounter
-                value={99}
-                suffix=".9%"
-                className="text-3xl font-bold text-white sm:text-4xl"
-              />
-              <p className="mt-2 text-sm text-white/80">{t('home.stats.uptime')}</p>
-            </div>
+            <AnimatedCounter value={99} suffix=".9%" className="font-display block text-3xl font-semibold sm:text-4xl" />
+            <p className="mt-2 font-data text-xs uppercase tracking-[0.1em] text-home-paper/50">{t('home.stats.uptime')}</p>
           </StaggerItem>
           <StaggerItem>
-            <div>
-              <AnimatedCounter
-                value={24}
-                suffix="/7"
-                className="text-3xl font-bold text-white sm:text-4xl"
-              />
-              <p className="mt-2 text-sm text-white/80">{t('home.stats.supportHours')}</p>
-            </div>
+            <AnimatedCounter value={24} suffix="/7" className="font-display block text-3xl font-semibold sm:text-4xl" />
+            <p className="mt-2 font-data text-xs uppercase tracking-[0.1em] text-home-paper/50">{t('home.stats.supportHours')}</p>
           </StaggerItem>
         </StaggerContainer>
       </section>
 
-      {/* ============ 11. TESTIMONIALS — equal-height glass cards over blurred backdrop ============ */}
+      {/* ============ 11. TESTIMONIALS ============ */}
       {testimonials.length > 0 && (
-        <section className="relative overflow-hidden bg-surface px-4 py-28 sm:px-6 lg:px-8">
-          <div className="pointer-events-none absolute -left-20 top-10 size-72 rounded-full bg-primary/10 blur-3xl" />
-          <div className="pointer-events-none absolute -right-20 bottom-10 size-72 rounded-full bg-accent/10 blur-3xl" />
-          <div className="relative mx-auto max-w-7xl">
+        <section className="border-b border-home-line bg-home-paper px-4 py-24 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-7xl">
             <RevealOnScroll>
-              <SectionHeading
-                eyebrow={t('home.testimonials.eyebrow')}
-                title={t('home.testimonials.title')}
-                className="mb-16"
-              />
+              <ReadoutHeading eyebrow={t('home.testimonials.eyebrow')} title={t('home.testimonials.title')} className="mb-14" />
             </RevealOnScroll>
-            <StaggerContainer className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <StaggerContainer className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {testimonials.slice(0, 6).map((testimonial) => (
                 <StaggerItem key={testimonial.id} className="h-full">
-                  <div className="flex h-full flex-col gap-4 rounded-2xl border border-white/60 bg-white/70 p-6 shadow-lg shadow-primary/5 backdrop-blur-md">
+                  <div className="flex h-full flex-col gap-4 border border-home-line bg-white/40 p-6">
                     <div className="flex items-center gap-1">
                       {Array.from({ length: 5 }).map((_, starIdx) => (
                         <Star
                           key={starIdx}
-                          className={`size-3.5 ${starIdx < testimonial.rating ? 'fill-amber-400 text-amber-400' : 'text-border'}`}
+                          className={cn(
+                            'size-3.5',
+                            starIdx < testimonial.rating ? 'fill-home-beacon text-home-beacon' : 'text-home-line',
+                          )}
                         />
                       ))}
                     </div>
-                    <p className="line-clamp-4 flex-1 text-sm leading-relaxed text-text-secondary">
+                    <p className="line-clamp-4 flex-1 text-sm leading-relaxed text-home-graphite-soft">
                       &ldquo;{localize(testimonial.content, locale)}&rdquo;
                     </p>
-                    <div className="flex items-center gap-3">
-                      <img
-                        src={testimonial.avatar}
-                        alt={testimonial.name}
-                        className="size-10 rounded-full bg-surface"
-                      />
+                    <div className="flex items-center gap-3 border-t border-home-line pt-4">
+                      <img src={testimonial.avatar} alt={testimonial.name} className="size-9 rounded-full bg-home-paper" />
                       <div>
-                        <p className="text-sm font-semibold text-text-primary">
-                          {testimonial.name}
-                        </p>
-                        <p className="text-xs text-text-secondary">
-                          {localize(testimonial.role, locale)}
-                        </p>
+                        <p className="text-sm font-semibold text-home-graphite">{testimonial.name}</p>
+                        <p className="text-xs text-home-graphite-soft">{localize(testimonial.role, locale)}</p>
                       </div>
                     </div>
                   </div>
@@ -606,16 +589,12 @@ export function HomePage() {
         </section>
       )}
 
-      {/* ============ 12. FAQ — centered, white, generous whitespace ============ */}
+      {/* ============ 12. FAQ ============ */}
       {faqs.length > 0 && (
-        <section className="bg-background px-4 py-32 sm:px-6 lg:px-8">
+        <section className="border-b border-home-line bg-home-paper px-4 py-24 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-3xl">
             <RevealOnScroll>
-              <SectionHeading
-                eyebrow={t('home.faq.eyebrow')}
-                title={t('home.faq.title')}
-                className="mb-14"
-              />
+              <ReadoutHeading eyebrow={t('home.faq.eyebrow')} title={t('home.faq.title')} className="mb-12" />
             </RevealOnScroll>
             <RevealOnScroll delay={0.1}>
               <Accordion
@@ -630,23 +609,27 @@ export function HomePage() {
         </section>
       )}
 
-      {/* ============ 13. FINAL CTA — rounded card, glow button ============ */}
-      <section className="px-4 pb-16 sm:px-6 lg:px-8">
-        <div className="relative mx-auto max-w-6xl overflow-hidden rounded-3xl border border-border bg-surface px-4 py-24 sm:px-6 lg:px-8">
-          <div className="pointer-events-none absolute -left-20 top-10 size-72 rounded-full bg-primary/10 blur-3xl" />
-          <div className="pointer-events-none absolute -right-20 bottom-10 size-72 rounded-full bg-accent/10 blur-3xl" />
-          <RevealOnScroll direction="scale" className="relative mx-auto max-w-4xl">
-            <ContactCTA
-              bare
-              glow
-              shine
-              tone="light"
-              title={t('home.cta.title')}
-              primaryLabel={t('home.cta.primary')}
-              secondaryLabel={t('home.cta.secondary')}
-            />
-          </RevealOnScroll>
-        </div>
+      {/* ============ 13. FINAL CTA ============ */}
+      <section className="relative overflow-hidden bg-home-ink px-4 py-24 text-center text-home-paper sm:px-6 lg:px-8">
+        <div className="bg-grid-home-dark pointer-events-none absolute inset-0 opacity-40" aria-hidden />
+        <RevealOnScroll className="relative mx-auto max-w-2xl">
+          <h2 className="font-display text-3xl font-semibold tracking-tight sm:text-4xl">{t('home.cta.title')}</h2>
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <Link
+              to={ROUTES.PRODUCTS}
+              className="group inline-flex items-center gap-2 rounded-md bg-home-beacon px-6 py-3 text-sm font-semibold text-white shadow-[0_8px_24px_-8px_rgba(0,102,179,0.55)] transition-colors hover:bg-home-beacon/90 focus-ring"
+            >
+              {t('home.cta.primary')}
+              <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
+            </Link>
+            <Link
+              to={ROUTES.CONTACT}
+              className="inline-flex items-center gap-2 rounded-md border border-home-paper/20 px-6 py-3 text-sm font-semibold text-home-paper transition-colors hover:border-home-paper/40 hover:bg-home-paper/5 focus-ring"
+            >
+              {t('home.cta.secondary')}
+            </Link>
+          </div>
+        </RevealOnScroll>
       </section>
     </div>
   )

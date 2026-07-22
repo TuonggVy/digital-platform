@@ -3,15 +3,29 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --primary: #2563eb;
-  --primary-dark: #1d4ed8;
+  /* Brand blue, matched to the VTC Telecom logo (#0066B3 / #00AEEF). */
+  --primary: #0066b3;
+  --primary-dark: #00517d;
   --secondary: #6366f1;
-  --accent: #06b6d4;
+  --accent: #00aeef;
   --background: #ffffff;
   --surface: #f5f7fb;
   --text-primary: #0b1220;
   --text-secondary: #5b6472;
   --border: #e4e8f0;
+
+  /* Homepage-only chapter palette — additive, does not touch the tokens
+     above so every other page keeps its current theme. Values are the same
+     brand-blue system, re-expressed for the homepage's navy dark chapters
+     and pale-blue light chapters. */
+  --home-ink: #051b33;
+  --home-ink-raised: #0a2947;
+  --home-paper: #f5f8fb;
+  --home-graphite: #0b1f33;
+  --home-graphite-soft: #54697d;
+  --home-wire: #00aeef;
+  --home-beacon: #0066b3;
+  --home-line: #dce6f0;
 }
 
 .dark {
@@ -37,6 +51,19 @@
   --color-text-primary: var(--text-primary);
   --color-text-secondary: var(--text-secondary);
   --color-border: var(--border);
+
+  /* Homepage-only ("Coverage Map" signature) */
+  --font-display: 'Space Grotesk', var(--font-sans);
+  --font-plex: 'IBM Plex Sans', var(--font-sans);
+  --font-data: 'IBM Plex Mono', ui-monospace, monospace;
+  --color-home-ink: var(--home-ink);
+  --color-home-ink-raised: var(--home-ink-raised);
+  --color-home-paper: var(--home-paper);
+  --color-home-graphite: var(--home-graphite);
+  --color-home-graphite-soft: var(--home-graphite-soft);
+  --color-home-wire: var(--home-wire);
+  --color-home-beacon: var(--home-beacon);
+  --color-home-line: var(--home-line);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -102,6 +129,21 @@ button:disabled,
 .bg-dot {
   background-image: radial-gradient(circle, var(--border) 1.5px, transparent 1.5px);
   background-size: 22px 22px;
+}
+
+/* Homepage "Coverage Map" texture — a plot grid, not a decorative blob. */
+.bg-grid-home-light {
+  background-image:
+    linear-gradient(to right, var(--home-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--home-line) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+.bg-grid-home-dark {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 56px 56px;
 }
 
 @keyframes float {

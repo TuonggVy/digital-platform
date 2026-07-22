@@ -3,110 +3,99 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion'
 import { ArrowRight, ChevronDown } from 'lucide-react'
-import { Button } from '@/components/common/Button'
 import { RevealOnScroll } from '@/components/animation/RevealOnScroll'
 import { AnimatedCounter } from '@/components/animation/AnimatedCounter'
-import { DynamicIcon } from '@/components/common/DynamicIcon'
+import { CoverageMap } from './CoverageMap'
 import { HeroBackground } from './HeroBackground'
-import { HeroDashboard } from './HeroDashboard'
 import { ROUTES } from '@/constants/routes'
 
 const TRUST_STATS = [
-  { value: 1500, suffix: '+', labelKey: 'home.stats.customers', icon: 'Users' },
-  { value: 35, suffix: '+', labelKey: 'home.stats.countries', icon: 'Globe' },
-  { value: 99, suffix: '.9%', labelKey: 'home.stats.uptime', icon: 'Gauge' },
-  { value: 24, suffix: '/7', labelKey: 'home.stats.supportHours', icon: 'Headphones' },
+  { value: 1500, suffix: '+', labelKey: 'home.stats.customers' },
+  { value: 35, suffix: '+', labelKey: 'home.stats.countries' },
+  { value: 99, suffix: '.9%', labelKey: 'home.stats.uptime' },
+  { value: 24, suffix: '/7', labelKey: 'home.stats.supportHours' },
 ] as const
 
-function TrustStat({ value, suffix, labelKey, icon, t }: (typeof TRUST_STATS)[number] & { t: (k: string) => string }) {
-  return (
-    <div className="group flex flex-col items-center gap-1.5 rounded-2xl border border-border/60 bg-surface/50 px-3 py-4 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-primary/25 hover:bg-surface/70 hover:shadow-lg hover:shadow-primary/10">
-      <span className="flex size-8 items-center justify-center rounded-xl bg-primary/10 text-primary transition-transform duration-300 group-hover:scale-110">
-        <DynamicIcon name={icon} className="size-4" />
-      </span>
-      <AnimatedCounter
-        value={value}
-        suffix={suffix}
-        className="text-lg font-bold text-text-primary sm:text-xl"
-      />
-      <p className="text-center text-xs text-text-secondary">{t(labelKey)}</p>
-    </div>
-  )
-}
-
-/**
- * Premium SaaS Hero — layered animated background and a large interactive
- * dashboard mockup that emerges on scroll. Copy (badge, heading, subtitle,
- * CTAs, stats) is unchanged from the original Hero.
- */
 export function Hero() {
   const { t } = useTranslation()
   const prefersReducedMotion = useReducedMotion()
   const reduced = prefersReducedMotion ?? false
 
   const sectionRef = useRef<HTMLElement>(null)
-
   const { scrollYProgress } = useScroll({ target: sectionRef, offset: ['start start', 'end start'] })
-  const contentY = useTransform(scrollYProgress, [0, 1], [0, -70])
-  const contentOpacity = useTransform(scrollYProgress, [0, 0.8, 1], [1, 1, 0.35])
+  const contentY = useTransform(scrollYProgress, [0, 1], [0, -60])
+  const contentOpacity = useTransform(scrollYProgress, [0, 0.85, 1], [1, 1, 0.4])
 
   return (
-    <section ref={sectionRef} className="relative overflow-hidden bg-background">
+    <section ref={sectionRef} className="relative overflow-hidden bg-home-ink font-plex text-home-paper">
       <HeroBackground />
 
-      {/* Intro zone — fills most of the first viewport so the dashboard below
-          the fold reveals itself as the user scrolls, instead of appearing
-          instantly on load. */}
-      <div className="relative z-10 flex min-h-[88vh] flex-col items-center justify-center px-4 pb-12 pt-28 sm:px-6 lg:min-h-screen lg:px-8 lg:pt-32">
-        <motion.div
-          style={reduced ? undefined : { y: contentY, opacity: contentOpacity }}
-          className="mx-auto max-w-[900px] text-center"
-        >
+      <div className="relative mx-auto grid max-w-7xl grid-cols-1 items-center gap-4 px-4 pb-16 pt-28 sm:px-6 lg:grid-cols-[minmax(0,480px)_1fr] lg:gap-8 lg:px-8 lg:pb-24 lg:pt-36">
+        <motion.div style={reduced ? undefined : { y: contentY, opacity: contentOpacity }}>
           <RevealOnScroll direction="scale">
-            <span className="inline-flex items-center justify-center gap-1.5 rounded-full border border-primary/15 bg-primary/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wide text-primary">
-              <span className="size-1.5 rounded-full bg-primary" />
-              VTC TELECOM
+            <span className="inline-flex items-center gap-2 font-data text-xs uppercase tracking-[0.16em] text-home-wire">
+              <span className="relative flex size-1.5">
+                <span className="absolute inset-0 rounded-full bg-home-wire" />
+                {!reduced && (
+                  <motion.span
+                    className="absolute inset-0 rounded-full bg-home-wire"
+                    animate={{ scale: [1, 2.4], opacity: [0.7, 0] }}
+                    transition={{ duration: 1.8, repeat: Infinity, ease: 'easeOut' }}
+                  />
+                )}
+              </span>
+              VTC TELECOM // MẠNG LƯỚI SỐ
             </span>
           </RevealOnScroll>
-          <RevealOnScroll delay={0.1}>
-            <h1 className="mt-5 text-4xl font-bold leading-[1.1] tracking-tight text-text-primary sm:text-5xl lg:text-6xl">
+
+          <RevealOnScroll delay={0.08}>
+            <h1 className="mt-6 font-display text-4xl font-semibold leading-[1.08] tracking-tight text-home-paper sm:text-5xl lg:text-[3.4rem]">
               {t('home.hero.title')}
             </h1>
-            <p className="mx-auto mt-5 max-w-xl text-lg text-text-secondary">
+            <p className="mt-5 max-w-md text-base leading-7 text-home-paper/65">
               {t('home.hero.subtitle')}
             </p>
           </RevealOnScroll>
-          <RevealOnScroll delay={0.2}>
-            <div className="mt-8 flex flex-wrap justify-center gap-3">
-              <Link to={ROUTES.PRODUCTS}>
-                <Button
-                  size="lg"
-                  shine
-                  className="shadow-lg shadow-primary/25"
-                  rightIcon={<ArrowRight className="size-4" />}
-                >
+
+          <RevealOnScroll delay={0.16}>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link
+                to={ROUTES.PRODUCTS}
+                className="group relative isolate inline-flex items-center gap-2 overflow-hidden rounded-md bg-home-beacon px-6 py-3 text-sm font-semibold text-white shadow-[0_8px_24px_-8px_rgba(0,102,179,0.55)] transition-colors hover:bg-home-beacon/90 focus-ring"
+              >
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-y-0 -left-20 z-0 w-16 -skew-x-[18deg] bg-gradient-to-r from-transparent via-white/50 to-transparent blur-[1px] transition-[left] duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:left-full motion-reduce:hidden"
+                />
+                <span className="relative z-10 inline-flex items-center gap-2">
                   {t('home.hero.ctaPrimary')}
-                </Button>
+                  <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
+                </span>
               </Link>
-              <Link to={ROUTES.CONTACT}>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="!border-border/70 !bg-surface/60 backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:!bg-surface/85 hover:shadow-md"
-                >
-                  {t('home.hero.ctaSecondary')}
-                </Button>
+              <Link
+                to={ROUTES.CONTACT}
+                className="inline-flex items-center gap-2 rounded-md border border-home-paper/20 px-6 py-3 text-sm font-semibold text-home-paper transition-colors hover:border-home-paper/40 hover:bg-home-paper/5 focus-ring"
+              >
+                {t('home.hero.ctaSecondary')}
               </Link>
             </div>
           </RevealOnScroll>
-          <RevealOnScroll delay={0.3}>
-            <div className="mx-auto mt-14 max-w-2xl">
-              <p className="text-xs font-semibold uppercase tracking-widest text-text-secondary/70">
+
+          <RevealOnScroll delay={0.26}>
+            <div className="mt-14 border-t border-home-paper/10 pt-6">
+              <p className="font-data text-[11px] uppercase tracking-[0.14em] text-home-paper/40">
                 {t('home.hero.trustedBy')}
               </p>
-              <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
+              <div className="mt-4 grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-4">
                 {TRUST_STATS.map((stat) => (
-                  <TrustStat key={stat.labelKey} {...stat} t={t} />
+                  <div key={stat.labelKey}>
+                    <AnimatedCounter
+                      value={stat.value}
+                      suffix={stat.suffix}
+                      className="font-data text-xl font-medium text-home-paper"
+                    />
+                    <p className="mt-1 text-xs text-home-paper/50">{t(stat.labelKey)}</p>
+                  </div>
                 ))}
               </div>
             </div>
@@ -114,21 +103,31 @@ export function Hero() {
         </motion.div>
 
         <motion.div
-          className="mt-10 flex flex-col items-center gap-1.5 text-text-secondary/60 lg:absolute lg:bottom-8"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: reduced ? 0.6 : [0.3, 0.8, 0.3] }}
-          transition={{ duration: 2.2, repeat: reduced ? 0 : Infinity, ease: 'easeInOut' }}
+          className="relative -mx-4 mt-4 aspect-[620/470] w-[calc(100%+2rem)] opacity-70 sm:-mx-6 sm:w-[calc(100%+3rem)] lg:mx-0 lg:mt-0 lg:w-full lg:opacity-80"
+          initial={reduced ? undefined : { opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.3 }}
         >
-          <span className="text-[11px] font-medium uppercase tracking-widest">
-            {t('home.hero.scrollHint')}
-          </span>
-          <ChevronDown className="size-4" />
+          <div
+            className="pointer-events-none absolute inset-0 lg:[mask-image:linear-gradient(to_right,transparent,black_18%)]"
+            aria-hidden
+          >
+            <CoverageMap variant="hero" tone="dark" className="h-full w-full" />
+          </div>
         </motion.div>
       </div>
 
-      <div className="relative px-4 pb-24 sm:px-6 lg:px-8 lg:pb-32">
-        <HeroDashboard />
-      </div>
+      <motion.div
+        className="relative mx-auto hidden max-w-7xl items-center gap-1.5 px-4 pb-8 text-home-paper/40 sm:px-6 lg:flex lg:px-8"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: reduced ? 0.5 : [0.25, 0.6, 0.25] }}
+        transition={{ duration: 2.4, repeat: reduced ? 0 : Infinity, ease: 'easeInOut' }}
+      >
+        <ChevronDown className="size-3.5" />
+        <span className="font-data text-[11px] uppercase tracking-[0.14em]">
+          {t('home.hero.scrollHint')}
+        </span>
+      </motion.div>
     </section>
   )
 }

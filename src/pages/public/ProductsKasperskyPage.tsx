@@ -5,6 +5,7 @@ import type { Product } from '@/types'
 import { Seo } from '@/components/common/Seo'
 import { SectionHeading } from '@/components/common/SectionHeading'
 import { ProductGrid } from '@/components/product/ProductGrid'
+import { ProductCategoryHero } from '@/components/product/ProductCategoryHero'
 import { ComparisonTable } from '@/components/common/ComparisonTable'
 import { Select } from '@/components/common/Select'
 import { RevealOnScroll } from '@/components/animation/RevealOnScroll'
@@ -49,20 +50,13 @@ export function ProductsKasperskyPage() {
     <div>
       <Seo title={t('kasperskyPage.heroTitle')} description={t('kasperskyPage.heroSubtitle')} />
 
-      <section className="relative overflow-hidden bg-grid px-4 py-20 sm:px-6 lg:px-8">
-        <div className="absolute inset-0 -z-10 bg-gradient-to-b from-secondary/5 to-transparent" />
-        <div className="mx-auto max-w-3xl text-center">
-          <RevealOnScroll>
-            <span className="mb-4 inline-flex items-center justify-center rounded-full bg-secondary/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wide text-secondary">
-              Kaspersky
-            </span>
-            <h1 className="text-4xl font-semibold text-text-primary sm:text-5xl">
-              {t('kasperskyPage.heroTitle')}
-            </h1>
-            <p className="mt-4 text-lg text-text-secondary">{t('kasperskyPage.heroSubtitle')}</p>
-          </RevealOnScroll>
-        </div>
-      </section>
+      <ProductCategoryHero
+        eyebrow="KASPERSKY"
+        title={t('kasperskyPage.heroTitle')}
+        subtitle={t('kasperskyPage.heroSubtitle')}
+        visual="security"
+        breadcrumbItems={[{ label: t('nav.megamenu.kaspersky') }]}
+      />
 
       <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="mb-8 flex justify-center">

@@ -7,6 +7,7 @@
     "addToCart": "Add to cart",
     "buyNow": "Buy now",
     "contactSales": "Contact sales",
+    "contactForPricing": "Contact us for pricing",
     "learnMore": "Learn more",
     "seeAll": "See all",
     "back": "Back",
@@ -370,6 +371,7 @@
     "ram": "RAM",
     "ssd": "SSD storage",
     "os": "Operating system",
+    "bandwidth": "Bandwidth",
     "billingCycle": "Billing cycle",
     "devices": "Number of devices",
     "duration": "Duration",
@@ -386,8 +388,9 @@
     "addedToCart": "Added to cart"
   },
   "pricingPage": {
+    "eyebrow": "Transparent · Easy to compare",
     "title": "Service pricing",
-    "subtitle": "Choose the plan that fits your needs.",
+    "subtitle": "Compare Cloud, Kaspersky and eSIM plans to find the right fit for your needs and budget.",
     "monthly": "Monthly",
     "yearly": "Yearly",
     "mostPopular": "Most popular",
@@ -395,7 +398,21 @@
       "cloud": "Cloud",
       "kaspersky": "Kaspersky",
       "esim": "eSIM"
-    }
+    },
+    "allCloudTitle": "All Cloud services",
+    "allKasperskyTitle": "Kaspersky plans",
+    "allEsimTitle": "eSIM plans",
+    "cloudServerTiersTitle": "Cloud Server configuration tiers",
+    "billingToggleScope": "Applies to {{name}}",
+    "compareKasperskyTitle": "Compare Kaspersky plans",
+    "compareEsimAsiaTitle": "Compare Asia eSIM plans",
+    "notesTitle": "Pricing notes",
+    "notes": {
+      "cloud": "Cloud Server pricing follows the configuration you choose; other Cloud services show the price of their lowest-priced package.",
+      "kaspersky": "The price shown is for the package with the lowest device count and license duration currently available; please check supported device count before purchasing.",
+      "esim": "The price shown for each eSIM plan is a fixed one-time price, not a recurring charge."
+    },
+    "faqTitle": "Billing questions"
   },
   "solutionsPage": {
     "title": "Solutions by need",
@@ -427,12 +444,18 @@
     "exploreCta": "Explore solution"
   },
   "aboutPage": {
+    "eyebrow": "About VTC Telecom",
+    "headerTitle": "One digital platform, three connected services",
+    "headerIntro": "VTC TELECOM brings Cloud infrastructure, Kaspersky security and eSIM connectivity together on one digital platform for individuals and businesses across Vietnam.",
     "storyTitle": "Our story",
     "storyContent": "VTC TELECOM was founded to bring high-quality, accessible digital services to individuals and businesses across Vietnam.",
     "missionTitle": "Mission",
     "missionContent": "Simplify access to digital technology through reliable cloud, security, and connectivity solutions.",
     "visionTitle": "Vision",
     "visionContent": "To become the most trusted digital services platform in Southeast Asia.",
+    "ecosystemEyebrow": "Service ecosystem",
+    "ecosystemTitle": "Three services, one connected platform",
+    "ecosystemSubtitle": "Cloud, eSIM and Kaspersky run on one shared platform — infrastructure to build on, connectivity to run on, and security to stay at ease.",
     "valuesTitle": "Core values",
     "value1": {
       "title": "Transparency",
@@ -450,10 +473,7 @@
       "title": "Dedication",
       "desc": "Always accompanying and supporting our customers."
     },
-    "milestonesTitle": "Milestones",
-    "teamTitle": "Our team",
-    "ctaTitle": "Ready to partner with VTC TELECOM?",
-    "disclaimer": "* Content on this page is illustrative demo data, not official legal information."
+    "ctaTitle": "Ready to partner with VTC TELECOM?"
   },
   "contactPage": {
     "title": "Get in touch",
@@ -517,11 +537,30 @@
     "findProducts": "Find products"
   },
   "auth": {
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "backToLogin": "Back to log in",
+    "trust": {
+      "secure": {
+        "title": "Secure & protected",
+        "description": "Your information is encrypted and protected."
+      },
+      "reliable": {
+        "title": "Reliable service",
+        "description": "A stable platform for Cloud, eSIM and Kaspersky."
+      },
+      "support": {
+        "title": "24/7 support",
+        "description": "Our support team is ready whenever you need it."
+      }
+    },
     "login": {
       "title": "Log in",
       "subtitle": "Welcome back to VTC TELECOM",
       "email": "Email",
+      "emailPlaceholder": "Enter your email",
       "password": "Password",
+      "passwordPlaceholder": "Enter your password",
       "remember": "Remember me",
       "forgot": "Forgot password?",
       "submit": "Log in",
@@ -534,19 +573,25 @@
       "invalidCredentials": "Incorrect email or password"
     },
     "register": {
-      "title": "Create an account",
-      "subtitle": "Sign up to start using our services",
+      "title": "Create account",
+      "subtitle": "Join VTC TELECOM",
       "fullName": "Full name",
+      "fullNamePlaceholder": "Enter your full name",
       "email": "Email",
+      "emailPlaceholder": "Enter your email",
       "phone": "Phone number",
+      "phonePlaceholder": "Enter your phone number",
       "password": "Password",
+      "passwordPlaceholder": "Create a password",
       "confirmPassword": "Confirm password",
+      "confirmPasswordPlaceholder": "Re-enter your password",
       "agreeTerms": "I agree to the terms of service",
       "agreeTermsPrefix": "I agree to the",
       "agreeTermsLink": "terms of service",
-      "submit": "Register",
+      "agreeTermsAnd": "and",
+      "submit": "Create account",
       "haveAccount": "Already have an account?",
-      "loginNow": "Log in",
+      "loginNow": "Log in now",
       "success": "Registered successfully!",
       "emailExists": "This email is already in use"
     },

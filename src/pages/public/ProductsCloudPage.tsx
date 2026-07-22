@@ -7,6 +7,7 @@ import type { Faq, Product } from '@/types'
 import { Seo } from '@/components/common/Seo'
 import { SectionHeading } from '@/components/common/SectionHeading'
 import { ProductGrid } from '@/components/product/ProductGrid'
+import { ProductCategoryHero } from '@/components/product/ProductCategoryHero'
 import { ComparisonTable } from '@/components/common/ComparisonTable'
 import { Accordion } from '@/components/common/Accordion'
 import { RevealOnScroll } from '@/components/animation/RevealOnScroll'
@@ -76,20 +77,13 @@ export function ProductsCloudPage() {
     <div>
       <Seo title={t('cloudPage.heroTitle')} description={t('cloudPage.heroSubtitle')} />
 
-      <section className="relative overflow-hidden bg-grid px-4 py-20 sm:px-6 lg:px-8">
-        <div className="absolute inset-0 -z-10 bg-gradient-to-b from-primary/5 to-transparent" />
-        <div className="mx-auto max-w-3xl text-center">
-          <RevealOnScroll>
-            <span className="mb-4 inline-flex items-center justify-center rounded-full bg-primary/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wide text-primary">
-              Cloud
-            </span>
-            <h1 className="text-4xl font-semibold text-text-primary sm:text-5xl">
-              {t('cloudPage.heroTitle')}
-            </h1>
-            <p className="mt-4 text-lg text-text-secondary">{t('cloudPage.heroSubtitle')}</p>
-          </RevealOnScroll>
-        </div>
-      </section>
+      <ProductCategoryHero
+        eyebrow="CLOUD"
+        title={t('cloudPage.heroTitle')}
+        subtitle={t('cloudPage.heroSubtitle')}
+        visual="cloud"
+        breadcrumbItems={[{ label: t('nav.megamenu.cloud') }]}
+      />
 
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <ProductGrid products={products} isLoading={isLoading} />
@@ -117,11 +111,11 @@ export function ProductsCloudPage() {
         <StaggerContainer className="grid grid-cols-1 gap-6 sm:grid-cols-3">
           {USE_CASES.map((uc) => (
             <StaggerItem key={uc.key}>
-              <div className="rounded-2xl border border-border p-6 text-center">
-                <uc.icon className="mx-auto size-8 text-primary" />
-                <p className="mt-3 text-sm font-medium text-text-primary">
-                  {t(`cloudPage.${uc.key}`)}
-                </p>
+              <div className="flex h-full flex-col items-center gap-3 rounded-xl border border-border p-6 text-center">
+                <span className="flex size-11 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <uc.icon className="size-5" />
+                </span>
+                <p className="text-sm font-medium text-text-primary">{t(`cloudPage.${uc.key}`)}</p>
               </div>
             </StaggerItem>
           ))}
@@ -136,9 +130,11 @@ export function ProductsCloudPage() {
           <StaggerContainer className="grid grid-cols-1 gap-6 sm:grid-cols-3">
             {WHY_CLOUD.map((item) => (
               <StaggerItem key={item.titleEn}>
-                <div className="rounded-2xl bg-background p-6 text-center shadow-sm">
-                  <item.icon className="mx-auto size-8 text-primary" />
-                  <p className="mt-3 text-sm font-medium text-text-primary">
+                <div className="flex h-full flex-col items-center gap-3 rounded-xl border border-border/70 bg-background p-6 text-center">
+                  <span className="flex size-11 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <item.icon className="size-5" />
+                  </span>
+                  <p className="text-sm font-medium text-text-primary">
                     {locale === 'vi' ? item.titleVi : item.titleEn}
                   </p>
                 </div>
