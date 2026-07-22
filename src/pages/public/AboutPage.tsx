@@ -1,24 +1,13 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { motion, useReducedMotion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
 import { Seo } from '@/components/common/Seo'
 import { Breadcrumb } from '@/components/common/Breadcrumb'
 import { SectionHeading } from '@/components/common/SectionHeading'
-import { ContactCTA } from '@/components/common/ContactCTA'
 import { DynamicIcon } from '@/components/common/DynamicIcon'
 import { RevealOnScroll } from '@/components/animation/RevealOnScroll'
 import { StaggerContainer, StaggerItem } from '@/components/animation/StaggerContainer'
 import { ROUTES } from '@/constants/routes'
-
-// Shared exit point: the header's signal curve lands at x=1120 (viewBox width
-// 1440) at its bottom edge, and the "who we are" section's connector picks up
-// from that same x at its top edge — two independent SVGs reading as one
-// continuous line across the section boundary, the same technique used for
-// the Homepage Hero → "Trusted by" seam.
-const HEADER_SIGNAL_EXIT_X = 1120
-const HEADER_SIGNAL_PATH = `M1440,0 C1320,90 1200,140 1160,220 C1130,280 ${HEADER_SIGNAL_EXIT_X},340 ${HEADER_SIGNAL_EXIT_X},400`
-const CONNECTOR_PATH = `M${HEADER_SIGNAL_EXIT_X},0 C${HEADER_SIGNAL_EXIT_X},50 1220,64 1300,64 L1440,64`
 
 const PRINCIPLES = [
   { key: 'value1', icon: 'Eye' },
@@ -35,8 +24,6 @@ const ECOSYSTEM = [
 
 export function AboutPage() {
   const { t } = useTranslation()
-  const prefersReducedMotion = useReducedMotion()
-  const reduced = prefersReducedMotion ?? false
 
   return (
     <div>

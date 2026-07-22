@@ -48,6 +48,7 @@ import { AdminProductFormPage } from '@/pages/admin/AdminProductFormPage'
 import { AdminOrdersPage } from '@/pages/admin/AdminOrdersPage'
 import { AdminOrderDetailPage } from '@/pages/admin/AdminOrderDetailPage'
 import { AdminCustomersPage } from '@/pages/admin/AdminCustomersPage'
+import { AdminCustomerDetailPage } from '@/pages/admin/AdminCustomerDetailPage'
 import { AdminServicesPage } from '@/pages/admin/AdminServicesPage'
 import { AdminLicensesPage } from '@/pages/admin/AdminLicensesPage'
 import { AdminEsimsPage } from '@/pages/admin/AdminEsimsPage'
@@ -115,6 +116,7 @@ export function AppRoutes() {
           <Route path="/admin/orders" element={<AdminOrdersPage />} />
           <Route path="/admin/orders/:orderId" element={<AdminOrderDetailPage />} />
           <Route path="/admin/customers" element={<AdminCustomersPage />} />
+          <Route path="/admin/customers/:customerId" element={<AdminCustomerDetailPage />} />
           <Route path="/admin/services" element={<AdminServicesPage />} />
           <Route path="/admin/licenses" element={<AdminLicensesPage />} />
           <Route path="/admin/esims" element={<AdminEsimsPage />} />

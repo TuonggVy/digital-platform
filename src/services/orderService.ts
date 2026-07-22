@@ -72,13 +72,6 @@ export const orderService = {
     return repo.getAll().find((o) => o.orderCode === orderCode) ?? null
   },
 
-  async getAllOrders(): Promise<Order[]> {
-    await delay()
-    return repo
-      .getAll()
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-  },
-
   async updateOrderStatus(orderId: string, status: OrderStatus): Promise<Order> {
     await delay()
     const all = repo.getAll()

@@ -148,9 +148,4 @@ export const authService = {
       throw error
     }
   },
-
-  async getAllCustomers(): Promise<User[]> {
-    await delay()
-    return repo.getAll().filter((u) => u.role === 'customer')
-  },
 }
