@@ -5,12 +5,13 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Mail, Lock } from 'lucide-react'
+import { Mail, Lock, Eye, EyeOff, ShieldCheck, Boxes, Clock } from 'lucide-react'
 import { Button } from '@/components/common/Button'
 import { Input } from '@/components/common/Input'
 import { Checkbox } from '@/components/common/Checkbox'
 import { Seo } from '@/components/common/Seo'
-import { RevealOnScroll } from '@/components/animation/RevealOnScroll'
+import { AuthLayout, type AuthTrustItem } from '@/components/auth/AuthLayout'
+import { StaggerContainer, StaggerItem } from '@/components/animation/StaggerContainer'
 import { useAuthStore } from '@/stores/authStore'
 import { useUiStore } from '@/stores/uiStore'
 import { ROUTES } from '@/constants/routes'
@@ -38,6 +39,7 @@ export function LoginPage() {
   const login = useAuthStore((s) => s.login)
   const showToast = useUiStore((s) => s.showToast)
   const [remember, setRemember] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
   const [formError, setFormError] = useState<string | null>(null)
 
   const schema = useMemo(() => buildLoginSchema(t), [t])
@@ -50,6 +52,24 @@ export function LoginPage() {
     resolver: zodResolver(schema),
     defaultValues: { email: '', password: '' },
   })
+
+  const trustItems: AuthTrustItem[] = [
+    {
+      icon: ShieldCheck,
+      title: t('auth.trust.secure.title'),
+      description: t('auth.trust.secure.description'),
+    },
+    {
+      icon: Boxes,
+      title: t('auth.trust.reliable.title'),
+      description: t('auth.trust.reliable.description'),
+    },
+    {
+      icon: Clock,
+      title: t('auth.trust.support.title'),
+      description: t('auth.trust.support.description'),
+    },
+  ]
 
   async function onSubmit(data: LoginFormValues) {
     setFormError(null)
@@ -68,69 +88,86 @@ export function LoginPage() {
   }
 
   return (
-    <div className="relative isolate overflow-hidden">
+    <>
       <Seo title={t('auth.login.title')} description={t('auth.login.subtitle')} />
 
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-grid opacity-40 [mask-image:radial-gradient(ellipse_at_center,black,transparent_75%)]" />
-      <div className="pointer-events-none absolute -left-24 top-10 -z-10 size-72 rounded-full bg-primary/20 blur-3xl" />
-      <div className="pointer-events-none absolute -right-24 bottom-10 -z-10 size-72 rounded-full bg-accent/20 blur-3xl" />
-
-      <div className="mx-auto flex min-h-[70vh] max-w-md flex-col justify-center px-4 py-16">
-        <RevealOnScroll>
-          <div className="rounded-2xl border border-border bg-background p-8 shadow-sm">
-            <div className="text-center">
-              <h1 className="text-2xl font-semibold text-text-primary">{t('auth.login.title')}</h1>
-              <p className="mt-1 text-sm text-text-secondary">{t('auth.login.subtitle')}</p>
-            </div>
-
-            <form className="mt-8 flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)} noValidate>
+      <AuthLayout
+        title={t('auth.login.title')}
+        subtitle={t('auth.login.subtitle')}
+        formError={formError}
+        trustItems={trustItems}
+        footer={
+          <>
+            {t('auth.login.noAccount')}{' '}
+            <Link to={ROUTES.REGISTER} className="font-medium text-accent hover:underline">
+              {t('auth.login.registerNow')}
+            </Link>
+          </>
+        }
+      >
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)} noValidate>
+          <StaggerContainer className="flex flex-col gap-4">
+            <StaggerItem>
               <Input
+                tone="dark"
                 label={t('auth.login.email')}
                 type="email"
                 autoComplete="email"
+                placeholder={t('auth.login.emailPlaceholder')}
                 leftIcon={<Mail className="size-4" />}
                 error={errors.email?.message}
                 {...register('email')}
               />
+            </StaggerItem>
+            <StaggerItem>
               <Input
+                tone="dark"
                 label={t('auth.login.password')}
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 autoComplete="current-password"
+                placeholder={t('auth.login.passwordPlaceholder')}
                 leftIcon={<Lock className="size-4" />}
                 error={errors.password?.message}
+                rightIcon={
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((v) => !v)}
+                    aria-label={t(showPassword ? 'auth.hidePassword' : 'auth.showPassword')}
+                    aria-pressed={showPassword}
+                    className="flex items-center rounded-sm text-white/50 hover:text-white/80 focus-ring"
+                  >
+                    {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                  </button>
+                }
                 {...register('password')}
               />
+            </StaggerItem>
 
-              {formError && <p className="text-sm text-red-500">{formError}</p>}
-
+            <StaggerItem>
               <div className="flex items-center justify-between gap-4">
                 <Checkbox
+                  tone="dark"
                   label={t('auth.login.remember')}
                   checked={remember}
                   onChange={(e) => setRemember(e.target.checked)}
                 />
                 <Link
                   to={ROUTES.FORGOT_PASSWORD}
-                  className="whitespace-nowrap text-sm font-medium text-primary hover:underline"
+                  className="whitespace-nowrap text-sm font-medium text-accent hover:underline"
                 >
                   {t('auth.login.forgot')}
                 </Link>
               </div>
+            </StaggerItem>
 
-              <Button type="submit" size="lg" isLoading={isSubmitting} className="mt-2 w-full">
+            <StaggerItem>
+              <Button type="submit" size="lg" isLoading={isSubmitting} shine className="mt-2 w-full">
                 {t('auth.login.submit')}
               </Button>
-            </form>
-
-            <p className="mt-6 text-center text-sm text-text-secondary">
-              {t('auth.login.noAccount')}{' '}
-              <Link to={ROUTES.REGISTER} className="font-medium text-primary hover:underline">
-                {t('auth.login.registerNow')}
-              </Link>
-            </p>
-          </div>
-        </RevealOnScroll>
-      </div>
-    </div>
+            </StaggerItem>
+          </StaggerContainer>
+        </form>
+      </AuthLayout>
+    </>
   )
 }

@@ -81,8 +81,8 @@ export function ProductDetailPage() {
       <div className="mt-8 grid grid-cols-1 gap-10 lg:grid-cols-2 lg:items-center">
         <RevealOnScroll>
           <div className="flex items-center gap-3">
-            <Badge variant="primary">{t(`nav.megamenu.${product.category}`)}</Badge>
-            {product.badge && <Badge variant="accent">{localize(product.badge, locale)}</Badge>}
+            <Badge variant="neutral">{t(`nav.megamenu.${product.category}`)}</Badge>
+            {product.badge && <Badge variant="primary">{localize(product.badge, locale)}</Badge>}
           </div>
           <h1 className="mt-4 text-3xl font-semibold text-text-primary sm:text-4xl">
             {localize(product.name, locale)}
@@ -111,9 +111,10 @@ export function ProductDetailPage() {
         </RevealOnScroll>
 
         <RevealOnScroll delay={0.15} direction="left">
-          <div className="relative flex aspect-square items-center justify-center rounded-3xl border border-border bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10">
-            <div className="absolute size-40 rounded-full bg-primary/20 blur-3xl" />
-            <DynamicIcon name={product.icon} className="relative size-28 text-primary" />
+          <div className="flex aspect-square items-center justify-center rounded-2xl border border-border bg-surface/40">
+            <span className="flex size-28 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <DynamicIcon name={product.icon} className="size-14" />
+            </span>
           </div>
         </RevealOnScroll>
       </div>
@@ -155,7 +156,7 @@ export function ProductDetailPage() {
         <StaggerContainer className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {product.howItWorks.map((step, idx) => (
             <StaggerItem key={idx}>
-              <div className="h-full rounded-2xl border border-border p-5">
+              <div className="h-full rounded-xl border border-border p-5">
                 <span className="flex size-8 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
                   {idx + 1}
                 </span>

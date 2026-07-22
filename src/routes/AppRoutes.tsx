@@ -79,13 +79,17 @@ export function AppRoutes() {
         <Route path="/checkout/payment/:orderId" element={<PaymentPage />} />
 
         <Route element={<GuestRoute />}>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
         </Route>
 
         <Route path="*" element={<NotFoundPage />} />
+      </Route>
+
+      {/* Login/Register use their own full-bleed AuthLayout — no site Header/Footer. */}
+      <Route element={<GuestRoute />}>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
       </Route>
 
       <Route element={<CustomerRoute />}>

@@ -14,9 +14,18 @@ interface TabsProps {
   defaultValue?: string
   onChange?: (value: string) => void
   className?: string
+  /** Overrides the active-pill background — defaults to `bg-primary`. */
+  activePillClassName?: string
 }
 
-export function Tabs({ tabs, value, defaultValue, onChange, className }: TabsProps) {
+export function Tabs({
+  tabs,
+  value,
+  defaultValue,
+  onChange,
+  className,
+  activePillClassName = 'bg-primary',
+}: TabsProps) {
   const [internalValue, setInternalValue] = useState(defaultValue ?? tabs[0]?.value)
   const activeValue = value ?? internalValue
 
@@ -49,7 +58,7 @@ export function Tabs({ tabs, value, defaultValue, onChange, className }: TabsPro
           {activeValue === tab.value && (
             <motion.span
               layoutId="tabs-active-pill"
-              className="absolute inset-0 rounded-lg bg-primary"
+              className={cn('absolute inset-0 rounded-lg', activePillClassName)}
               transition={{ type: 'spring', duration: 0.4, bounce: 0.15 }}
             />
           )}

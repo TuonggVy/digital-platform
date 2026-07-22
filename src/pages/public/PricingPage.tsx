@@ -1,87 +1,189 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { motion, useReducedMotion, type Variants } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import { productService } from '@/services/productService'
-import type { Product } from '@/types'
+import { contentService } from '@/services/contentService'
+import type { Faq, Product } from '@/types'
 import { Seo } from '@/components/common/Seo'
 import { Tabs } from '@/components/common/Tabs'
+import { SectionHeading } from '@/components/common/SectionHeading'
+import { ComparisonTable, type ComparisonRow } from '@/components/common/ComparisonTable'
+import { Accordion } from '@/components/common/Accordion'
 import { PriceCard } from '@/components/common/PriceCard'
+import { ProductGrid } from '@/components/product/ProductGrid'
+import { ProductCategoryHero } from '@/components/product/ProductCategoryHero'
 import { RevealOnScroll } from '@/components/animation/RevealOnScroll'
+import { StaggerContainer, StaggerItem } from '@/components/animation/StaggerContainer'
 import { useLocale } from '@/hooks/useLocale'
 import { localize } from '@/utils/localize'
+import { formatCurrency } from '@/utils/formatters'
+import { resolveDisplayPackage } from '@/utils/productPricing'
 import { ROUTES } from '@/constants/routes'
-import { cn } from '@/utils/cn'
 
-// `StaggerContainer`/`StaggerItem` use `whileInView` + `viewport={{ once: true }}`,
-// which fires once as soon as the (still-empty) grid mounts. Cards only exist once
-// the async product fetch resolves, so by the time they're added the container's
-// one-time trigger has already been consumed and they never animate in — they stay
-// stuck at `opacity: 0` until a full reload replays the race differently. Animating
-// on mount here instead (cards only ever mount once data is ready) sidesteps that
-// entirely, so pricing cards are always visible regardless of navigation timing.
-const gridVariants: Variants = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.08 } },
+type Category = 'cloud' | 'kaspersky' | 'esim'
+type Billing = 'monthly' | 'yearly'
+
+function suffixFor(cycle: string, applyYearlyBilling: boolean, t: (key: string) => string) {
+  if (applyYearlyBilling && cycle === 'monthly') return t('common.perYear')
+  if (cycle === 'monthly') return t('common.perMonth')
+  if (cycle === 'yearly') return t('common.perYear')
+  return ` (${t('common.oneTime')})`
 }
 
-const cardVariants: Variants = {
-  hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
-}
-
-const reducedCardVariants: Variants = {
-  hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { duration: 0.35 } },
+function priceFor(price: number, cycle: string, applyYearlyBilling: boolean) {
+  if (applyYearlyBilling && cycle === 'monthly') return price * 10
+  return price
 }
 
 export function PricingPage() {
   const { t } = useTranslation()
   const locale = useLocale()
   const prefersReducedMotion = useReducedMotion()
-  const [category, setCategory] = useState<'cloud' | 'kaspersky' | 'esim'>('cloud')
-  const [billing, setBilling] = useState<'monthly' | 'yearly'>('monthly')
+
+  const [category, setCategory] = useState<Category>('cloud')
+  const [billing, setBilling] = useState<Billing>('monthly')
   const [products, setProducts] = useState<Product[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [faqs, setFaqs] = useState<Faq[]>([])
 
   useEffect(() => {
-    productService.getProducts({ category }).then(setProducts)
+    setIsLoading(true)
+    productService.getProducts({ category }).then((result) => {
+      setProducts(result)
+      setIsLoading(false)
+    })
   }, [category])
 
-  const cloudServer = products.find((p) => p.subCategory === 'cloud-server')
-  const showBillingToggle = category === 'cloud'
+  useEffect(() => {
+    contentService.getFaqs('billing').then(setFaqs)
+  }, [])
 
-  function priceFor(price: number, cycle: string) {
-    if (category === 'cloud' && billing === 'yearly' && cycle === 'monthly') return price * 10
-    return price
+  const cloudServer = category === 'cloud' ? products.find((p) => p.subCategory === 'cloud-server') : undefined
+  // The monthly→yearly ×10 calculation is existing business logic (unchanged) and only
+  // ever applied to Cloud Server, the one Cloud product whose packages actually carry a
+  // 'monthly' billingCycle and whose product record declares 'yearly' as a supported cycle.
+  const supportsYearlyBilling = !!cloudServer?.billingCycles.includes('yearly')
+  const applyYearlyBilling = billing === 'yearly' && supportsYearlyBilling
+
+  const cloudCompareRows: ComparisonRow[] = useMemo(() => {
+    if (!cloudServer) return []
+    return [
+      { label: t('productDetail.cpu'), values: cloudServer.packages.map((p) => p.cloud?.cpu ?? '-') },
+      { label: t('productDetail.ram'), values: cloudServer.packages.map((p) => p.cloud?.ram ?? '-') },
+      { label: t('productDetail.ssd'), values: cloudServer.packages.map((p) => p.cloud?.ssd ?? '-') },
+      {
+        label: t('productDetail.bandwidth'),
+        values: cloudServer.packages.map((p) => p.cloud?.bandwidth ?? '-'),
+      },
+      {
+        label: t('productDetail.region'),
+        values: cloudServer.packages.map((p) => p.cloud?.regions.join(', ') ?? '-'),
+      },
+      {
+        label: t('common.startingFrom'),
+        values: cloudServer.packages.map(
+          (p) =>
+            `${formatCurrency(priceFor(p.price, p.billingCycle, applyYearlyBilling), locale)}${suffixFor(p.billingCycle, applyYearlyBilling, t)}`,
+        ),
+      },
+    ]
+  }, [cloudServer, applyYearlyBilling, locale, t])
+
+  const kasperskyProducts = useMemo(
+    () => (category === 'kaspersky' ? products : []),
+    [category, products],
+  )
+  const kasperskyCompareRows: ComparisonRow[] = useMemo(() => {
+    if (kasperskyProducts.length === 0) return []
+    return [
+      {
+        label: t('productDetail.devices'),
+        values: kasperskyProducts.map((p) => {
+          const deviceCounts = p.packages.map((pkg) => pkg.kaspersky?.devices ?? 0)
+          const max = deviceCounts.length > 0 ? Math.max(...deviceCounts) : 0
+          return max > 0 ? String(max) : '-'
+        }),
+      },
+      {
+        label: t('productDetail.duration'),
+        values: kasperskyProducts.map((p) => p.packages[0]?.kaspersky?.duration ?? '-'),
+      },
+      { label: t('home.kasperskySection.f1'), values: kasperskyProducts.map(() => true) },
+      { label: 'VPN', values: kasperskyProducts.map((p) => p.subCategory !== 'standard') },
+      { label: t('home.kasperskySection.f3'), values: kasperskyProducts.map(() => true) },
+      {
+        label: 'Password Manager',
+        values: kasperskyProducts.map((p) => p.subCategory !== 'standard'),
+      },
+      {
+        label: t('common.startingFrom'),
+        values: kasperskyProducts.map((p) => {
+          const resolved = resolveDisplayPackage(p)
+          return resolved ? formatCurrency(resolved.price, locale) : '-'
+        }),
+      },
+    ]
+  }, [kasperskyProducts, locale, t])
+  const kasperskyHighlightIndex = kasperskyProducts.findIndex((p) => !!p.badge)
+
+  // eSIM destinations are not one comparable set — only compare within a region that
+  // actually has multiple plans (a single-plan region has nothing to compare against).
+  const esimAsiaProducts = useMemo(
+    () => (category === 'esim' ? products.filter((p) => p.subCategory === 'asia') : []),
+    [category, products],
+  )
+  const esimCompareRows: ComparisonRow[] = useMemo(() => {
+    if (esimAsiaProducts.length < 2) return []
+    return [
+      {
+        label: t('productDetail.country'),
+        values: esimAsiaProducts.map((p) => localize(p.packages[0]?.esim?.country ?? { vi: '-', en: '-' }, locale)),
+      },
+      {
+        label: t('productDetail.dataAmount'),
+        values: esimAsiaProducts.map((p) => p.packages[0]?.esim?.dataAmount ?? '-'),
+      },
+      {
+        label: t('productDetail.days'),
+        values: esimAsiaProducts.map((p) => String(p.packages[0]?.esim?.days ?? '-')),
+      },
+      {
+        label: t('common.startingFrom'),
+        values: esimAsiaProducts.map((p) => {
+          const resolved = resolveDisplayPackage(p)
+          return resolved ? formatCurrency(resolved.price, locale) : '-'
+        }),
+      },
+    ]
+  }, [esimAsiaProducts, locale, t])
+  const esimHighlightIndex = esimAsiaProducts.findIndex((p) => !!p.badge)
+
+  function cloudServerSpecs(pkg: Product['packages'][number]) {
+    const entries: { label: string; value: string }[] = [
+      { label: t('productDetail.cpu'), value: pkg.cloud?.cpu ?? '' },
+      { label: t('productDetail.ram'), value: pkg.cloud?.ram ?? '' },
+      { label: t('productDetail.ssd'), value: pkg.cloud?.ssd ?? '' },
+    ]
+    return entries.filter((entry) => entry.value && entry.value !== '-')
   }
-
-  function suffixFor(cycle: string) {
-    if (category === 'cloud' && billing === 'yearly' && cycle === 'monthly')
-      return t('common.perYear')
-    if (cycle === 'monthly') return t('common.perMonth')
-    if (cycle === 'yearly') return t('common.perYear')
-    return ` (${t('common.oneTime')})`
-  }
-
-  const cards =
-    category === 'cloud' && cloudServer
-      ? cloudServer.packages
-      : products.map((p) => p.packages[0]).filter(Boolean)
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+    <div>
       <Seo title={t('pricingPage.title')} description={t('pricingPage.subtitle')} />
 
-      <RevealOnScroll className="text-center">
-        <h1 className="text-3xl font-semibold text-text-primary sm:text-4xl">
-          {t('pricingPage.title')}
-        </h1>
-        <p className="mx-auto mt-2 max-w-xl text-text-secondary">{t('pricingPage.subtitle')}</p>
-      </RevealOnScroll>
+      <ProductCategoryHero
+        eyebrow={t('pricingPage.eyebrow')}
+        title={t('pricingPage.title')}
+        subtitle={t('pricingPage.subtitle')}
+        visual="platform"
+        breadcrumbItems={[{ label: t('pricingPage.title') }]}
+      />
 
-      <div className="mt-8 flex justify-center">
+      <div className="relative z-10 mx-auto -mt-6 flex max-w-7xl justify-center px-4 sm:px-6 lg:px-8">
         <Tabs
           value={category}
-          onChange={(v) => setCategory(v as typeof category)}
+          onChange={(v) => setCategory(v as Category)}
+          className="shadow-[0_10px_28px_-14px_rgba(11,31,51,0.35)]"
           tabs={[
             { value: 'cloud', label: t('pricingPage.tabs.cloud') },
             { value: 'kaspersky', label: t('pricingPage.tabs.kaspersky') },
@@ -90,90 +192,180 @@ export function PricingPage() {
         />
       </div>
 
-      {showBillingToggle && (
-        <div className="mt-6 flex justify-center">
-          <div className="flex items-center rounded-lg border border-border p-1 text-sm font-medium">
-            <button
-              onClick={() => setBilling('monthly')}
-              className={cn(
-                'rounded-md px-4 py-1.5',
-                billing === 'monthly' ? 'bg-primary text-white' : 'text-text-secondary',
-              )}
-            >
-              {t('pricingPage.monthly')}
-            </button>
-            <button
-              onClick={() => setBilling('yearly')}
-              className={cn(
-                'rounded-md px-4 py-1.5',
-                billing === 'yearly' ? 'bg-primary text-white' : 'text-text-secondary',
-              )}
-            >
-              {t('pricingPage.yearly')}
-            </button>
-          </div>
-        </div>
-      )}
-
       <motion.div
         key={category}
-        className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4"
-        variants={gridVariants}
-        initial="hidden"
-        animate="show"
+        className="mx-auto max-w-7xl px-4 pb-20 pt-12 sm:px-6 lg:px-8"
+        initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: prefersReducedMotion ? 0.3 : 0.45, ease: [0.22, 1, 0.36, 1] }}
       >
-        {category === 'cloud' &&
-          cloudServer &&
-          cloudServer.packages.map((pkg) => (
-            <motion.div
-              key={pkg.id}
-              className="h-full"
-              variants={prefersReducedMotion ? reducedCardVariants : cardVariants}
-            >
-              <PriceCard
-                name={localize(pkg.name, locale)}
-                price={priceFor(pkg.price, pkg.billingCycle)}
-                billingSuffix={suffixFor(pkg.billingCycle)}
-                features={[
-                  pkg.cloud?.cpu ?? '',
-                  pkg.cloud?.ram ?? '',
-                  pkg.cloud?.ssd ?? '',
-                  pkg.cloud?.bandwidth ?? '',
-                ].filter(Boolean)}
-                isPopular={!!pkg.isPopular}
-                ctaHref={ROUTES.PRODUCT_DETAIL(cloudServer.slug)}
-                locale={locale}
+        {category === 'cloud' && (
+          <>
+            <RevealOnScroll>
+              <SectionHeading title={t('pricingPage.allCloudTitle')} align="left" className="mb-8" />
+            </RevealOnScroll>
+            <ProductGrid products={products} isLoading={isLoading} />
+
+            {!isLoading && cloudServer && (
+              <div className="mt-16">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+                  <RevealOnScroll>
+                    <SectionHeading
+                      title={t('pricingPage.cloudServerTiersTitle')}
+                      align="left"
+                    />
+                  </RevealOnScroll>
+                  {supportsYearlyBilling && (
+                    <RevealOnScroll delay={0.05} className="flex flex-col items-start gap-1.5 sm:items-end">
+                      <span className="text-xs text-text-secondary">
+                        {t('pricingPage.billingToggleScope', { name: localize(cloudServer.name, locale) })}
+                      </span>
+                      <div
+                        role="group"
+                        aria-label={t('productDetail.billingCycle')}
+                        className="flex items-center rounded-lg border border-border p-1 text-sm font-medium"
+                      >
+                        <button
+                          type="button"
+                          aria-pressed={billing === 'monthly'}
+                          onClick={() => setBilling('monthly')}
+                          className={
+                            billing === 'monthly'
+                              ? 'rounded-md bg-primary px-4 py-1.5 text-white'
+                              : 'rounded-md px-4 py-1.5 text-text-secondary'
+                          }
+                        >
+                          {t('pricingPage.monthly')}
+                        </button>
+                        <button
+                          type="button"
+                          aria-pressed={billing === 'yearly'}
+                          onClick={() => setBilling('yearly')}
+                          className={
+                            billing === 'yearly'
+                              ? 'rounded-md bg-primary px-4 py-1.5 text-white'
+                              : 'rounded-md px-4 py-1.5 text-text-secondary'
+                          }
+                        >
+                          {t('pricingPage.yearly')}
+                        </button>
+                      </div>
+                    </RevealOnScroll>
+                  )}
+                </div>
+
+                <StaggerContainer
+                  key={billing}
+                  className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4"
+                >
+                  {cloudServer.packages.map((pkg) => (
+                    <StaggerItem key={pkg.id} className="h-full">
+                      <PriceCard
+                        name={localize(pkg.name, locale)}
+                        price={priceFor(pkg.price, pkg.billingCycle, applyYearlyBilling)}
+                        billingSuffix={suffixFor(pkg.billingCycle, applyYearlyBilling, t)}
+                        specs={cloudServerSpecs(pkg)}
+                        isPopular={!!pkg.isPopular}
+                        ctaHref={ROUTES.PRODUCT_DETAIL(cloudServer.slug)}
+                        locale={locale}
+                      />
+                    </StaggerItem>
+                  ))}
+                </StaggerContainer>
+
+                <RevealOnScroll delay={0.1} className="mt-10">
+                  <ComparisonTable
+                    columns={cloudServer.packages.map((p) => localize(p.name, locale))}
+                    rows={cloudCompareRows}
+                    highlightColumnIndex={cloudServer.packages.findIndex((p) => p.isPopular)}
+                  />
+                </RevealOnScroll>
+              </div>
+            )}
+          </>
+        )}
+
+        {category === 'kaspersky' && (
+          <>
+            <RevealOnScroll>
+              <SectionHeading title={t('pricingPage.allKasperskyTitle')} align="left" className="mb-8" />
+            </RevealOnScroll>
+            <ProductGrid products={products} isLoading={isLoading} />
+
+            {!isLoading && kasperskyCompareRows.length > 0 && (
+              <div className="mt-16">
+                <RevealOnScroll>
+                  <SectionHeading title={t('pricingPage.compareKasperskyTitle')} align="left" className="mb-8" />
+                </RevealOnScroll>
+                <RevealOnScroll delay={0.1}>
+                  <ComparisonTable
+                    columns={kasperskyProducts.map((p) => localize(p.name, locale))}
+                    rows={kasperskyCompareRows}
+                    highlightColumnIndex={kasperskyHighlightIndex}
+                  />
+                </RevealOnScroll>
+              </div>
+            )}
+          </>
+        )}
+
+        {category === 'esim' && (
+          <>
+            <RevealOnScroll>
+              <SectionHeading title={t('pricingPage.allEsimTitle')} align="left" className="mb-8" />
+            </RevealOnScroll>
+            <ProductGrid products={products} isLoading={isLoading} />
+
+            {!isLoading && esimCompareRows.length > 0 && (
+              <div className="mt-16">
+                <RevealOnScroll>
+                  <SectionHeading title={t('pricingPage.compareEsimAsiaTitle')} align="left" className="mb-8" />
+                </RevealOnScroll>
+                <RevealOnScroll delay={0.1}>
+                  <ComparisonTable
+                    columns={esimAsiaProducts.map((p) => localize(p.name, locale))}
+                    rows={esimCompareRows}
+                    highlightColumnIndex={esimHighlightIndex}
+                  />
+                </RevealOnScroll>
+              </div>
+            )}
+          </>
+        )}
+
+        <RevealOnScroll className="mt-16 rounded-xl border border-border bg-surface/40 p-6 sm:p-8">
+          <h2 className="text-base font-semibold text-text-primary">{t('pricingPage.notesTitle')}</h2>
+          <ul className="mt-4 flex flex-col gap-2.5 text-sm text-text-secondary">
+            <li className="flex items-start gap-2">
+              <span className="mt-1.5 size-1 shrink-0 rounded-full bg-primary" />
+              {t(`pricingPage.notes.${category}`)}
+            </li>
+            {category === 'esim' && (
+              <li className="flex items-start gap-2">
+                <span className="mt-1.5 size-1 shrink-0 rounded-full bg-primary" />
+                {t('productDetail.activationTime')}: {t('productDetail.activationOnArrival')}
+              </li>
+            )}
+          </ul>
+        </RevealOnScroll>
+
+        {faqs.length > 0 && (
+          <div className="mx-auto mt-16 max-w-3xl">
+            <RevealOnScroll>
+              <SectionHeading title={t('pricingPage.faqTitle')} className="mb-8" />
+            </RevealOnScroll>
+            <RevealOnScroll delay={0.1}>
+              <Accordion
+                items={faqs.map((faq) => ({
+                  id: faq.id,
+                  question: localize(faq.question, locale),
+                  answer: localize(faq.answer, locale),
+                }))}
               />
-            </motion.div>
-          ))}
-
-        {category !== 'cloud' &&
-          products.map((product) => {
-            const pkg = product.packages[0]
-            if (!pkg) return null
-            return (
-              <motion.div
-                key={product.id}
-                className="h-full"
-                variants={prefersReducedMotion ? reducedCardVariants : cardVariants}
-              >
-                <PriceCard
-                  name={localize(product.name, locale)}
-                  price={pkg.price}
-                  billingSuffix={suffixFor(pkg.billingCycle)}
-                  features={product.features.map((f) => localize(f, locale))}
-                  isPopular={!!pkg.isPopular}
-                  ctaHref={ROUTES.PRODUCT_DETAIL(product.slug)}
-                  locale={locale}
-                />
-              </motion.div>
-            )
-          })}
+            </RevealOnScroll>
+          </div>
+        )}
       </motion.div>
-
-      {cards.length === 0 && (
-        <p className="mt-10 text-center text-text-secondary">{t('common.loading')}</p>
-      )}
     </div>
   )
 }

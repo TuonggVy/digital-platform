@@ -7,6 +7,7 @@
     "addToCart": "Thêm vào giỏ",
     "buyNow": "Mua ngay",
     "contactSales": "Liên hệ tư vấn",
+    "contactForPricing": "Liên hệ để biết giá",
     "learnMore": "Tìm hiểu thêm",
     "seeAll": "Xem tất cả",
     "back": "Quay lại",
@@ -370,6 +371,7 @@
     "ram": "RAM",
     "ssd": "Ổ cứng SSD",
     "os": "Hệ điều hành",
+    "bandwidth": "Băng thông",
     "billingCycle": "Chu kỳ thanh toán",
     "devices": "Số thiết bị",
     "duration": "Thời hạn",
@@ -386,8 +388,9 @@
     "addedToCart": "Đã thêm vào giỏ hàng"
   },
   "pricingPage": {
+    "eyebrow": "Minh bạch · Dễ so sánh",
     "title": "Bảng giá dịch vụ",
-    "subtitle": "Chọn gói phù hợp với nhu cầu của bạn.",
+    "subtitle": "So sánh các gói Cloud, Kaspersky và eSIM để chọn lựa chọn phù hợp với nhu cầu và ngân sách của bạn.",
     "monthly": "Hàng tháng",
     "yearly": "Hàng năm",
     "mostPopular": "Phổ biến nhất",
@@ -395,7 +398,21 @@
       "cloud": "Cloud",
       "kaspersky": "Kaspersky",
       "esim": "eSIM"
-    }
+    },
+    "allCloudTitle": "Toàn bộ dịch vụ Cloud",
+    "allKasperskyTitle": "Các gói Kaspersky",
+    "allEsimTitle": "Các gói eSIM",
+    "cloudServerTiersTitle": "Gói Cloud Server theo cấu hình",
+    "billingToggleScope": "Áp dụng cho {{name}}",
+    "compareKasperskyTitle": "So sánh các gói Kaspersky",
+    "compareEsimAsiaTitle": "So sánh các gói eSIM khu vực Châu Á",
+    "notesTitle": "Lưu ý về giá",
+    "notes": {
+      "cloud": "Giá Cloud Server áp dụng theo cấu hình bạn chọn; các dịch vụ Cloud khác hiển thị giá của gói thấp nhất hiện có.",
+      "kaspersky": "Giá hiển thị là giá của gói có số thiết bị và thời hạn license thấp nhất hiện có; vui lòng kiểm tra số thiết bị được hỗ trợ trước khi mua.",
+      "esim": "Giá hiển thị cho mỗi gói eSIM là giá cố định một lần, không phải giá định kỳ."
+    },
+    "faqTitle": "Câu hỏi về thanh toán"
   },
   "solutionsPage": {
     "title": "Giải pháp theo nhu cầu",
@@ -427,12 +444,18 @@
     "exploreCta": "Khám phá giải pháp"
   },
   "aboutPage": {
+    "eyebrow": "Về VTC Telecom",
+    "headerTitle": "Một nền tảng số, ba dịch vụ kết nối",
+    "headerIntro": "VTC TELECOM xây dựng hạ tầng Cloud, bảo mật Kaspersky và kết nối eSIM trên cùng một nền tảng số duy nhất cho cá nhân và doanh nghiệp tại Việt Nam.",
     "storyTitle": "Câu chuyện thương hiệu",
     "storyContent": "VTC TELECOM được thành lập với mong muốn mang đến các dịch vụ số chất lượng cao, dễ tiếp cận cho mọi cá nhân và doanh nghiệp tại Việt Nam.",
     "missionTitle": "Sứ mệnh",
     "missionContent": "Đơn giản hóa việc tiếp cận công nghệ số thông qua các giải pháp Cloud, bảo mật và kết nối đáng tin cậy.",
     "visionTitle": "Tầm nhìn",
     "visionContent": "Trở thành nền tảng dịch vụ số được tin dùng hàng đầu khu vực Đông Nam Á.",
+    "ecosystemEyebrow": "Hệ sinh thái dịch vụ",
+    "ecosystemTitle": "Ba dịch vụ, một nền tảng kết nối",
+    "ecosystemSubtitle": "Cloud, eSIM và Kaspersky cùng vận hành trên một nền tảng duy nhất — hạ tầng để xây dựng, kết nối để vận hành, bảo mật để yên tâm.",
     "valuesTitle": "Giá trị cốt lõi",
     "value1": {
       "title": "Minh bạch",
@@ -450,10 +473,7 @@
       "title": "Tận tâm",
       "desc": "Luôn đồng hành và hỗ trợ khách hàng kịp thời."
     },
-    "milestonesTitle": "Các cột mốc",
-    "teamTitle": "Đội ngũ của chúng tôi",
-    "ctaTitle": "Sẵn sàng đồng hành cùng VTC TELECOM?",
-    "disclaimer": "* Nội dung trang này là dữ liệu minh họa, chưa phải thông tin pháp lý chính thức."
+    "ctaTitle": "Sẵn sàng đồng hành cùng VTC TELECOM?"
   },
   "contactPage": {
     "title": "Liên hệ với chúng tôi",
@@ -517,11 +537,30 @@
     "findProducts": "Tìm sản phẩm"
   },
   "auth": {
+    "showPassword": "Hiện mật khẩu",
+    "hidePassword": "Ẩn mật khẩu",
+    "backToLogin": "Quay lại đăng nhập",
+    "trust": {
+      "secure": {
+        "title": "An toàn & Bảo mật",
+        "description": "Thông tin của bạn được mã hóa và bảo vệ."
+      },
+      "reliable": {
+        "title": "Dịch vụ tin cậy",
+        "description": "Nền tảng ổn định cho Cloud, eSIM và Kaspersky."
+      },
+      "support": {
+        "title": "Hỗ trợ 24/7",
+        "description": "Đội ngũ hỗ trợ luôn sẵn sàng khi bạn cần."
+      }
+    },
     "login": {
       "title": "Đăng nhập",
       "subtitle": "Chào mừng bạn quay trở lại VTC TELECOM",
       "email": "Email",
+      "emailPlaceholder": "Nhập email của bạn",
       "password": "Mật khẩu",
+      "passwordPlaceholder": "Nhập mật khẩu",
       "remember": "Ghi nhớ đăng nhập",
       "forgot": "Quên mật khẩu?",
       "submit": "Đăng nhập",
@@ -534,19 +573,25 @@
       "invalidCredentials": "Email hoặc mật khẩu không đúng"
     },
     "register": {
-      "title": "Đăng ký tài khoản",
-      "subtitle": "Tạo tài khoản để bắt đầu sử dụng dịch vụ",
-      "fullName": "Họ tên",
+      "title": "Tạo tài khoản",
+      "subtitle": "Tham gia cùng VTC TELECOM",
+      "fullName": "Họ và tên",
+      "fullNamePlaceholder": "Nhập họ và tên",
       "email": "Email",
+      "emailPlaceholder": "Nhập email của bạn",
       "phone": "Số điện thoại",
+      "phonePlaceholder": "Nhập số điện thoại",
       "password": "Mật khẩu",
+      "passwordPlaceholder": "Tạo mật khẩu",
       "confirmPassword": "Xác nhận mật khẩu",
+      "confirmPasswordPlaceholder": "Nhập lại mật khẩu",
       "agreeTerms": "Tôi đồng ý với các điều khoản sử dụng",
       "agreeTermsPrefix": "Tôi đồng ý với",
       "agreeTermsLink": "điều khoản sử dụng",
-      "submit": "Đăng ký",
+      "agreeTermsAnd": "và",
+      "submit": "Tạo tài khoản",
       "haveAccount": "Đã có tài khoản?",
-      "loginNow": "Đăng nhập",
+      "loginNow": "Đăng nhập ngay",
       "success": "Đăng ký thành công!",
       "emailExists": "Email này đã được sử dụng"
     },
