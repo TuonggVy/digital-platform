@@ -907,7 +907,41 @@
       "categoryChart": "Orders by category",
       "recentOrders": "Recent orders",
       "topProducts": "Top-selling products",
-      "lowStockAlert": "Low license & eSIM stock alerts"
+      "lowStockAlert": "Low license & eSIM stock alerts",
+      "subtitle": "Track orders, services and operational activity in real time.",
+      "lastUpdated": "Last updated",
+      "refresh": "Refresh",
+      "refreshing": "Refreshing",
+      "statusLoading": "Loading system status",
+      "statusHealthy": "All systems normal",
+      "statusAttention": "Some items need review",
+      "statusUnknown": "System status unavailable",
+      "servicesNeedingAttention": "Services needing attention",
+      "dataUnavailable": "Data unavailable",
+      "serviceOverview": {
+        "title": "Service overview",
+        "cloud": "Cloud",
+        "kaspersky": "Kaspersky",
+        "esim": "eSIM",
+        "licenseStock": "License stock",
+        "esimStock": "eSIM stock",
+        "noServices": "No services yet",
+        "noStock": "No stock yet"
+      },
+      "attention": {
+        "title": "Attention required",
+        "lowStockLicenses": "License stock running low",
+        "lowStockEsims": "eSIM stock running low",
+        "expiringSoon": "Services expiring soon",
+        "suspended": "Suspended services",
+        "empty": "No items need attention",
+        "viewLicenses": "View license stock",
+        "viewEsims": "View eSIM stock",
+        "viewServices": "View services"
+      },
+      "quickActions": {
+        "title": "Quick actions"
+      }
     },
     "products": {
       "title": "Manage products",
