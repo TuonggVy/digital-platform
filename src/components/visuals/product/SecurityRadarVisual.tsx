@@ -82,34 +82,6 @@ function RadarRings({ geo, reduced }: { geo: RadarGeometry; reduced: boolean }) 
   )
 }
 
-/** One-time: a signal approaches from outside the field and is absorbed right at the perimeter — never repeats. */
-function ContainedSignal({ geo, reduced }: { geo: RadarGeometry; reduced: boolean }) {
-  const contact = polar(geo.cx, geo.cy, geo.outerR, -60)
-  const origin = polar(geo.cx, geo.cy, geo.outerR + 70, -60)
-  const delay = 1.6
-
-  return (
-    <g className="hidden md:block">
-      <SignalPath
-        d={`M${origin.x.toFixed(1)},${origin.y.toFixed(1)} L${contact.x.toFixed(1)},${contact.y.toFixed(1)}`}
-        kind="active"
-        delay={delay}
-        duration={0.7}
-        reduced={reduced}
-      />
-      <circle cx={contact.x} cy={contact.y} r={8} fill="none" stroke={VISUAL_COLOR.stable} strokeWidth={1} opacity={0.3} />
-      <motion.circle
-        cx={contact.x}
-        cy={contact.y}
-        initial={reduced ? undefined : { r: 0, fill: VISUAL_COLOR.active }}
-        whileInView={{ r: 4, fill: VISUAL_COLOR.stable }}
-        viewport={VISUAL_VIEWPORT}
-        transition={{ duration: 0.45, delay: delay + 0.7, ease: VISUAL_EASE }}
-      />
-    </g>
-  )
-}
-
 export function SecurityRadarVisual({ variant = 'full', className }: ProductVisualProps) {
   const prefersReducedMotion = useReducedMotion()
   const reduced = prefersReducedMotion ?? false

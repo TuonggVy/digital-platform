@@ -993,8 +993,17 @@
       "orderCount": "Order count",
       "totalSpent": "Total spent",
       "status": "Status",
-      "searchPlaceholder": "Search by name or email...",
-      "noCustomers": "No matching customers found"
+      "searchPlaceholder": "Search by name, email, phone...",
+      "noCustomers": "No matching customers found",
+      "sortNewest": "Newest",
+      "sortOldest": "Oldest",
+      "sortNameAsc": "Name A-Z",
+      "sortNameDesc": "Name Z-A",
+      "statusActive": "Active",
+      "statusInactive": "Inactive",
+      "joinedDate": "Joined date",
+      "latestPayment": "Latest payment",
+      "noPaymentYet": "No payment yet"
     },
     "services": {
       "title": "Manage services",

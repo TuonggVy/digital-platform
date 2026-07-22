@@ -2,12 +2,12 @@ import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { ShoppingBag, Users, Server, AlertTriangle, AlertCircle } from 'lucide-react'
-import { authService } from '@/services/authService'
 import { serviceService } from '@/services/serviceService'
 import { productService } from '@/services/productService'
 import { inventoryService } from '@/services/inventoryService'
 import { orderApiService } from '@/services/orderApiService'
 import type { BackendOrder } from '@/services/orderApiService'
+import { customerApiService } from '@/services/customerApiService'
 import { Seo } from '@/components/common/Seo'
 import { StatCard } from '@/components/admin/StatCard'
 import { DataTable } from '@/components/admin/DataTable'
@@ -20,7 +20,6 @@ import { formatCurrency, formatDateTime } from '@/utils/formatters'
 import { ROUTES } from '@/constants/routes'
 
 interface DashboardData {
-  customerCount: number
   activeServiceCount: number
   lowStockProducts: { productId: string; productName: string; available: number }[]
 }
@@ -37,15 +36,16 @@ export function AdminDashboardPage() {
   const [ordersLoading, setOrdersLoading] = useState(true)
   const [ordersError, setOrdersError] = useState<string | null>(null)
 
+  const [customerCount, setCustomerCount] = useState<number | null>(null)
+
   useEffect(() => {
     let cancelled = false
     Promise.all([
-      authService.getAllCustomers(),
       serviceService.getAllForAdmin(),
       productService.getAllForAdmin(),
       inventoryService.getLicenses(),
       inventoryService.getEsimStock(),
-    ]).then(([customers, services, products, licenses, esimStock]) => {
+    ]).then(([services, products, licenses, esimStock]) => {
       if (cancelled) return
 
       const productNameById = new Map(products.map((p) => [p.id, p.name[locale]]))
@@ -71,7 +71,6 @@ export function AdminDashboardPage() {
         .filter((v) => v.available < 2)
 
       setData({
-        customerCount: customers.length,
         activeServiceCount: services.filter((s) => s.status === 'ACTIVE').length,
         lowStockProducts,
       })
@@ -80,6 +79,25 @@ export function AdminDashboardPage() {
       cancelled = true
     }
   }, [locale])
+
+  // Kept independent from the fetch above (and from the orders fetch below) so a
+  // Customer API failure never blocks the rest of the dashboard from rendering.
+  useEffect(() => {
+    let cancelled = false
+    customerApiService
+      .getAdminCustomers({ page: 1, pageSize: 1 })
+      .then((result) => {
+        if (cancelled) return
+        setCustomerCount(result.total)
+      })
+      .catch(() => {
+        if (cancelled) return
+        setCustomerCount(null)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   // Kept independent from the fetch above so Orders API errors/latency never
   // block the rest of the dashboard from rendering.
@@ -130,7 +148,7 @@ export function AdminDashboardPage() {
         <StatCard
           icon={<Users className="size-5" />}
           label={t('admin.dashboard.totalCustomers')}
-          value={data.customerCount.toLocaleString('vi-VN')}
+          value={customerCount === null ? '-' : customerCount.toLocaleString('vi-VN')}
         />
         <StatCard
           icon={<Server className="size-5" />}

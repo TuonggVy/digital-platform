@@ -993,8 +993,17 @@
       "orderCount": "Số đơn hàng",
       "totalSpent": "Tổng chi tiêu",
       "status": "Trạng thái",
-      "searchPlaceholder": "Tìm theo tên hoặc email...",
-      "noCustomers": "Không tìm thấy khách hàng phù hợp"
+      "searchPlaceholder": "Tìm theo tên, email, số điện thoại...",
+      "noCustomers": "Không tìm thấy khách hàng phù hợp",
+      "sortNewest": "Mới nhất",
+      "sortOldest": "Cũ nhất",
+      "sortNameAsc": "Tên A-Z",
+      "sortNameDesc": "Tên Z-A",
+      "statusActive": "Đang hoạt động",
+      "statusInactive": "Ngừng hoạt động",
+      "joinedDate": "Ngày tham gia",
+      "latestPayment": "Giao dịch thanh toán gần nhất",
+      "noPaymentYet": "Chưa có giao dịch thanh toán nào"
     },
     "services": {
       "title": "Quản lý dịch vụ",
