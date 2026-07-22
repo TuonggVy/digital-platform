@@ -907,7 +907,41 @@
       "categoryChart": "Đơn hàng theo danh mục",
       "recentOrders": "Đơn hàng gần đây",
       "topProducts": "Sản phẩm bán chạy",
-      "lowStockAlert": "Cảnh báo kho license & eSIM sắp hết"
+      "lowStockAlert": "Cảnh báo kho license & eSIM sắp hết",
+      "subtitle": "Theo dõi đơn hàng, dịch vụ và hoạt động vận hành theo thời gian thực.",
+      "lastUpdated": "Cập nhật lúc",
+      "refresh": "Làm mới",
+      "refreshing": "Đang làm mới",
+      "statusLoading": "Đang tải trạng thái hệ thống",
+      "statusHealthy": "Hệ thống hoạt động bình thường",
+      "statusAttention": "Có hạng mục cần kiểm tra",
+      "statusUnknown": "Không thể tải trạng thái hệ thống",
+      "servicesNeedingAttention": "Dịch vụ cần chú ý",
+      "dataUnavailable": "Không thể tải dữ liệu",
+      "serviceOverview": {
+        "title": "Tổng quan dịch vụ",
+        "cloud": "Cloud",
+        "kaspersky": "Kaspersky",
+        "esim": "eSIM",
+        "licenseStock": "Kho license",
+        "esimStock": "Kho eSIM",
+        "noServices": "Chưa có dịch vụ nào",
+        "noStock": "Chưa có tồn kho"
+      },
+      "attention": {
+        "title": "Cần chú ý",
+        "lowStockLicenses": "Kho license sắp hết",
+        "lowStockEsims": "Kho eSIM sắp hết",
+        "expiringSoon": "Dịch vụ sắp hết hạn",
+        "suspended": "Dịch vụ bị tạm ngưng",
+        "empty": "Không có hạng mục cần xử lý",
+        "viewLicenses": "Xem kho license",
+        "viewEsims": "Xem kho eSIM",
+        "viewServices": "Xem dịch vụ"
+      },
+      "quickActions": {
+        "title": "Thao tác nhanh"
+      }
     },
     "products": {
       "title": "Quản lý sản phẩm",
