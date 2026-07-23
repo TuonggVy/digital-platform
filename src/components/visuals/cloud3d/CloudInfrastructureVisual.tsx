@@ -2,6 +2,8 @@ import { Component, Suspense, lazy, useEffect, useRef, useState, type ReactNode 
 import { useScroll, useTransform, useSpring, useReducedMotion } from 'framer-motion'
 import { cn } from '@/utils/cn'
 import { CloudProductVisual } from '@/components/visuals/product/CloudProductVisual'
+import { useViewportActive } from '@/components/visuals/shared/useViewportActive'
+import { usePointerParallax } from '@/components/visuals/shared/usePointerParallax'
 
 // The actual three.js/@react-three/fiber/drei chunk — dynamically imported so none of it
 // ships to visitors who never scroll to this section, and none of it ships to mobile at all.
@@ -91,23 +93,7 @@ export function CloudInfrastructureVisual({ className }: CloudInfrastructureVisu
   const compact = isTabletUp && !isDesktop
   const [webglOk] = useState(supportsWebGL)
 
-  const [hasBeenVisible, setHasBeenVisible] = useState(false)
-  useEffect(() => {
-    if (!isTabletUp || hasBeenVisible) return
-    const node = wrapperRef.current
-    if (!node) return
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setHasBeenVisible(true)
-          observer.disconnect()
-        }
-      },
-      { rootMargin: '200px' },
-    )
-    observer.observe(node)
-    return () => observer.disconnect()
-  }, [isTabletUp, hasBeenVisible])
+  const { hasBeenVisible, inView } = useViewportActive(wrapperRef, isTabletUp)
 
   const size = compact ? 'compact' : 'full'
   const { scrollYProgress } = useScroll({ target: wrapperRef, offset: ['start end', 'end start'] })
@@ -130,6 +116,10 @@ export function CloudInfrastructureVisual({ className }: CloudInfrastructureVisu
   const rotX = useSpring(rotXTarget, SPRING)
   const sceneScale = useSpring(scaleTarget, SPRING)
 
+  const pointer = usePointerParallax(wrapperRef, isDesktop && !reduced)
+  const combinedRotY = useTransform([rotY, pointer.offsetY], ([a, b]) => (a as number) + (b as number))
+  const combinedRotX = useTransform([rotX, pointer.offsetX], ([a, b]) => (a as number) + (b as number))
+
   if (!isTabletUp) {
     return <CloudProductVisual variant="full" className={className} />
   }
@@ -143,7 +133,14 @@ export function CloudInfrastructureVisual({ className }: CloudInfrastructureVisu
         <CloudSceneErrorBoundary fallback={<CloudProductVisual variant="full" className="h-full w-full" />}>
           <Suspense fallback={<div className="h-full w-full" />}>
             {hasBeenVisible && (
-              <CloudInfrastructureScene rotY={rotY} rotX={rotX} scale={sceneScale} reduced={reduced} compact={compact} />
+              <CloudInfrastructureScene
+                rotY={combinedRotY}
+                rotX={combinedRotX}
+                scale={sceneScale}
+                reduced={reduced}
+                compact={compact}
+                inView={inView}
+              />
             )}
           </Suspense>
         </CloudSceneErrorBoundary>
