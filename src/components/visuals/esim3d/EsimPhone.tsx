@@ -1,81 +1,168 @@
-import { useRef } from 'react'
-import { useFrame } from '@react-three/fiber'
-import { RoundedBox } from '@react-three/drei'
+import { forwardRef, useRef, type RefObject } from 'react'
+import { QuadraticBezierLine, RoundedBox } from '@react-three/drei'
 import * as THREE from 'three'
-import { esimMaterials } from './esimMaterials'
-
-function easeOutCubic(t: number) {
-  return 1 - Math.pow(1 - t, 3)
-}
-
-const FOCUS_IN_DURATION = 0.3
-const FOCUS_IN_START_SCALE = 0.94
+import { visualMaterials } from '../shared/materials'
+import { VISUAL_COLOR } from '../shared/palette'
+import { useEntryReveal } from '../shared/animation'
+import { FloatingGroup } from '../shared/FloatingGroup'
+import { StatusLight, type StatusLightHandle } from '../shared/StatusLight'
 
 export const PHONE_ACTIVATION_MARKER: [number, number, number] = [0.42, 0.55, 0.045]
+
+const SCREEN_W = 0.82
+const SCREEN_H = 1.55
+const SCREEN_Y = 0.06
+const SCREEN_Z = 0.046
+const BEZEL_T = 0.026
+
+// Low-opacity, low-intensity emissive material dedicated to the abstract on-screen UI — kept
+// local to this file (module scope, not the shared `visualMaterials.active` singleton) because
+// its whole point is to read as "quietly alive", far dimmer than the shared active material used
+// for status lights/pulses elsewhere in the scene.
+const screenUIMaterial = new THREE.MeshStandardMaterial({
+  color: VISUAL_COLOR.active,
+  emissive: new THREE.Color(VISUAL_COLOR.active),
+  emissiveIntensity: 0.4,
+  transparent: true,
+  opacity: 0.45,
+  roughness: 0.35,
+  metalness: 0.08,
+})
+
+const SIGNAL_BAR_HEIGHTS = [0.03, 0.05, 0.07, 0.09]
+
+const NODE_A: [number, number, number] = [-0.16, 0.4, SCREEN_Z + 0.003]
+const NODE_B: [number, number, number] = [0.14, 0.08, SCREEN_Z + 0.003]
+const NODE_C: [number, number, number] = [-0.02, -0.3, SCREEN_Z + 0.003]
+const ROUTE_MID: [number, number, number] = [
+  (NODE_A[0] + NODE_B[0]) / 2,
+  (NODE_A[1] + NODE_B[1]) / 2 + 0.08,
+  SCREEN_Z + 0.0028,
+]
 
 interface EsimPhoneProps {
   reduced: boolean
   connectDelay: number
+  /** Lets `EsimConnection` trigger a brief brighten on the screen dot once its ring pulse lands —
+   *  a real glow-response beyond the initial pop-in. */
+  screenDotHandleRef?: RefObject<StatusLightHandle | null>
   children?: never
 }
 
 /** The large, centered, dominant object — an abstract phone, never a branded device or fake UI.
- *  Does a very subtle one-time focus-in (scale 0.94 → 1), then its status light and screen
- *  dot light up once the connection completes at `connectDelay`. */
-export function EsimPhone({ reduced, connectDelay }: EsimPhoneProps) {
-  const rootRef = useRef<THREE.Group>(null!)
-  const focusSettledRef = useRef(reduced)
-  const statusLightRef = useRef<THREE.Mesh>(null!)
-  const screenDotRef = useRef<THREE.Mesh>(null!)
-  const markerDotRef = useRef<THREE.Mesh>(null!)
-  const activateSettledRef = useRef(reduced)
+ *  The outer group's one-time focus-in (scale 0.94 -> 1) is driven by the Scene's shared entrance
+ *  timeline; only the screen dot / status light / activation marker's own pop-in (at
+ *  `connectDelay`) is animated locally here. */
+export const EsimPhone = forwardRef<THREE.Group, EsimPhoneProps>(function EsimPhone(
+  { reduced, connectDelay, screenDotHandleRef },
+  ref,
+) {
+  const screenDotGroupRef = useRef<THREE.Group>(null!)
+  const topStatusGroupRef = useRef<THREE.Group>(null!)
+  const markerGroupRef = useRef<THREE.Group>(null!)
 
-  useFrame((state) => {
-    if (!focusSettledRef.current && rootRef.current) {
-      const t = Math.min(1, state.clock.elapsedTime / FOCUS_IN_DURATION)
-      const eased = easeOutCubic(t)
-      const s = FOCUS_IN_START_SCALE + (1 - FOCUS_IN_START_SCALE) * eased
-      rootRef.current.scale.setScalar(s)
-      if (t >= 1) focusSettledRef.current = true
-    }
-
-    if (!activateSettledRef.current && statusLightRef.current && screenDotRef.current && markerDotRef.current) {
-      const elapsed = Math.max(0, state.clock.elapsedTime - connectDelay)
-      const t = Math.min(1, elapsed / 0.35)
-      const eased = easeOutCubic(t)
-      statusLightRef.current.scale.setScalar(eased)
-      screenDotRef.current.scale.setScalar(eased)
-      markerDotRef.current.scale.setScalar(eased)
-      if (t >= 1) activateSettledRef.current = true
-    }
-  })
+  useEntryReveal(screenDotGroupRef, { delay: connectDelay, duration: 0.35, reduced })
+  useEntryReveal(topStatusGroupRef, { delay: connectDelay, duration: 0.35, reduced })
+  useEntryReveal(markerGroupRef, { delay: connectDelay, duration: 0.35, reduced })
 
   return (
-    <group ref={rootRef} scale={reduced ? 1 : FOCUS_IN_START_SCALE}>
-      <RoundedBox args={[1.0, 1.9, 0.08]} radius={0.09} smoothness={3} material={esimMaterials.body} />
+    <group ref={ref}>
+      <FloatingGroup reduced={reduced} bobAmplitude={0.045} bobPeriod={5.2} tiltAmplitude={0.03} phase={0}>
+        <RoundedBox args={[1.0, 1.9, 0.08]} radius={0.09} smoothness={3} material={visualMaterials.metal} />
 
-      {/* screen */}
-      <mesh position={[0, 0.06, 0.045]} material={esimMaterials.panel}>
-        <planeGeometry args={[0.82, 1.55]} />
-      </mesh>
-      <mesh ref={screenDotRef} position={[0, 0.06, 0.05]} material={esimMaterials.active} scale={reduced ? 1 : 0}>
-        <sphereGeometry args={[0.04, 16, 16]} />
-      </mesh>
+        {/* thin bezel/rim outline around the screen, so the glass doesn't look glued flush onto
+            the front face */}
+        <group position={[0, 0, 0.043]}>
+          <mesh position={[0, SCREEN_Y + SCREEN_H / 2 + BEZEL_T / 2, 0]} material={visualMaterials.metal}>
+            <boxGeometry args={[SCREEN_W + BEZEL_T * 2, BEZEL_T, 0.006]} />
+          </mesh>
+          <mesh position={[0, SCREEN_Y - SCREEN_H / 2 - BEZEL_T / 2, 0]} material={visualMaterials.metal}>
+            <boxGeometry args={[SCREEN_W + BEZEL_T * 2, BEZEL_T, 0.006]} />
+          </mesh>
+          <mesh position={[-SCREEN_W / 2 - BEZEL_T / 2, SCREEN_Y, 0]} material={visualMaterials.metal}>
+            <boxGeometry args={[BEZEL_T, SCREEN_H, 0.006]} />
+          </mesh>
+          <mesh position={[SCREEN_W / 2 + BEZEL_T / 2, SCREEN_Y, 0]} material={visualMaterials.metal}>
+            <boxGeometry args={[BEZEL_T, SCREEN_H, 0.006]} />
+          </mesh>
+        </group>
 
-      {/* status light near the top edge */}
-      <mesh ref={statusLightRef} position={[0, 0.82, 0.045]} material={esimMaterials.active} scale={reduced ? 1 : 0}>
-        <sphereGeometry args={[0.022, 12, 12]} />
-      </mesh>
-
-      {/* eSIM activation marker on the upper-right edge — where the connection attaches */}
-      <group position={PHONE_ACTIVATION_MARKER}>
-        <mesh material={esimMaterials.edge}>
-          <torusGeometry args={[0.045, 0.008, 8, 24]} />
+        {/* small speaker/camera detail near the top edge of the frame */}
+        <mesh position={[0, 0.9, 0.043]} rotation={[0, 0, Math.PI / 2]} material={visualMaterials.metal}>
+          <capsuleGeometry args={[0.012, 0.12, 4, 8]} />
         </mesh>
-        <mesh ref={markerDotRef} material={esimMaterials.active} scale={reduced ? 1 : 0}>
-          <sphereGeometry args={[0.022, 12, 12]} />
+
+        {/* screen glass — one of the few surfaces transmission is justified for */}
+        <mesh position={[0, SCREEN_Y, SCREEN_Z]} material={visualMaterials.glass}>
+          <planeGeometry args={[SCREEN_W, SCREEN_H]} />
         </mesh>
-      </group>
+
+        {/* abstract, minimal screen UI — no text, no fine print */}
+        <group>
+          {/* coverage arcs */}
+          <mesh position={[-0.06, 0.32, SCREEN_Z + 0.001]} rotation={[0, 0, 0.3]} material={screenUIMaterial}>
+            <torusGeometry args={[0.22, 0.006, 8, 32, Math.PI * 1.3]} />
+          </mesh>
+          <mesh position={[0.09, -0.12, SCREEN_Z + 0.0015]} rotation={[0, 0, -0.7]} material={screenUIMaterial}>
+            <torusGeometry args={[0.15, 0.005, 8, 32, Math.PI * 1.05]} />
+          </mesh>
+
+          {/* signal-indicator bars, ascending, corner of the screen */}
+          {SIGNAL_BAR_HEIGHTS.map((h, i) => (
+            <mesh
+              key={i}
+              position={[-0.32 + i * 0.045, -0.62 + h / 2, SCREEN_Z + 0.002]}
+              material={screenUIMaterial}
+            >
+              <boxGeometry args={[0.03, h, 0.004]} />
+            </mesh>
+          ))}
+
+          {/* location nodes */}
+          <mesh position={NODE_A} material={screenUIMaterial}>
+            <sphereGeometry args={[0.018, 10, 10]} />
+          </mesh>
+          <mesh position={NODE_B} material={screenUIMaterial}>
+            <sphereGeometry args={[0.018, 10, 10]} />
+          </mesh>
+          <mesh position={NODE_C} material={screenUIMaterial}>
+            <sphereGeometry args={[0.015, 10, 10]} />
+          </mesh>
+
+          {/* one roaming-route, thin curved line connecting two of the location nodes */}
+          <QuadraticBezierLine
+            start={NODE_A}
+            end={NODE_B}
+            mid={ROUTE_MID}
+            color={VISUAL_COLOR.active}
+            lineWidth={1}
+            transparent
+            opacity={0.4}
+          />
+        </group>
+
+        {/* screen dot — flashes when the transfer packet arrives */}
+        <group ref={screenDotGroupRef} position={[0, SCREEN_Y, SCREEN_Z + 0.004]}>
+          <StatusLight radius={0.035} handleRef={screenDotHandleRef} />
+        </group>
+
+        {/* status light near the top edge */}
+        <group ref={topStatusGroupRef} position={[0, 0.82, 0.045]}>
+          <StatusLight radius={0.022} />
+        </group>
+
+        {/* eSIM activation marker on the upper-right edge — where the connection attaches */}
+        <group position={PHONE_ACTIVATION_MARKER}>
+          <mesh material={visualMaterials.edge}>
+            <torusGeometry args={[0.045, 0.008, 8, 24]} />
+          </mesh>
+          <group ref={markerGroupRef}>
+            <StatusLight radius={0.022} />
+          </group>
+        </group>
+      </FloatingGroup>
     </group>
   )
-}
+})
+
+EsimPhone.displayName = 'EsimPhone'
