@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { Plus, ExternalLink, Pencil, Trash2 } from 'lucide-react'
+import { Plus, ExternalLink, Pencil, Trash2, AlertCircle } from 'lucide-react'
 import { productService } from '@/services/productService'
 import type { Product, ProductCategory } from '@/types'
 import { Seo } from '@/components/common/Seo'
@@ -9,14 +9,20 @@ import { SearchBar } from '@/components/common/SearchBar'
 import { Select } from '@/components/common/Select'
 import { Badge } from '@/components/common/Badge'
 import { Button } from '@/components/common/Button'
+import { EmptyState } from '@/components/common/EmptyState'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { PageHeader } from '@/components/admin/PageHeader'
 import { DataTable } from '@/components/admin/DataTable'
+import { Pagination } from '@/components/common/Pagination'
 import { useLocale } from '@/hooks/useLocale'
 import { localize } from '@/utils/localize'
 import { formatCurrency } from '@/utils/formatters'
 import { useUiStore } from '@/stores/uiStore'
 import { ROUTES } from '@/constants/routes'
+
+type ProductSort = 'name_asc' | 'name_desc' | 'price_asc' | 'price_desc'
+
+const PAGE_SIZE = 10
 
 export function AdminProductsPage() {
   const { t } = useTranslation()
@@ -25,19 +31,33 @@ export function AdminProductsPage() {
 
   const [products, setProducts] = useState<Product[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [search, setSearch] = useState('')
   const [category, setCategory] = useState<ProductCategory | ''>('')
+  const [sort, setSort] = useState<ProductSort>('name_asc')
+  const [page, setPage] = useState(1)
   const [deleteTarget, setDeleteTarget] = useState<Product | null>(null)
 
-  useEffect(() => {
+  function loadProducts() {
+    setIsLoading(true)
+    setError(null)
     productService
       .getAllForAdmin()
       .then(setProducts)
+      .catch((err) => setError(err instanceof Error ? err.message : t('toast.genericError')))
       .finally(() => setIsLoading(false))
+  }
+
+  useEffect(() => {
+    loadProducts()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // The admin products endpoint has no server-side search/sort/pagination params
+  // (getAllForAdmin() takes none) — the full list is fetched once and all three
+  // are applied client-side over data that's already real, not fabricated.
   const filtered = useMemo(() => {
-    return products.filter((p) => {
+    const rows = products.filter((p) => {
       if (category && p.category !== category) return false
       if (search) {
         const q = search.toLowerCase()
@@ -46,7 +66,29 @@ export function AdminProductsPage() {
       }
       return true
     })
-  }, [products, search, category])
+    const sorted = [...rows].sort((a, b) => {
+      switch (sort) {
+        case 'name_asc':
+          return localize(a.name, locale).localeCompare(localize(b.name, locale))
+        case 'name_desc':
+          return localize(b.name, locale).localeCompare(localize(a.name, locale))
+        case 'price_asc':
+          return a.startingPrice - b.startingPrice
+        case 'price_desc':
+          return b.startingPrice - a.startingPrice
+        default:
+          return 0
+      }
+    })
+    return sorted
+  }, [products, search, category, sort, locale])
+
+  useEffect(() => {
+    setPage(1)
+  }, [search, category, sort])
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
+  const pageItems = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
 
   async function handleConfirmDelete() {
     if (!deleteTarget) return
@@ -86,10 +128,38 @@ export function AdminProductsPage() {
           placeholder={t('admin.products.category')}
           className="sm:w-56"
         />
+        <Select
+          value={sort}
+          onChange={(e) => setSort(e.target.value as ProductSort)}
+          className="sm:w-56"
+          options={[
+            { value: 'name_asc', label: t('admin.products.sortNameAsc') },
+            { value: 'name_desc', label: t('admin.products.sortNameDesc') },
+            { value: 'price_asc', label: t('admin.products.sortPriceAsc') },
+            { value: 'price_desc', label: t('admin.products.sortPriceDesc') },
+          ]}
+        />
       </div>
 
-      <DataTable
-        data={filtered}
+      {error ? (
+        <EmptyState
+          icon={<AlertCircle className="size-6" />}
+          title={t('common.error')}
+          description={error}
+          action={
+            <button
+              type="button"
+              onClick={loadProducts}
+              className="rounded-xl bg-primary px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-dark focus-ring"
+            >
+              {t('common.tryAgain')}
+            </button>
+          }
+        />
+      ) : (
+        <>
+          <DataTable
+        data={pageItems}
         isLoading={isLoading}
         rowKey={(p) => p.id}
         emptyTitle={t('common.noResults')}
@@ -163,7 +233,15 @@ export function AdminProductsPage() {
             ),
           },
         ]}
-      />
+          />
+
+          {!isLoading && filtered.length > 0 && (
+            <div className="mt-5">
+              <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
+            </div>
+          )}
+        </>
+      )}
 
       <ConfirmDialog
         isOpen={!!deleteTarget}

@@ -1,8 +1,9 @@
-import { useEffect, type ReactNode } from 'react'
+import { useEffect, useRef, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { X } from 'lucide-react'
 import { cn } from '@/utils/cn'
+import { useFocusTrap } from '@/hooks/useFocusTrap'
 
 interface ModalProps {
   isOpen: boolean
@@ -15,6 +16,9 @@ interface ModalProps {
 const sizeClasses = { sm: 'max-w-sm', md: 'max-w-lg', lg: 'max-w-2xl' }
 
 export function Modal({ isOpen, onClose, title, children, size = 'md' }: ModalProps) {
+  const dialogRef = useRef<HTMLDivElement>(null)
+  useFocusTrap(isOpen, dialogRef)
+
   useEffect(() => {
     if (!isOpen) return
     const onKeyDown = (e: KeyboardEvent) => {
@@ -40,11 +44,13 @@ export function Modal({ isOpen, onClose, title, children, size = 'md' }: ModalPr
             onClick={onClose}
           />
           <motion.div
+            ref={dialogRef}
+            tabIndex={-1}
             role="dialog"
             aria-modal="true"
             aria-labelledby={title ? 'modal-title' : undefined}
             className={cn(
-              'relative z-10 w-full rounded-2xl border border-border bg-background p-6 shadow-2xl',
+              'relative z-10 w-full rounded-2xl border border-border bg-background p-6 shadow-2xl focus:outline-none',
               sizeClasses[size],
             )}
             initial={{ opacity: 0, scale: 0.95, y: 10 }}

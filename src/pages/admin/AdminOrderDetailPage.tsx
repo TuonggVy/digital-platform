@@ -7,7 +7,7 @@ import type { BackendOrder, OrderStatus as BackendOrderStatus } from '@/services
 import { paymentApiService } from '@/services/paymentApiService'
 import type { BackendPayment } from '@/services/paymentApiService'
 import { Seo } from '@/components/common/Seo'
-import { Breadcrumb } from '@/components/common/Breadcrumb'
+import { PageHeader } from '@/components/admin/PageHeader'
 import { Button } from '@/components/common/Button'
 import { Select } from '@/components/common/Select'
 import { EmptyState } from '@/components/common/EmptyState'
@@ -121,25 +121,22 @@ export function AdminOrderDetailPage() {
     <div className="flex flex-col gap-6">
       <Seo title={`${t('account.orderDetail.title')} - ${order.orderCode}`} />
 
-      <Breadcrumb
-        items={[
+      <PageHeader
+        title={order.orderCode}
+        breadcrumb={[
           { label: t('admin.orders.title'), href: ROUTES.ADMIN_ORDERS },
           { label: order.orderCode },
         ]}
+        description={
+          <>
+            <p>
+              {t('admin.orders.systemId')}: {order.id}
+            </p>
+            <p>{formatDateTime(order.createdDate, locale)}</p>
+          </>
+        }
+        meta={<BackendOrderStatusBadge status={order.status} tone="dark" />}
       />
-
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold text-text-primary sm:text-3xl">
-            {order.orderCode}
-          </h1>
-          <p className="text-xs text-text-secondary">
-            {t('admin.orders.systemId')}: {order.id}
-          </p>
-          <p className="text-sm text-text-secondary">{formatDateTime(order.createdDate, locale)}</p>
-        </div>
-        <BackendOrderStatusBadge status={order.status} />
-      </div>
 
       <div className="rounded-2xl border border-border p-5">
         <h2 className="mb-4 text-lg font-semibold text-text-primary">

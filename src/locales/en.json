@@ -33,6 +33,7 @@
     "delete": "Delete",
     "add": "Add new",
     "status": "Status",
+    "actions": "Actions",
     "error": "Something went wrong",
     "all": "All",
     "yes": "Yes",
@@ -897,6 +898,11 @@
       "logout": "Log out",
       "comingSoon": "This feature is coming soon"
     },
+    "errorBoundary": {
+      "title": "Something went wrong displaying this page",
+      "description": "Please try reloading the page. Contact support if the issue persists.",
+      "reload": "Reload page"
+    },
     "dashboard": {
       "title": "Admin overview",
       "totalRevenue": "Total revenue",
@@ -957,6 +963,10 @@
       "preview": "Preview",
       "deleteConfirm": "Are you sure you want to delete this product?",
       "deleted": "Product deleted",
+      "sortNameAsc": "Name A-Z",
+      "sortNameDesc": "Name Z-A",
+      "sortPriceAsc": "Price: low to high",
+      "sortPriceDesc": "Price: high to low",
       "form": {
         "nameVi": "Vietnamese name",
         "nameEn": "English name",
@@ -1041,6 +1051,7 @@
     },
     "services": {
       "title": "Manage services",
+      "description": "Track Cloud, Kaspersky and eSIM services provisioned for customers.",
       "noServices": "No services found",
       "startDate": "Start date",
       "expiryDate": "Expiry date",
@@ -1056,10 +1067,17 @@
       "country": "Country",
       "dataAmount": "Data amount",
       "days": "Days",
-      "user": "User"
+      "daysUnit": "days",
+      "user": "User",
+      "specs": "Specs",
+      "searchPlaceholder": "Search by order code, product or package...",
+      "sortExpiryAsc": "Expiry: soonest first",
+      "sortExpiryDesc": "Expiry: latest first",
+      "resultsCount": "{{count}} services"
     },
     "licenses": {
       "title": "Kaspersky license stock",
+      "description": "Manage the Kaspersky license stock and assignments to orders.",
       "addNew": "Add license",
       "key": "License key",
       "product": "Product",
@@ -1077,10 +1095,14 @@
       },
       "cancel": "Cancel",
       "save": "Save",
-      "added": "License added"
+      "added": "License added",
+      "noLicenses": "No licenses in stock yet",
+      "searchPlaceholder": "Search by license key or product...",
+      "resultsCount": "{{count}} licenses"
     },
     "esims": {
       "title": "eSIM stock",
+      "description": "Manage the eSIM stock and assignments to orders.",
       "addNew": "Add eSIM",
       "code": "eSIM code",
       "country": "Country",
@@ -1097,10 +1119,17 @@
       },
       "cancel": "Cancel",
       "save": "Save",
-      "added": "eSIM added"
+      "added": "eSIM added",
+      "noEsims": "No eSIMs in stock yet",
+      "searchPlaceholder": "Search by eSIM code or country...",
+      "sortDaysAsc": "Days: low to high",
+      "sortDaysDesc": "Days: high to low",
+      "resultsCount": "{{count}} eSIMs"
     },
     "tickets": {
+      "code": "Code",
       "title": "Manage support tickets",
+      "description": "Handle and reply to customer support tickets.",
       "updatePriority": "Update priority",
       "updateStatus": "Update status",
       "addReply": "Add reply",
@@ -1112,6 +1141,11 @@
       "noTickets": "No tickets found",
       "user": "Sender",
       "details": "Ticket details",
+      "lastUpdated": "Last updated",
+      "searchPlaceholder": "Search by ticket code or subject...",
+      "sortUpdatedDesc": "Updated: newest first",
+      "sortUpdatedAsc": "Updated: oldest first",
+      "resultsCount": "{{count}} tickets",
       "categories": {
         "cloud": "Cloud",
         "kaspersky": "Kaspersky",
@@ -1122,17 +1156,26 @@
     },
     "content": {
       "title": "Manage website content",
+      "description": "Manage banners, FAQs, support articles and testimonials shown on the website.",
       "banners": "Banners",
+      "bannersDescription": "Turn banners shown on the homepage on or off.",
       "faqs": "FAQs",
+      "faqsDescription": "Frequently asked questions shown to customers.",
       "articles": "Support articles",
+      "articlesDescription": "Articles listed in the support center.",
       "testimonials": "Testimonials",
+      "testimonialsDescription": "Customer testimonials shown on the website.",
       "bannerStatus": "Display status",
       "readTime": "Read time",
       "category": "Category",
       "rating": "Rating",
       "role": "Role",
       "group": "Group",
-      "minutes": "min"
+      "minutes": "min",
+      "noBanners": "No banners yet",
+      "noFaqs": "No FAQs yet",
+      "noArticles": "No articles yet",
+      "noTestimonials": "No testimonials yet"
     }
   },
   "toast": {

@@ -91,7 +91,11 @@ export function ServiceOverviewPanel({ title, categories, viewAllLabel }: Servic
                 </span>
                 {category.label}
               </div>
-              <Link to={category.href} className="text-xs font-medium text-primary hover:underline focus-ring">
+              <Link
+                to={category.href}
+                aria-label={`${viewAllLabel} — ${category.label}`}
+                className="-m-1.5 rounded p-1.5 text-xs font-medium text-primary hover:underline focus-ring"
+              >
                 {viewAllLabel}
               </Link>
             </div>

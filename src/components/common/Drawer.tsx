@@ -1,8 +1,9 @@
-import { useEffect, type ReactNode } from 'react'
+import { useEffect, useRef, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { X } from 'lucide-react'
 import { cn } from '@/utils/cn'
+import { useFocusTrap } from '@/hooks/useFocusTrap'
 
 interface DrawerProps {
   isOpen: boolean
@@ -21,6 +22,9 @@ export function Drawer({
   side = 'right',
   widthClassName = 'max-w-md',
 }: DrawerProps) {
+  const panelRef = useRef<HTMLDivElement>(null)
+  useFocusTrap(isOpen, panelRef)
+
   useEffect(() => {
     if (!isOpen) return
     const onKeyDown = (e: KeyboardEvent) => {
@@ -48,10 +52,12 @@ export function Drawer({
             onClick={onClose}
           />
           <motion.div
+            ref={panelRef}
+            tabIndex={-1}
             role="dialog"
             aria-modal="true"
             className={cn(
-              'relative z-10 flex h-full w-full flex-col bg-background shadow-2xl',
+              'relative z-10 flex h-full w-full flex-col bg-background shadow-2xl focus:outline-none',
               widthClassName,
               isRight ? 'ml-auto' : 'mr-auto',
             )}

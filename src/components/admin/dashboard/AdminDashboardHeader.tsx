@@ -50,7 +50,10 @@ export function AdminDashboardHeader({
         </div>
 
         <div className="flex flex-col gap-3 sm:items-end">
-          <div className="flex items-center gap-2 font-data text-xs uppercase tracking-wide text-white/70">
+          <div
+            className="flex items-center gap-2 font-data text-xs uppercase tracking-wide text-white/70"
+            aria-live="polite"
+          >
             <span
               className={cn('inline-block size-1.5 rounded-full', STATUS_DOT_CLASS[status])}
               aria-hidden="true"

@@ -23,7 +23,7 @@ export function QuickActionsRow({ title, actions }: QuickActionsRowProps) {
           <Link
             key={action.key}
             to={action.href}
-            className="flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-medium text-text-primary transition-colors hover:bg-surface focus-ring"
+            className="flex items-center gap-2 rounded-lg border border-border px-3 py-3 text-sm font-medium text-text-primary transition-colors hover:bg-surface focus-ring"
           >
             {action.icon}
             <span className="truncate">{action.label}</span>

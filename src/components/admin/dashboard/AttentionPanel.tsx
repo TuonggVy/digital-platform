@@ -54,7 +54,8 @@ export function AttentionPanel({ title, groups, emptyLabel }: AttentionPanelProp
               </div>
               <Link
                 to={group.href}
-                className="text-sm font-medium text-primary hover:underline focus-ring sm:shrink-0"
+                aria-label={`${group.actionLabel} — ${group.label}`}
+                className="-m-1.5 shrink-0 rounded p-1.5 text-sm font-medium text-primary hover:underline focus-ring"
               >
                 {group.actionLabel}
               </Link>

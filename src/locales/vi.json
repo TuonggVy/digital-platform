@@ -33,6 +33,7 @@
     "delete": "Xóa",
     "add": "Thêm mới",
     "status": "Trạng thái",
+    "actions": "Thao tác",
     "error": "Đã có lỗi xảy ra",
     "all": "Tất cả",
     "yes": "Có",
@@ -897,6 +898,11 @@
       "logout": "Đăng xuất",
       "comingSoon": "Tính năng đang được phát triển"
     },
+    "errorBoundary": {
+      "title": "Đã có lỗi xảy ra khi hiển thị trang này",
+      "description": "Vui lòng thử tải lại trang. Nếu vẫn còn lỗi, hãy liên hệ bộ phận kỹ thuật.",
+      "reload": "Tải lại trang"
+    },
     "dashboard": {
       "title": "Tổng quan quản trị",
       "totalRevenue": "Tổng doanh thu",
@@ -957,6 +963,10 @@
       "preview": "Xem trước",
       "deleteConfirm": "Bạn có chắc chắn muốn xóa sản phẩm này?",
       "deleted": "Đã xóa sản phẩm",
+      "sortNameAsc": "Tên A-Z",
+      "sortNameDesc": "Tên Z-A",
+      "sortPriceAsc": "Giá tăng dần",
+      "sortPriceDesc": "Giá giảm dần",
       "form": {
         "nameVi": "Tên tiếng Việt",
         "nameEn": "Tên tiếng Anh",
@@ -1041,6 +1051,7 @@
     },
     "services": {
       "title": "Quản lý dịch vụ",
+      "description": "Theo dõi dịch vụ Cloud, Kaspersky và eSIM đã cấp cho khách hàng.",
       "noServices": "Không có dịch vụ nào",
       "startDate": "Ngày bắt đầu",
       "expiryDate": "Ngày hết hạn",
@@ -1056,10 +1067,17 @@
       "country": "Quốc gia",
       "dataAmount": "Dung lượng",
       "days": "Số ngày",
-      "user": "Người dùng"
+      "daysUnit": "ngày",
+      "user": "Người dùng",
+      "specs": "Cấu hình",
+      "searchPlaceholder": "Tìm theo mã đơn, sản phẩm hoặc gói...",
+      "sortExpiryAsc": "Hết hạn: gần nhất trước",
+      "sortExpiryDesc": "Hết hạn: xa nhất trước",
+      "resultsCount": "{{count}} dịch vụ"
     },
     "licenses": {
       "title": "Kho license Kaspersky",
+      "description": "Quản lý kho license Kaspersky và gán cho đơn hàng.",
       "addNew": "Thêm license",
       "key": "License key",
       "product": "Sản phẩm",
@@ -1077,10 +1095,14 @@
       },
       "cancel": "Hủy",
       "save": "Lưu",
-      "added": "Đã thêm license mới"
+      "added": "Đã thêm license mới",
+      "noLicenses": "Chưa có license nào trong kho",
+      "searchPlaceholder": "Tìm theo license key hoặc sản phẩm...",
+      "resultsCount": "{{count}} license"
     },
     "esims": {
       "title": "Kho eSIM",
+      "description": "Quản lý kho eSIM và gán cho đơn hàng.",
       "addNew": "Thêm eSIM",
       "code": "Mã eSIM",
       "country": "Quốc gia",
@@ -1097,10 +1119,17 @@
       },
       "cancel": "Hủy",
       "save": "Lưu",
-      "added": "Đã thêm eSIM mới"
+      "added": "Đã thêm eSIM mới",
+      "noEsims": "Chưa có eSIM nào trong kho",
+      "searchPlaceholder": "Tìm theo mã eSIM hoặc quốc gia...",
+      "sortDaysAsc": "Số ngày: thấp đến cao",
+      "sortDaysDesc": "Số ngày: cao đến thấp",
+      "resultsCount": "{{count}} eSIM"
     },
     "tickets": {
+      "code": "Mã",
       "title": "Quản lý yêu cầu hỗ trợ",
+      "description": "Xử lý và phản hồi yêu cầu hỗ trợ từ khách hàng.",
       "updatePriority": "Đổi mức độ ưu tiên",
       "updateStatus": "Đổi trạng thái",
       "addReply": "Thêm phản hồi",
@@ -1112,6 +1141,11 @@
       "noTickets": "Không có yêu cầu nào",
       "user": "Người gửi",
       "details": "Chi tiết yêu cầu",
+      "lastUpdated": "Cập nhật gần nhất",
+      "searchPlaceholder": "Tìm theo mã yêu cầu hoặc chủ đề...",
+      "sortUpdatedDesc": "Cập nhật: mới nhất trước",
+      "sortUpdatedAsc": "Cập nhật: cũ nhất trước",
+      "resultsCount": "{{count}} yêu cầu",
       "categories": {
         "cloud": "Cloud",
         "kaspersky": "Kaspersky",
@@ -1122,17 +1156,26 @@
     },
     "content": {
       "title": "Quản lý nội dung website",
+      "description": "Quản lý banner, câu hỏi thường gặp, bài viết hỗ trợ và đánh giá hiển thị trên website.",
       "banners": "Banner",
+      "bannersDescription": "Bật hoặc tắt hiển thị banner trên trang chủ.",
       "faqs": "Câu hỏi thường gặp",
+      "faqsDescription": "Nội dung câu hỏi thường gặp hiển thị cho khách hàng.",
       "articles": "Bài viết hỗ trợ",
+      "articlesDescription": "Danh sách bài viết trong trung tâm hỗ trợ.",
       "testimonials": "Đánh giá khách hàng",
+      "testimonialsDescription": "Đánh giá của khách hàng hiển thị trên website.",
       "bannerStatus": "Trạng thái hiển thị",
       "readTime": "Thời gian đọc",
       "category": "Danh mục",
       "rating": "Đánh giá",
       "role": "Vai trò",
       "group": "Nhóm",
-      "minutes": "phút"
+      "minutes": "phút",
+      "noBanners": "Chưa có banner nào",
+      "noFaqs": "Chưa có câu hỏi thường gặp nào",
+      "noArticles": "Chưa có bài viết nào",
+      "noTestimonials": "Chưa có đánh giá nào"
     }
   },
   "toast": {
