@@ -19,7 +19,17 @@ const variantMap: Record<BackendOrderStatus, 'warning' | 'success' | 'primary' |
   REFUNDED: 'neutral',
 }
 
-export function BackendOrderStatusBadge({ status }: { status: BackendOrderStatus }) {
+export function BackendOrderStatusBadge({
+  status,
+  tone,
+}: {
+  status: BackendOrderStatus
+  tone?: 'light' | 'dark'
+}) {
   const { t } = useTranslation()
-  return <Badge variant={variantMap[status]}>{t(`status.backendOrder.${status}`)}</Badge>
+  return (
+    <Badge variant={variantMap[status]} tone={tone}>
+      {t(`status.backendOrder.${status}`)}
+    </Badge>
+  )
 }

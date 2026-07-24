@@ -17,6 +17,7 @@ import { Pagination } from '@/components/common/Pagination'
 import { EmptyState } from '@/components/common/EmptyState'
 import { Badge } from '@/components/common/Badge'
 import { useLocale } from '@/hooks/useLocale'
+import { useDebouncedValue } from '@/hooks/useDebouncedValue'
 import { formatDateTime } from '@/utils/formatters'
 import { ROUTES } from '@/constants/routes'
 
@@ -35,14 +36,9 @@ export function AdminCustomersPage() {
   const [error, setError] = useState<string | null>(null)
 
   const [searchInput, setSearchInput] = useState('')
-  const [search, setSearch] = useState('')
+  const search = useDebouncedValue(searchInput, SEARCH_DEBOUNCE_MS)
   const [status, setStatus] = useState<CustomerStatus | ''>('')
   const [sort, setSort] = useState<GetAdminCustomersParams['sort']>('newest')
-
-  useEffect(() => {
-    const handle = setTimeout(() => setSearch(searchInput), SEARCH_DEBOUNCE_MS)
-    return () => clearTimeout(handle)
-  }, [searchInput])
 
   useEffect(() => {
     setPage(1)

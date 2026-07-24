@@ -13,6 +13,7 @@ import { Pagination } from '@/components/common/Pagination'
 import { EmptyState } from '@/components/common/EmptyState'
 import { BackendOrderStatusBadge } from '@/components/common/BackendOrderStatusBadge'
 import { useLocale } from '@/hooks/useLocale'
+import { useDebouncedValue } from '@/hooks/useDebouncedValue'
 import { formatCurrency, formatDateTime } from '@/utils/formatters'
 import { ROUTES } from '@/constants/routes'
 
@@ -42,16 +43,11 @@ export function AdminOrdersPage() {
   const [error, setError] = useState<string | null>(null)
 
   const [searchInput, setSearchInput] = useState('')
-  const [search, setSearch] = useState('')
+  const search = useDebouncedValue(searchInput, SEARCH_DEBOUNCE_MS)
   const [status, setStatus] = useState<BackendOrderStatus | ''>('')
   const [sort, setSort] = useState<GetAdminOrdersParams['sort']>('newest')
 
-  // Debounce the search box — reset to page 1 once the debounced value actually changes.
-  useEffect(() => {
-    const handle = setTimeout(() => setSearch(searchInput), SEARCH_DEBOUNCE_MS)
-    return () => clearTimeout(handle)
-  }, [searchInput])
-
+  // Reset to page 1 once the debounced search value (or any filter) actually changes.
   useEffect(() => {
     setPage(1)
   }, [search, status, sort])

@@ -26,7 +26,7 @@ import { DataTable } from '@/components/admin/DataTable'
 import { BackendOrderStatusBadge } from '@/components/common/BackendOrderStatusBadge'
 import { EmptyState } from '@/components/common/EmptyState'
 import { AdminDashboardHeader, type DashboardHealthStatus } from '@/components/admin/dashboard/AdminDashboardHeader'
-import { MetricCard } from '@/components/admin/dashboard/MetricCard'
+import { StatCard } from '@/components/admin/StatCard'
 import {
   ServiceOverviewPanel,
   type DistributionSegment,
@@ -366,10 +366,12 @@ export function AdminDashboardPage() {
       />
 
       {!anyMetricSourceSettled ? (
-        <MetricsRowSkeleton />
+        <div aria-busy="true">
+          <MetricsRowSkeleton />
+        </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <MetricCard
+          <StatCard
             icon={<ShoppingBag className="size-5" />}
             label={t('admin.dashboard.totalOrders')}
             href={ROUTES.ADMIN_ORDERS}
@@ -383,7 +385,7 @@ export function AdminDashboardPage() {
               )
             }
           />
-          <MetricCard
+          <StatCard
             icon={<Users className="size-5" />}
             label={t('admin.dashboard.totalCustomers')}
             href={ROUTES.ADMIN_CUSTOMERS}
@@ -397,7 +399,7 @@ export function AdminDashboardPage() {
               )
             }
           />
-          <MetricCard
+          <StatCard
             icon={<Server className="size-5" />}
             label={t('admin.dashboard.activeServices')}
             href={ROUTES.ADMIN_SERVICES}
@@ -411,7 +413,7 @@ export function AdminDashboardPage() {
               )
             }
           />
-          <MetricCard
+          <StatCard
             icon={<AlertTriangle className="size-5" />}
             label={t('admin.dashboard.servicesNeedingAttention')}
             href={ROUTES.ADMIN_SERVICES}
@@ -430,22 +432,26 @@ export function AdminDashboardPage() {
       )}
 
       {coreData === null && !coreError ? (
-        <ServiceOverviewSkeleton columns={3} />
+        <div aria-busy="true">
+          <ServiceOverviewSkeleton columns={3} />
+        </div>
       ) : coreError ? (
-        <EmptyState
-          icon={<AlertCircle className="size-6" />}
-          title={t('common.error')}
-          description={coreError}
-          action={
-            <button
-              type="button"
-              onClick={loadCoreData}
-              className="rounded-xl bg-primary px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-dark"
-            >
-              {t('common.tryAgain')}
-            </button>
-          }
-        />
+        <div role="alert">
+          <EmptyState
+            icon={<AlertCircle className="size-6" />}
+            title={t('common.error')}
+            description={coreError}
+            action={
+              <button
+                type="button"
+                onClick={loadCoreData}
+                className="rounded-xl bg-primary px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-dark focus-ring"
+              >
+                {t('common.tryAgain')}
+              </button>
+            }
+          />
+        </div>
       ) : (
         <ServiceOverviewPanel
           title={t('admin.dashboard.serviceOverview.title')}
@@ -459,73 +465,83 @@ export function AdminDashboardPage() {
           <h2 className="font-display text-base font-semibold text-text-primary">
             {t('admin.dashboard.recentOrders')}
           </h2>
-          <Link to={ROUTES.ADMIN_ORDERS} className="text-sm font-medium text-primary hover:underline">
+          <Link
+            to={ROUTES.ADMIN_ORDERS}
+            className="-m-1.5 rounded p-1.5 text-sm font-medium text-primary hover:underline focus-ring"
+          >
             {t('common.seeAll')}
           </Link>
         </div>
         {ordersError ? (
-          <EmptyState
-            icon={<AlertCircle className="size-6" />}
-            title={t('common.error')}
-            description={ordersError}
-            action={
-              <button
-                type="button"
-                onClick={loadOrderStats}
-                className="rounded-xl bg-primary px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-dark"
-              >
-                {t('common.tryAgain')}
-              </button>
-            }
-          />
+          <div role="alert">
+            <EmptyState
+              icon={<AlertCircle className="size-6" />}
+              title={t('common.error')}
+              description={ordersError}
+              action={
+                <button
+                  type="button"
+                  onClick={loadOrderStats}
+                  className="rounded-xl bg-primary px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-dark focus-ring"
+                >
+                  {t('common.tryAgain')}
+                </button>
+              }
+            />
+          </div>
         ) : (
-          <DataTable
-            data={recentOrders}
-            isLoading={ordersLoading}
-            emptyTitle={t('admin.orders.noOrders')}
-            rowKey={(o) => o.id}
-            columns={[
-              {
-                key: 'code',
-                header: t('admin.orders.orderCode'),
-                render: (o) => <span className="font-data">{o.orderCode}</span>,
-              },
-              { key: 'customer', header: t('admin.orders.customer'), render: (o) => o.customerName },
-              {
-                key: 'total',
-                header: t('admin.orders.total'),
-                render: (o) => formatCurrency(o.totalAmount, locale),
-              },
-              {
-                key: 'status',
-                header: t('admin.orders.status'),
-                render: (o) => <BackendOrderStatusBadge status={o.status} />,
-              },
-              {
-                key: 'date',
-                header: t('admin.orders.date'),
-                render: (o) => <span className="font-data">{formatDateTime(o.createdDate, locale)}</span>,
-              },
-              {
-                key: 'actions',
-                header: '',
-                className: 'text-right',
-                render: (o) => (
-                  <Link
-                    to={ROUTES.ADMIN_ORDER_DETAIL(o.id)}
-                    className="text-sm font-medium text-primary hover:underline"
-                  >
-                    {t('common.viewDetails')}
-                  </Link>
-                ),
-              },
-            ]}
-          />
+          <div aria-busy={ordersLoading}>
+            <DataTable
+              data={recentOrders}
+              isLoading={ordersLoading}
+              emptyTitle={t('admin.orders.noOrders')}
+              rowKey={(o) => o.id}
+              columns={[
+                {
+                  key: 'code',
+                  header: t('admin.orders.orderCode'),
+                  render: (o) => <span className="font-data">{o.orderCode}</span>,
+                },
+                { key: 'customer', header: t('admin.orders.customer'), render: (o) => o.customerName },
+                {
+                  key: 'total',
+                  header: t('admin.orders.total'),
+                  render: (o) => formatCurrency(o.totalAmount, locale),
+                },
+                {
+                  key: 'status',
+                  header: t('admin.orders.status'),
+                  render: (o) => <BackendOrderStatusBadge status={o.status} />,
+                },
+                {
+                  key: 'date',
+                  header: t('admin.orders.date'),
+                  render: (o) => <span className="font-data">{formatDateTime(o.createdDate, locale)}</span>,
+                },
+                {
+                  key: 'actions',
+                  header: <span className="sr-only">{t('common.actions')}</span>,
+                  className: 'text-right',
+                  render: (o) => (
+                    <Link
+                      to={ROUTES.ADMIN_ORDER_DETAIL(o.id)}
+                      aria-label={`${t('common.viewDetails')} — ${o.orderCode}`}
+                      className="-m-1.5 inline-block rounded p-1.5 text-sm font-medium text-primary hover:underline focus-ring"
+                    >
+                      {t('common.viewDetails')}
+                    </Link>
+                  ),
+                },
+              ]}
+            />
+          </div>
         )}
       </div>
 
       {coreData === null && !coreError ? (
-        <AttentionPanelSkeleton />
+        <div aria-busy="true">
+          <AttentionPanelSkeleton />
+        </div>
       ) : coreError ? null : (
         <AttentionPanel
           title={t('admin.dashboard.attention.title')}

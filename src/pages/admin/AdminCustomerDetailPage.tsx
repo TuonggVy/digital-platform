@@ -5,7 +5,7 @@ import { AlertCircle } from 'lucide-react'
 import { customerApiService } from '@/services/customerApiService'
 import type { AdminCustomerDetail } from '@/services/customerApiService'
 import { Seo } from '@/components/common/Seo'
-import { Breadcrumb } from '@/components/common/Breadcrumb'
+import { PageHeader } from '@/components/admin/PageHeader'
 import { Button } from '@/components/common/Button'
 import { Badge } from '@/components/common/Badge'
 import { EmptyState } from '@/components/common/EmptyState'
@@ -70,24 +70,19 @@ export function AdminCustomerDetailPage() {
     <div className="flex flex-col gap-6">
       <Seo title={`${t('admin.customers.title')} - ${customer.fullName}`} />
 
-      <Breadcrumb
-        items={[
+      <PageHeader
+        title={customer.fullName}
+        breadcrumb={[
           { label: t('admin.customers.title'), href: ROUTES.ADMIN_CUSTOMERS },
           { label: customer.fullName },
         ]}
+        description={customer.email}
+        meta={
+          <Badge variant={customer.status === 'ACTIVE' ? 'success' : 'neutral'} tone="dark">
+            {t(`admin.customers.status${customer.status === 'ACTIVE' ? 'Active' : 'Inactive'}`)}
+          </Badge>
+        }
       />
-
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold text-text-primary sm:text-3xl">
-            {customer.fullName}
-          </h1>
-          <p className="text-sm text-text-secondary">{customer.email}</p>
-        </div>
-        <Badge variant={customer.status === 'ACTIVE' ? 'success' : 'neutral'}>
-          {t(`admin.customers.status${customer.status === 'ACTIVE' ? 'Active' : 'Inactive'}`)}
-        </Badge>
-      </div>
 
       <div className="rounded-2xl border border-border p-5">
         <h2 className="mb-4 text-lg font-semibold text-text-primary">
