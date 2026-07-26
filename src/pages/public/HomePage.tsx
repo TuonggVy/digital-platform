@@ -11,6 +11,7 @@ import { ProductGrid } from '@/components/product/ProductGrid'
 import { RevealOnScroll } from '@/components/animation/RevealOnScroll'
 import { StaggerContainer, StaggerItem } from '@/components/animation/StaggerContainer'
 import { ProductScrollHero } from '@/components/home/ProductScrollHero'
+import { SpotlightCard } from '@/components/ui/SpotlightCard'
 import { productService } from '@/services/productService'
 import { contentService } from '@/services/contentService'
 import { useLocale } from '@/hooks/useLocale'
@@ -224,11 +225,13 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* ============ 3. PRODUCT CATEGORIES — status-board cards ============ */}
-      <section className="border-b border-home-line bg-home-paper px-4 py-24 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl">
+      {/* ============ 3. PRODUCT CATEGORIES — dark chapter, matches Purchase Process ============ */}
+      <section className="relative overflow-hidden bg-home-ink px-4 py-24 text-home-paper sm:px-6 lg:px-8">
+        <div className="bg-grid-home-dark pointer-events-none absolute inset-0 opacity-50" aria-hidden />
+        <div className="relative mx-auto max-w-7xl">
           <RevealOnScroll>
             <ReadoutHeading
+              dark
               eyebrow={t('home.categories.eyebrow')}
               title={t('home.categories.title')}
               subtitle={t('home.categories.subtitle')}
@@ -237,40 +240,46 @@ export function HomePage() {
           </RevealOnScroll>
           <StaggerContainer className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {CATEGORIES.map((category) => (
-              <StaggerItem key={category.key}>
-                <Link
-                  to={category.href}
-                  className="group flex h-full flex-col gap-4 border border-home-line bg-white/40 p-7 transition-colors duration-200 hover:border-home-wire/50"
+              <StaggerItem key={category.key} className="h-full">
+                <SpotlightCard
+                  tone="none"
+                  spotlightColor="rgba(0,174,239,0.16)"
+                  className="h-full rounded-2xl"
                 >
-                  <div className="flex items-center justify-between">
-                    <span className="flex size-11 items-center justify-center rounded-md bg-home-ink text-home-wire">
-                      <DynamicIcon name={category.icon} className="size-5" />
+                  <Link
+                    to={category.href}
+                    className="group flex h-full flex-col gap-4 rounded-2xl border border-home-paper/10 bg-home-paper/[0.03] p-7 transition-colors duration-200 hover:border-home-wire/50"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="flex size-11 items-center justify-center rounded-md border border-home-wire/30 bg-home-ink text-home-wire">
+                        <DynamicIcon name={category.icon} className="size-5" />
+                      </span>
+                      <span className="font-data text-[11px] tracking-[0.1em] text-home-paper/40">
+                        {category.code}
+                      </span>
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-display text-lg font-semibold text-home-paper">
+                        {t(`home.categories.${category.key}.name`)}
+                      </h3>
+                      <p className="mt-2 text-sm leading-6 text-home-paper/60">
+                        {t(`home.categories.${category.key}.desc`)}
+                      </p>
+                      <ul className="mt-4 flex flex-col gap-1.5">
+                        {(['b1', 'b2', 'b3'] as const).map((b) => (
+                          <li key={b} className="flex items-start gap-2 text-sm text-home-paper/55">
+                            <span className="mt-1.5 size-1 shrink-0 rounded-full bg-home-wire" />
+                            {t(`home.categories.${category.key}.${b}`)}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <span className="inline-flex items-center gap-1.5 text-sm font-medium text-home-paper group-hover:gap-2.5 transition-[gap]">
+                      {t('common.learnMore')}
+                      <ArrowRight className="size-4 text-home-wire" />
                     </span>
-                    <span className="font-data text-[11px] tracking-[0.1em] text-home-graphite-soft">
-                      {category.code}
-                    </span>
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-display text-lg font-semibold text-home-graphite">
-                      {t(`home.categories.${category.key}.name`)}
-                    </h3>
-                    <p className="mt-2 text-sm leading-6 text-home-graphite-soft">
-                      {t(`home.categories.${category.key}.desc`)}
-                    </p>
-                    <ul className="mt-4 flex flex-col gap-1.5">
-                      {(['b1', 'b2', 'b3'] as const).map((b) => (
-                        <li key={b} className="flex items-start gap-2 text-sm text-home-graphite-soft">
-                          <span className="mt-1.5 size-1 shrink-0 rounded-full bg-home-wire" />
-                          {t(`home.categories.${category.key}.${b}`)}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  <span className="inline-flex items-center gap-1.5 text-sm font-medium text-home-graphite group-hover:gap-2.5 transition-[gap]">
-                    {t('common.learnMore')}
-                    <ArrowRight className="size-4 text-home-beacon" />
-                  </span>
-                </Link>
+                  </Link>
+                </SpotlightCard>
               </StaggerItem>
             ))}
           </StaggerContainer>
@@ -376,9 +385,10 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* ============ 8. KASPERSKY ============ */}
-      <section className="border-b border-home-line bg-home-paper px-4 py-24 sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-14 lg:grid-cols-2">
+      {/* ============ 8. KASPERSKY — dark chapter, matches Purchase Process ============ */}
+      <section className="relative overflow-hidden bg-home-ink px-4 py-24 text-home-paper sm:px-6 lg:px-8">
+        <div className="bg-grid-home-dark pointer-events-none absolute inset-0 opacity-50" aria-hidden />
+        <div className="relative mx-auto grid max-w-7xl grid-cols-1 items-center gap-14 lg:grid-cols-2">
           <RevealOnScroll direction="left" className="order-2 lg:order-1">
             <ServiceProductVisual
               src="/images/home/kaspersky-security-3d-transparent.webp"
@@ -389,6 +399,7 @@ export function HomePage() {
 
           <RevealOnScroll direction="right" delay={0.1} className="order-1 lg:order-2">
             <ReadoutHeading
+              dark
               align="left"
               eyebrow={t('home.kasperskySection.eyebrow')}
               title={t('home.kasperskySection.title')}
@@ -399,8 +410,8 @@ export function HomePage() {
               {KASPERSKY_FEATURES.map((feature) => (
                 <StaggerItem key={feature.key}>
                   <div className="flex items-start gap-3">
-                    <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-home-beacon" />
-                    <span className="text-sm text-home-graphite-soft">
+                    <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-home-wire" />
+                    <span className="text-sm text-home-paper/60">
                       {t(`home.kasperskySection.${feature.key}`)}
                     </span>
                   </div>
