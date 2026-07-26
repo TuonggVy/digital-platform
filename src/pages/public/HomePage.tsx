@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { motion } from 'framer-motion'
 import { ArrowRight, Star, CheckCircle2 } from 'lucide-react'
 import { Seo } from '@/components/common/Seo'
 import { Accordion } from '@/components/common/Accordion'
@@ -12,11 +11,10 @@ import { ProductGrid } from '@/components/product/ProductGrid'
 import { RevealOnScroll } from '@/components/animation/RevealOnScroll'
 import { StaggerContainer, StaggerItem } from '@/components/animation/StaggerContainer'
 import { AnimatedCounter } from '@/components/animation/AnimatedCounter'
-import { Hero } from '@/components/home/Hero'
+import { ProductScrollHero } from '@/components/home/ProductScrollHero'
 import { CloudInfrastructureVisual } from '@/components/visuals/cloud3d/CloudInfrastructureVisual'
 import { SecurityPerimeterVisual } from '@/components/visuals/security3d/SecurityPerimeterVisual'
 import { EsimConnectionVisual } from '@/components/visuals/esim3d/EsimConnectionVisual'
-import { SWEEP_EXIT_X } from '@/components/home/HeroBackground'
 import { productService } from '@/services/productService'
 import { contentService } from '@/services/contentService'
 import { useLocale } from '@/hooks/useLocale'
@@ -162,10 +160,10 @@ export function HomePage() {
     <div className="font-plex">
       <Seo title={t('home.hero.title')} description={t('home.hero.subtitle')} />
 
-      {/* ============ 1. HERO — "Signal Sweep" signature ============ */}
-      <Hero />
+      {/* ============ 1. HERO — scroll-driven Cloud → product lineup ============ */}
+      <ProductScrollHero />
 
-      {/* ============ 2. TRUSTED BY — receives the Hero's signal sweep ============ */}
+      {/* ============ 2. TRUSTED BY ============ */}
       <section className="relative overflow-hidden border-b border-home-line bg-home-paper px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
         <div
           className="pointer-events-none absolute inset-x-0 top-0 h-40"
@@ -175,43 +173,6 @@ export function HomePage() {
           }}
           aria-hidden
         />
-        <svg
-          viewBox="0 0 1440 160"
-          preserveAspectRatio="none"
-          className="pointer-events-none absolute inset-x-0 top-0 h-40 w-full"
-          aria-hidden
-        >
-          <defs>
-            <linearGradient id="sweep-landing-right" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="var(--color-primary)" />
-              <stop offset="100%" stopColor="var(--color-primary)" stopOpacity="0" />
-            </linearGradient>
-            <linearGradient id="sweep-landing-left" x1="100%" y1="0%" x2="0%" y2="0%">
-              <stop offset="0%" stopColor="var(--color-primary)" />
-              <stop offset="100%" stopColor="var(--color-primary)" stopOpacity="0" />
-            </linearGradient>
-          </defs>
-          <motion.path
-            d={`M${SWEEP_EXIT_X},0 C${SWEEP_EXIT_X},60 820,75 960,76 L1220,76`}
-            fill="none"
-            stroke="url(#sweep-landing-right)"
-            strokeWidth={2}
-            strokeLinecap="round"
-            initial={{ pathLength: 0, opacity: 0 }}
-            animate={{ pathLength: 1, opacity: 0.7 }}
-            transition={{ duration: 1.1, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          />
-          <motion.path
-            d={`M${SWEEP_EXIT_X},0 C${SWEEP_EXIT_X},60 620,75 480,76 L220,76`}
-            fill="none"
-            stroke="url(#sweep-landing-left)"
-            strokeWidth={2}
-            strokeLinecap="round"
-            initial={{ pathLength: 0, opacity: 0 }}
-            animate={{ pathLength: 1, opacity: 0.7 }}
-            transition={{ duration: 1.1, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          />
-        </svg>
 
         <div className="relative mx-auto max-w-7xl">
           <div className="mx-auto flex max-w-2xl flex-col items-center text-center">
