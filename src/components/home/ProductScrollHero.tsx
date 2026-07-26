@@ -986,7 +986,7 @@ function ShowcaseProductCard({
  *  (`targetRect` — now the ENTIRE `CloudShowcaseCard`, not just an image slot above a white body).
  *  Portaled into `document.body` as `position: fixed` (see the `HeroProductsExperience` doc
  *  comment for why a portal, not a plain fixed sibling, is required in this app). Stacking:
- *  Product Lineup z-20 < this image z-30 < Hero z-40 < site navigation (z-40 today) — Hero's own
+ *  Product Lineup z-20 < this image z-30 < Hero z-40 < site navigation (z-[200]) — Hero's own
  *  copy needs to stay above this image early in the transition (both are showing literally the
  *  same pixels at that point, so overlap is invisible), and this image needs to stay above Product
  *  Lineup for the whole transition so it never gets painted over. Renders the SAME `ShowcaseCaption`
