@@ -9,36 +9,47 @@ import {
   useScroll,
   useTransform,
   type AnimationPlaybackControls,
+  type MotionStyle,
   type MotionValue,
 } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
-import { ProductCard, type ScrollHeroProduct } from './ProductCard'
 import { cn } from '@/utils/cn'
 import { ROUTES } from '@/constants/routes'
 
 const HERO_IMAGE = '/images/hero/cloud-hero.webp'
 
-const PRODUCTS: Record<'cloud' | 'kaspersky' | 'esim', ScrollHeroProduct> = {
+/** A pure visual showcase, not a commerce listing — no `href`/`tagline` (there is no Link, no
+ *  description). `label` is the small eyebrow above the name; `badge` is the short descriptor
+ *  pill below it. See `ShowcaseCaption`. */
+interface ShowcaseProduct {
+  id: string
+  name: string
+  image: string
+  label: string
+  badge: string
+}
+
+const PRODUCTS: Record<'cloud' | 'kaspersky' | 'esim', ShowcaseProduct> = {
   cloud: {
     id: 'cloud',
     name: 'Cloud Server',
-    tagline: 'Máy chủ ảo hiệu năng cao, tự động mở rộng theo tải, triển khai chỉ trong vài phút.',
     image: '/images/hero/cloud-card.webp',
-    href: ROUTES.PRODUCTS_CLOUD,
+    label: 'VTC TELECOM',
+    badge: 'HẠ TẦNG ĐÁM MÂY',
   },
   kaspersky: {
     id: 'kaspersky',
     name: 'Kaspersky Security',
-    tagline: 'Bảo vệ toàn diện trước mã độc, ransomware và các nguy cơ an ninh mạng.',
     image: '/images/hero/kaspersky-card.webp',
-    href: ROUTES.PRODUCTS_KASPERSKY,
+    label: 'VTC TELECOM',
+    badge: 'BẢO MẬT THIẾT BỊ',
   },
   esim: {
     id: 'esim',
     name: 'eSIM Data',
-    tagline: 'Kết nối dữ liệu di động toàn cầu, kích hoạt tức thì không cần SIM vật lý.',
     image: '/images/hero/esim-card.webp',
-    href: ROUTES.PRODUCTS_ESIM,
+    label: 'VTC TELECOM',
+    badge: 'KẾT NỐI TOÀN CẦU',
   },
 }
 
@@ -54,7 +65,6 @@ const TIMELINE = {
   kasperskyTransform: [0.1, 0.54],
   esimOpacity: [0.14, 0.5],
   esimTransform: [0.14, 0.58],
-  cloudBody: [0.32, 0.64],
 } satisfies Record<string, number[]>
 
 /** Duration/easing for the one controlled animation in this file: the guaranteed hand-off scroll
@@ -80,20 +90,23 @@ const REVERSE_CAPTURE_MIN_PROGRESS = 0.88
  *  long enough to swallow the SAME gesture's trailing momentum so it doesn't carry straight into
  *  Trusted By. Never extended — a genuinely new gesture arriving after this is handled immediately. */
 const POST_LANDING_BLOCK_MS = 32
-/** Not a visible crossfade: the target image is always prepared to full opacity UNDERNEATH the
- *  still-opaque shared image (forward), or the shared image is brought back on top of the
- *  still-opaque target image (reverse) — the other layer is only switched away once it's no
- *  longer needed. Two overlapping images at fractional alpha would otherwise briefly dim/soften
- *  the frame via alpha compositing, which reads as a flicker even when their rects match exactly.
- *  `linear`, since this fade is never meant to be seen — an easing curve has no visible effect to
- *  shape here, only extra complexity. Runs only once geometry is already sitting exactly on
- *  `targetRect` (forward: right after the scroll animation completes; reverse: right before it
- *  starts), so both layers are pixel-identical (same file/crop/radius/rect) for its whole duration. */
-const HANDOFF_DURATION = 0.05
+/** Not a visible crossfade: the ENTIRE real Cloud card (`targetCardOpacity`, applied to the whole
+ *  `CloudShowcaseCard` figure — background, gradient, shadow, caption, image, all of it) is always
+ *  prepared to full opacity UNDERNEATH the still-opaque shared image (forward), or the shared image
+ *  is brought back on top of the still-opaque real card (reverse) — the other layer is only
+ *  switched away once it's no longer needed. Two overlapping layers at fractional alpha would
+ *  otherwise briefly dim/soften the frame via alpha compositing, which reads as a flicker even when
+ *  their rects match exactly. `linear`, since this fade is never meant to be seen — an easing curve
+ *  has no visible effect to shape here, only extra complexity. Runs only once geometry is already
+ *  sitting exactly on `targetRect` (forward: right after the scroll animation completes; reverse:
+ *  right before it starts), so both layers are pixel-identical (same file/crop/radius/rect/caption)
+ *  for its whole duration. */
+const HANDOFF_DURATION = 0.08
 const HANDOFF_EASE = 'linear' as const
 
-const SIDE_CARD_IMAGE_CLASS = 'h-[clamp(9rem,20svh,13.5rem)]'
-const CLOUD_CARD_IMAGE_CLASS = 'h-[clamp(11rem,24svh,16rem)]'
+const SIDE_SHOWCASE_CLASS = 'h-[clamp(19rem,42svh,27rem)]'
+const CLOUD_SHOWCASE_CLASS = 'h-[clamp(23rem,50svh,32rem)]'
+const MOBILE_SHOWCASE_CLASS = 'h-[clamp(21rem,62svh,30rem)]'
 
 function lerp(start: number, end: number, progress: number) {
   return start + (end - start) * progress
@@ -187,7 +200,7 @@ function HeroProductsExperience() {
   const heroSectionRef = useRef<HTMLElement>(null)
   const productSectionRef = useRef<HTMLElement>(null)
   const heroVisualRef = useRef<HTMLDivElement>(null)
-  const cloudTargetSlotRef = useRef<HTMLDivElement>(null)
+  const cloudTargetSlotRef = useRef<HTMLElement>(null)
 
   const [sourceRect, setSourceRect] = useState<VisualRect | null>(null)
   const [targetRect, setTargetRect] = useState<VisualRect | null>(null)
@@ -693,18 +706,30 @@ function HeroProductsExperience() {
     const target = targetRectRef.current ?? targetRect
     return source && target ? lerp(source.height, target.height, progress) : 0
   })
-  // Cloud card's image slot is only rounded on its top two corners (it sits at the top of the
-  // card, flush with the body below) — a uniform radius wouldn't match that shape once docked.
-  // Both keyframes spell out all four corners (not a bare '0px'): Framer Motion's string
-  // interpolation only tweens smoothly when both ends have the same number of numeric tokens —
-  // '0px' → '28px 28px 0px 0px' (1 token vs. 4) snaps instantly at the very start of the range
-  // instead of morphing, verified directly against framer-motion's `mix()`.
-  const sharedRadius = useTransform(visualProgress, [0, 1], ['0px 0px 0px 0px', '28px 28px 0px 0px'])
+  // The Cloud card is now a full-image showcase, rounded on all four corners (not just the top
+  // two the old image-slot-above-a-white-body layout needed). Both keyframes spell out all four
+  // corners (not a bare '0px'): Framer Motion's string interpolation only tweens smoothly when
+  // both ends have the same number of numeric tokens — a mismatched count snaps instantly at the
+  // very start of the range instead of morphing, verified directly against framer-motion's `mix()`.
+  const sharedRadius = useTransform(visualProgress, [0, 1], ['0px 0px 0px 0px', '28px 28px 28px 28px'])
   // Keeps the cloud + server subject visible as the frame crops from a wide hero into a tall card;
-  // reaches the exact same crop the real card image uses ('72% 52%', see `CloudProductCard`)
-  // by progress 1, so nothing shifts crop mid-crossfade.
+  // reaches the exact same crop the real card image uses ('72% 52%', see `CloudShowcaseCard`) by
+  // progress 1, so nothing shifts crop mid-crossfade.
   const sharedObjectPosition = useTransform(visualProgress, [0, 0.5, 1], ['50% 50%', '60% 50%', '72% 52%'])
-  const sharedGradientOpacity = useTransform(visualProgress, [0.03, 0.5], [1, 0])
+  // Two gradients, not one: Hero's own gradient (dark, full-bleed) fades OUT early, and the Cloud
+  // showcase's own gradient + vignette (lighter, bottom-anchored — see `CloudShowcaseCard`) fades
+  // IN before progress 1. Without the second one, the shared image would hand off to the real card
+  // with a visibly different overlay right at the swap (the hand-off is a hard on/off switch, not
+  // a crossfade — see `HANDOFF_DURATION`'s doc comment — so any mismatch pops instead of blending).
+  const sharedHeroGradientOpacity = useTransform(visualProgress, [0.03, 0.48], [1, 0])
+  const sharedCardGradientOpacity = useTransform(visualProgress, [0.5, 0.76], [0, 1])
+  // Drives the caption on `SharedCloudTransitionImage` ONLY — `CloudShowcaseCard`'s own caption
+  // has no independent fade; it's just as much "the real card" as everything else in that figure,
+  // so it's covered entirely by `targetCardOpacity` (0 the whole morph, 1 only after hand-off).
+  // Starts later than the shared image's geometry morph itself (which runs the whole [0, 1]): early
+  // on this still has to read as Hero, not as a card-in-waiting, so the name/badge only appear once
+  // the shrinking visual is already close to the card's actual proportions.
+  const cloudLabelOpacity = useTransform(visualProgress, [0.7, 0.9], [0, 1])
 
   // NOT driven by scroll progress, and NOT by asset readiness either (`sharedAssetReady`) — only
   // by `sharedActive`, which a user gesture sets. Hero's own in-flow `<img>` must stay the visible
@@ -720,13 +745,16 @@ function HeroProductsExperience() {
   // compositing, which reads as a flicker even when their rects match exactly. Instead, the shared
   // image is a hard on/off layer — visible only once its asset is ready AND a gesture has actually
   // activated it AND it hasn't yet handed off to the real card image — that only ever switches off
-  // once the real card image (`targetImageOpacity` = `handoffProgress`) underneath it has already
-  // reached full opacity. See the hand-off sequencing in `animatePageScrollTo`.
+  // once the real card (`targetCardOpacity` = `handoffProgress`) underneath it has already reached
+  // full opacity. See the hand-off sequencing in `animatePageScrollTo`.
   const sharedImageOpacity = useTransform(
     [sharedAssetReady, sharedActive, sharedLayerVisible],
     ([ready, active, visible]) => Number(ready) * Number(active) * Number(visible),
   )
-  const targetImageOpacity = handoffProgress
+  // Applied to the ENTIRE `CloudShowcaseCard` figure (background, gradient, shadow, caption — not
+  // just its `<img>`), so the real card is completely invisible, not just missing its picture,
+  // until the moment `animatePageScrollTo`'s hand-off animation explicitly reveals it.
+  const targetCardOpacity = handoffProgress
 
   // Hero copy — fades/rises early, and stops intercepting clicks once mostly faded.
   const heroCopyOpacity = useTransform(visualProgress, TIMELINE.heroCopy, [1, 0])
@@ -740,16 +768,11 @@ function HeroProductsExperience() {
   const kasperskyX = useTransform(visualProgress, TIMELINE.kasperskyTransform, [-52, 0])
   const kasperskyY = useTransform(visualProgress, TIMELINE.kasperskyTransform, [16, 0])
   const kasperskyScale = useTransform(visualProgress, TIMELINE.kasperskyTransform, [0.96, 1])
-  const kasperskyPointerEvents = useTransform(kasperskyOpacity, [0.92, 1], ['none', 'auto'])
 
   const esimOpacity = useTransform(visualProgress, TIMELINE.esimOpacity, [0, 1])
   const esimX = useTransform(visualProgress, TIMELINE.esimTransform, [52, 0])
   const esimY = useTransform(visualProgress, TIMELINE.esimTransform, [16, 0])
   const esimScale = useTransform(visualProgress, TIMELINE.esimTransform, [0.96, 1])
-  const esimPointerEvents = useTransform(esimOpacity, [0.92, 1], ['none', 'auto'])
-
-  const cloudBodyOpacity = useTransform(visualProgress, TIMELINE.cloudBody, [0, 1])
-  const cloudBodyY = useTransform(visualProgress, TIMELINE.cloudBody, [10, 0])
 
   return (
     <div ref={experienceRef} className="relative bg-home-ink">
@@ -826,37 +849,31 @@ function HeroProductsExperience() {
         </motion.div>
 
         <div className="grid w-full max-w-7xl grid-cols-3 items-center gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.12fr)_minmax(0,1fr)] lg:gap-6">
-          <ProductCard
+          <ShowcaseProductCard
             product={PRODUCTS.kaspersky}
-            fillHeight={false}
-            imageClassName={SIDE_CARD_IMAGE_CLASS}
+            imageClassName={SIDE_SHOWCASE_CLASS}
             motionStyle={{
               opacity: kasperskyOpacity,
               x: kasperskyX,
               y: kasperskyY,
               scale: kasperskyScale,
-              pointerEvents: kasperskyPointerEvents,
             }}
           />
 
-          <CloudProductCard
+          <CloudShowcaseCard
             product={PRODUCTS.cloud}
             slotRef={cloudTargetSlotRef}
-            targetImageOpacity={targetImageOpacity}
-            bodyOpacity={cloudBodyOpacity}
-            bodyY={cloudBodyY}
+            targetCardOpacity={targetCardOpacity}
           />
 
-          <ProductCard
+          <ShowcaseProductCard
             product={PRODUCTS.esim}
-            fillHeight={false}
-            imageClassName={SIDE_CARD_IMAGE_CLASS}
+            imageClassName={SIDE_SHOWCASE_CLASS}
             motionStyle={{
               opacity: esimOpacity,
               x: esimX,
               y: esimY,
               scale: esimScale,
-              pointerEvents: esimPointerEvents,
             }}
           />
         </div>
@@ -871,8 +888,11 @@ function HeroProductsExperience() {
             height={sharedHeight}
             borderRadius={sharedRadius}
             objectPosition={sharedObjectPosition}
-            gradientOpacity={sharedGradientOpacity}
+            heroGradientOpacity={sharedHeroGradientOpacity}
+            cardGradientOpacity={sharedCardGradientOpacity}
             opacity={sharedImageOpacity}
+            labelOpacity={cloudLabelOpacity}
+            product={PRODUCTS.cloud}
           />,
           document.body,
         )}
@@ -880,14 +900,99 @@ function HeroProductsExperience() {
   )
 }
 
+/** The three lines of text laid over every showcase visual (Kaspersky, eSIM, and — via
+ *  `CloudShowcaseCard`/`SharedCloudTransitionImage` — Cloud): a small eyebrow, the product name,
+ *  and a short descriptor pill. Pure content, no positioning of its own — callers wrap it in
+ *  whatever absolutely-positioned container fits their layer (a static `<figcaption>` for the two
+ *  side cards, a `motion.div` with an animated opacity for Cloud, which fades in mid-morph). */
+function ShowcaseCaption({ label, name, badge }: { label: string; name: string; badge: string }) {
+  return (
+    <>
+      <span className="font-data text-[10px] uppercase tracking-[0.18em] text-white/65">{label}</span>
+      <h3 className="mt-2 font-display text-2xl font-semibold tracking-tight text-white lg:text-3xl">{name}</h3>
+      <span className="mt-3 rounded-full border border-white/25 bg-white/10 px-3 py-1.5 font-data text-[10px] uppercase tracking-[0.12em] text-white/85 backdrop-blur-sm">
+        {badge}
+      </span>
+    </>
+  )
+}
+
+/** A pure visual — not a link, not a button, nothing to click. Kaspersky and eSIM use this
+ *  directly on desktop (`variant="scroll"`, driven by `motionStyle`) and all three products use it
+ *  on mobile (`variant="reveal"`, a simple `whileInView` fade — see `SimplifiedHero`). Cloud on
+ *  desktop needs its own `CloudShowcaseCard` instead, since it also has to be the real shared-image
+ *  morph target (measured rect, real-image hand-off, animated caption) — this component has none
+ *  of that machinery. */
+function ShowcaseProductCard({
+  product,
+  imageClassName,
+  className,
+  objectPosition = '50% 50%',
+  variant = 'scroll',
+  motionStyle,
+  revealDelay = 0,
+}: {
+  product: ShowcaseProduct
+  imageClassName: string
+  className?: string
+  objectPosition?: string
+  variant?: 'scroll' | 'reveal'
+  motionStyle?: MotionStyle
+  revealDelay?: number
+}) {
+  const variantProps =
+    variant === 'scroll'
+      ? { style: motionStyle }
+      : {
+          initial: { opacity: 0, y: 28 },
+          whileInView: { opacity: 1, y: 0 },
+          viewport: { once: true, margin: '-60px' },
+          transition: { duration: 0.55, delay: revealDelay, ease: [0.22, 1, 0.36, 1] as const },
+        }
+
+  return (
+    <motion.figure
+      className={cn(
+        'relative isolate overflow-hidden rounded-[28px] bg-home-ink',
+        'transform-gpu [backface-visibility:hidden]',
+        imageClassName,
+        className,
+      )}
+      {...variantProps}
+    >
+      <img
+        src={product.image}
+        alt={product.name}
+        width={640}
+        height={800}
+        loading="eager"
+        decoding="async"
+        className="absolute inset-0 block h-full w-full object-cover"
+        style={{ objectPosition }}
+      />
+
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-home-ink/80 via-home-ink/10 to-home-ink/10" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,transparent_30%,rgba(5,27,51,0.22)_100%)]" />
+
+      <figcaption className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex flex-col items-center px-5 pb-7 text-center text-white">
+        <ShowcaseCaption label={product.label} name={product.name} badge={product.badge} />
+      </figcaption>
+    </motion.figure>
+  )
+}
+
 /** The single shared Cloud visual: one continuous image element that morphs from Hero's real,
- *  measured box (`sourceRect`) straight to the Product Lineup Cloud card's real, measured
- *  image-slot rect (`targetRect`). Portaled into `document.body` as `position: fixed` (see the
- *  `HeroProductsExperience` doc comment for why a portal, not a plain fixed sibling, is required
- *  in this app). Stacking: Product Lineup z-20 < this image z-30 < Hero z-40 < site navigation
- *  (z-40 today) — Hero's own copy needs to stay above this image early in the transition (both
- *  are showing literally the same pixels at that point, so overlap is invisible), and this image
- *  needs to stay above Product Lineup for the whole transition so it never gets painted over. */
+ *  measured box (`sourceRect`) straight to the Product Lineup Cloud card's real, measured rect
+ *  (`targetRect` — now the ENTIRE `CloudShowcaseCard`, not just an image slot above a white body).
+ *  Portaled into `document.body` as `position: fixed` (see the `HeroProductsExperience` doc
+ *  comment for why a portal, not a plain fixed sibling, is required in this app). Stacking:
+ *  Product Lineup z-20 < this image z-30 < Hero z-40 < site navigation (z-40 today) — Hero's own
+ *  copy needs to stay above this image early in the transition (both are showing literally the
+ *  same pixels at that point, so overlap is invisible), and this image needs to stay above Product
+ *  Lineup for the whole transition so it never gets painted over. Renders the SAME `ShowcaseCaption`
+ *  content `CloudShowcaseCard` will reveal once it hands off, faded in here on `labelOpacity` —
+ *  this is the ONLY Cloud caption visible during the morph, since `CloudShowcaseCard`'s own copy
+ *  stays fully covered by `targetCardOpacity` until the hand-off in `animatePageScrollTo` runs. */
 function SharedCloudTransitionImage({
   top,
   left,
@@ -895,8 +1000,11 @@ function SharedCloudTransitionImage({
   height,
   borderRadius,
   objectPosition,
-  gradientOpacity,
+  heroGradientOpacity,
+  cardGradientOpacity,
   opacity,
+  labelOpacity,
+  product,
 }: {
   top: MotionValue<number>
   left: MotionValue<number>
@@ -904,8 +1012,11 @@ function SharedCloudTransitionImage({
   height: MotionValue<number>
   borderRadius: MotionValue<string>
   objectPosition: MotionValue<string>
-  gradientOpacity: MotionValue<number>
+  heroGradientOpacity: MotionValue<number>
+  cardGradientOpacity: MotionValue<number>
   opacity: MotionValue<number>
+  labelOpacity: MotionValue<number>
+  product: ShowcaseProduct
 }) {
   return (
     <motion.div
@@ -932,61 +1043,78 @@ function SharedCloudTransitionImage({
       />
       <motion.div
         className="pointer-events-none absolute inset-0 bg-gradient-to-t from-home-ink via-home-ink/25 to-home-ink/55"
-        style={{ opacity: gradientOpacity }}
+        style={{ opacity: heroGradientOpacity }}
       />
+      <motion.div
+        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-home-ink/80 via-home-ink/5 to-home-ink/10"
+        style={{ opacity: cardGradientOpacity }}
+      />
+      <motion.div
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,transparent_30%,rgba(5,27,51,0.22)_100%)]"
+        style={{ opacity: cardGradientOpacity }}
+      />
+      <motion.div
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex flex-col items-center px-5 pb-7 text-center text-white"
+        style={{ opacity: labelOpacity }}
+      >
+        <ShowcaseCaption label={product.label} name={product.name} badge={product.badge} />
+      </motion.div>
     </motion.div>
   )
 }
 
-/** The Cloud card as it really lives inside Product Lineup — a real section, real content. Its
- *  image slot renders a real `<img>` (same file, same crop as the shared image, so the hand-off is
- *  invisible) whose opacity IS `handoffProgress` directly — 0 while the shared image (portaled,
- *  fixed) is the visible layer, 1 once `animatePageScrollTo`'s short hand-off animation has run. */
-function CloudProductCard({
+/** The Cloud showcase as it really lives inside Product Lineup — a real, full-image visual, not a
+ *  commerce card. `slotRef` (`cloudTargetSlotRef`) sits on THIS ENTIRE `<figure>`, not on a nested
+ *  image slot — `measureRects` now measures the whole rounded-rect visual, so `targetRect` (and
+ *  the shared image's geometry/radius) always matches exactly what this renders, at whatever size
+ *  `CLOUD_SHOWCASE_CLASS` currently resolves to.
+ *
+ *  `targetCardOpacity` (= `handoffProgress`) is applied to the WHOLE `<motion.figure>`, not just
+ *  the `<img>` inside it — the dark `bg-home-ink` shell, gradient, vignette, shadow, and caption
+ *  are all just as much "the real card" as the image is. Opacity-ing only the image left every
+ *  other layer permanently visible underneath the shrinking shared image, so a fully-dressed Cloud
+ *  card (background, gradient, shadow, caption) was visible sitting in place well before the
+ *  morph finished — looking like the shared image was landing ON TOP of an already-existing card
+ *  rather than becoming it. With opacity on the figure itself, the real card is entirely invisible
+ *  (but still fully present in layout, still exactly what `slotRef` measures) until the hand-off
+ *  animation in `animatePageScrollTo` explicitly reveals it — see that function's doc comment. */
+function CloudShowcaseCard({
   product,
   slotRef,
-  targetImageOpacity,
-  bodyOpacity,
-  bodyY,
+  targetCardOpacity,
 }: {
-  product: ScrollHeroProduct
-  slotRef: React.RefObject<HTMLDivElement | null>
-  targetImageOpacity: MotionValue<number>
-  bodyOpacity: MotionValue<number>
-  bodyY: MotionValue<number>
+  product: ShowcaseProduct
+  slotRef: React.RefObject<HTMLElement | null>
+  targetCardOpacity: MotionValue<number>
 }) {
   return (
-    <div className="h-auto self-center transform-gpu [backface-visibility:hidden] lg:z-10">
-      <Link
-        to={product.href}
-        className="group relative flex flex-col overflow-hidden rounded-[28px] bg-white ring-1 ring-home-line/70 shadow-[0_20px_44px_-26px_rgba(5,27,51,0.38)] transition-shadow duration-300 hover:shadow-[0_24px_50px_-24px_rgba(5,27,51,0.44)]"
-      >
-        <div ref={slotRef} className={cn('relative w-full shrink-0 overflow-hidden', CLOUD_CARD_IMAGE_CLASS)}>
-          <motion.img
-            src={HERO_IMAGE}
-            alt={product.name}
-            width={640}
-            height={800}
-            loading="eager"
-            decoding="async"
-            className="absolute inset-0 block h-full w-full object-cover transform-gpu [backface-visibility:hidden] [will-change:opacity]"
-            style={{ opacity: targetImageOpacity, objectPosition: '72% 52%' }}
-          />
-        </div>
+    <motion.figure
+      ref={slotRef}
+      className={cn(
+        'relative isolate overflow-hidden rounded-[28px] bg-home-ink',
+        'transform-gpu [backface-visibility:hidden] [will-change:opacity] lg:z-10',
+        CLOUD_SHOWCASE_CLASS,
+      )}
+      style={{ opacity: targetCardOpacity }}
+    >
+      <img
+        src={HERO_IMAGE}
+        alt={product.name}
+        width={640}
+        height={800}
+        loading="eager"
+        decoding="async"
+        className="absolute inset-0 block h-full w-full object-cover transform-gpu [backface-visibility:hidden]"
+        style={{ objectPosition: '72% 52%' }}
+      />
 
-        <motion.div
-          className="flex flex-col gap-2 p-4 lg:p-6"
-          style={{ opacity: bodyOpacity, y: bodyY }}
-        >
-          <h3 className="font-display text-base font-semibold text-home-graphite lg:text-lg">{product.name}</h3>
-          <p className="line-clamp-2 text-sm leading-6 text-home-graphite-soft">{product.tagline}</p>
-          <span className="mt-1 inline-flex items-center gap-1.5 text-sm font-semibold text-home-beacon transition-[gap] group-hover:gap-2.5">
-            Tìm hiểu thêm
-            <ArrowRight className="size-4" />
-          </span>
-        </motion.div>
-      </Link>
-    </div>
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-home-ink/80 via-home-ink/5 to-home-ink/10" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,transparent_30%,rgba(5,27,51,0.22)_100%)]" />
+
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex flex-col items-center px-5 pb-7 text-center text-white">
+        <ShowcaseCaption label={product.label} name={product.name} badge={product.badge} />
+      </div>
+    </motion.figure>
   )
 }
 
@@ -1049,13 +1177,12 @@ function SimplifiedHero() {
 
         <div className="mx-auto mt-10 flex max-w-md flex-col gap-6">
           {cards.map((product, index) => (
-            <ProductCard
+            <ShowcaseProductCard
               key={product.id}
               product={product}
-              featured={product.id === 'cloud'}
               variant="reveal"
               revealDelay={index * 0.08}
-              className="aspect-auto"
+              imageClassName={MOBILE_SHOWCASE_CLASS}
             />
           ))}
         </div>
