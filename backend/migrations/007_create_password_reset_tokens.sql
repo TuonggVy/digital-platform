@@ -5,7 +5,7 @@ CREATE TABLE password_reset_tokens (
   token_hash NVARCHAR(64) NOT NULL,
   expires_at DATETIME2 NOT NULL,
   used_at DATETIME2 NULL,
-  created_date DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME(),
+  created_date DATETIME2 NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT FK_password_reset_tokens_user FOREIGN KEY (user_id) REFERENCES users(id)
 );
 

@@ -6,12 +6,12 @@ export class Status extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'nvarchar', length: 50 })
+  @Column({ type: 'varchar', length: 50 })
   code: string;
 
-  @Column({ type: 'nvarchar', length: 100 })
+  @Column({ type: 'varchar', length: 100 })
   name: string;
 
-  @Column({ type: 'nvarchar', length: 255, nullable: true })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   description: string | null;
 }

@@ -35,7 +35,7 @@ async function ensureMigrationsTable(pool) {
     CREATE TABLE schema_migrations (
       id INT IDENTITY(1,1) PRIMARY KEY,
       name NVARCHAR(255) NOT NULL UNIQUE,
-      executed_at DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME()
+      executed_at DATETIME2 NOT NULL DEFAULT CURRENT_TIMESTAMP
     );
   `);
 }

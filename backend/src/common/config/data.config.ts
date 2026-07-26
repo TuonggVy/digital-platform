@@ -1,26 +1,23 @@
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 
-export function buildTypeOrmConfig(config: ConfigService): TypeOrmModuleOptions {
+export function buildTypeOrmConfig(
+  config: ConfigService,
+): TypeOrmModuleOptions {
   return {
-    type: 'mssql',
+    type: 'postgres',
     host: config.get<string>('DB_HOST'),
-    port: Number(config.get<string>('DB_PORT')),
+    port: Number(config.get<string>('DB_PORT') ?? 5432),
     username: config.get<string>('DB_USERNAME'),
     password: config.get<string>('DB_PASSWORD'),
     database: config.get<string>('DB_NAME'),
     synchronize: false,
     autoLoadEntities: true,
-    options: {
-      encrypt: config.get<string>('DB_ENCRYPT') === 'true',
-      trustServerCertificate: config.get<string>('DB_TRUST_SERVER_CERTIFICATE') === 'true',
-    },
+    ssl: false,
     extra: {
-      pool: {
-        max: 10,
-        min: 0,
-        idleTimeoutMillis: 30000,
-      },
+      max: 10,
+      min: 0,
+      idleTimeoutMillis: 30000,
     },
   };
 }

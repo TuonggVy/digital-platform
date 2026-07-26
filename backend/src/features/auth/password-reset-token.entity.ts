@@ -14,15 +14,15 @@ export class PasswordResetToken {
   user: User;
 
   /** SHA-256 hex digest of the raw reset token — raw token is never persisted. */
-  @Column({ name: 'token_hash', type: 'nvarchar', length: 64 })
+  @Column({ name: 'token_hash', type: 'varchar', length: 64 })
   tokenHash: string;
 
-  @Column({ name: 'expires_at', type: 'datetime2' })
+  @Column({ name: 'expires_at', type: 'timestamptz' })
   expiresAt: Date;
 
-  @Column({ name: 'used_at', type: 'datetime2', nullable: true })
+  @Column({ name: 'used_at', type: 'timestamptz', nullable: true })
   usedAt: Date | null;
 
-  @Column({ name: 'created_date', type: 'datetime2', default: () => 'SYSUTCDATETIME()' })
+  @Column({ name: 'created_date', type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   createdDate: Date;
 }

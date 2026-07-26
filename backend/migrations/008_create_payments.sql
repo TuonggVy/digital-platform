@@ -12,7 +12,7 @@ CREATE TABLE payments (
   failure_reason NVARCHAR(500) NULL,
   paid_at DATETIME2 NULL,
   expired_at DATETIME2 NULL,
-  created_date DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME(),
+  created_date DATETIME2 NOT NULL DEFAULT CURRENT_TIMESTAMP,
   modified_date DATETIME2 NULL,
   CONSTRAINT UQ_payments_payment_code UNIQUE (payment_code),
   CONSTRAINT FK_payments_order FOREIGN KEY (order_id) REFERENCES orders(id),

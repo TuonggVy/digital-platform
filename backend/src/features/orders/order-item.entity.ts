@@ -30,10 +30,10 @@ export class OrderItem {
   @Column({ name: 'product_name', type: 'simple-json' })
   productName: LocalizedText;
 
-  @Column({ name: 'product_type', type: 'nvarchar', length: 50 })
+  @Column({ name: 'product_type', type: 'varchar', length: 50 })
   productType: string;
 
-  @Column({ name: 'package_id', type: 'nvarchar', length: 100, nullable: true })
+  @Column({ name: 'package_id', type: 'varchar', length: 100, nullable: true })
   packageId: string | null;
 
   @Column({ name: 'package_name', type: 'simple-json', nullable: true })
@@ -48,6 +48,6 @@ export class OrderItem {
   @Column({ name: 'total_price', type: 'decimal', precision: 18, scale: 2 })
   totalPrice: number;
 
-  @Column({ name: 'created_date', type: 'datetime2', default: () => 'SYSUTCDATETIME()' })
+  @Column({ name: 'created_date', type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   createdDate: Date;
 }

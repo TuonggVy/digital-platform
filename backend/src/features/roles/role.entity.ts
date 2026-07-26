@@ -7,10 +7,10 @@ export class Role extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'nvarchar', length: 50 })
+  @Column({ type: 'varchar', length: 50 })
   code: string;
 
-  @Column({ type: 'nvarchar', length: 100 })
+  @Column({ type: 'varchar', length: 100 })
   name: string;
 
   @OneToMany(() => User, (user) => user.role)
