@@ -16,7 +16,7 @@ export function MegaMenu() {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -8 }}
       transition={{ duration: 0.18 }}
-      className="absolute left-0 top-full z-40 mt-2 w-[min(900px,92vw)] rounded-2xl border border-border bg-background p-6 shadow-2xl"
+      className="absolute left-0 top-full z-[210] mt-2 w-[min(900px,92vw)] rounded-2xl border border-border bg-background p-6 shadow-2xl"
     >
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
         {MEGA_MENU_GROUPS.map((group, idx) => {
