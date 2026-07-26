@@ -7,7 +7,7 @@ CREATE TABLE categories (
   description NVARCHAR(MAX) NULL,
   status_id INT NOT NULL,
   display_order INT NOT NULL DEFAULT 0,
-  created_date DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME(),
+  created_date DATETIME2 NOT NULL DEFAULT CURRENT_TIMESTAMP,
   modified_date DATETIME2 NULL,
   deleted_date DATETIME2 NULL,
   CONSTRAINT UQ_categories_slug UNIQUE (slug),

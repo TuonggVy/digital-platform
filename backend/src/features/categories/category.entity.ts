@@ -15,10 +15,10 @@ export class Category extends BaseEntity {
   @Column({ type: 'simple-json' })
   name: LocalizedText;
 
-  @Column({ type: 'nvarchar', length: 100, unique: true })
+  @Column({ type: 'varchar', length: 100, unique: true })
   slug: string;
 
-  @Column({ type: 'nvarchar', length: 50, unique: true })
+  @Column({ type: 'varchar', length: 50, unique: true })
   code: string;
 
   @Column({ type: 'simple-json', nullable: true })

@@ -13,7 +13,7 @@ CREATE TABLE orders (
   customer_email NVARCHAR(255) NOT NULL,
   customer_phone NVARCHAR(20) NOT NULL,
   note NVARCHAR(MAX) NULL,
-  created_date DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME(),
+  created_date DATETIME2 NOT NULL DEFAULT CURRENT_TIMESTAMP,
   modified_date DATETIME2 NULL,
   deleted_date DATETIME2 NULL,
   CONSTRAINT UQ_orders_order_code UNIQUE (order_code),
@@ -34,7 +34,7 @@ CREATE TABLE order_items (
   unit_price DECIMAL(18,2) NOT NULL,
   quantity INT NOT NULL,
   total_price DECIMAL(18,2) NOT NULL,
-  created_date DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME(),
+  created_date DATETIME2 NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT FK_order_items_order FOREIGN KEY (order_id) REFERENCES orders(id),
   CONSTRAINT FK_order_items_product FOREIGN KEY (product_id) REFERENCES products(id)
 );

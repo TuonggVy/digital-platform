@@ -62,13 +62,13 @@ export class Product extends BaseEntity {
   @JoinColumn({ name: 'category_id' })
   category: Category;
 
-  @Column({ name: 'sub_category', type: 'nvarchar', length: 100 })
+  @Column({ name: 'sub_category', type: 'varchar', length: 100 })
   subCategory: string;
 
-  @Column({ type: 'nvarchar', length: 150, unique: true })
+  @Column({ type: 'varchar', length: 150, unique: true })
   slug: string;
 
-  @Column({ type: 'nvarchar', length: 100, unique: true, nullable: true })
+  @Column({ type: 'varchar', length: 100, unique: true, nullable: true })
   sku: string | null;
 
   @Column({ type: 'simple-json' })
@@ -80,7 +80,7 @@ export class Product extends BaseEntity {
   @Column({ type: 'simple-json', nullable: true })
   description: LocalizedText | null;
 
-  @Column({ type: 'nvarchar', length: 100, nullable: true })
+  @Column({ type: 'varchar', length: 100, nullable: true })
   icon: string | null;
 
   @Column({ type: 'simple-json', nullable: true })
@@ -89,7 +89,7 @@ export class Product extends BaseEntity {
   @Column({ name: 'starting_price', type: 'decimal', precision: 18, scale: 2 })
   startingPrice: number;
 
-  @Column({ type: 'nvarchar', length: 10, default: 'VND' })
+  @Column({ type: 'varchar', length: 10, default: 'VND' })
   currency: string;
 
   @Column({ name: 'billing_cycles', type: 'simple-json' })
@@ -116,7 +116,7 @@ export class Product extends BaseEntity {
   @Column({ name: 'review_count', type: 'int', default: 0 })
   reviewCount: number;
 
-  @Column({ name: 'is_featured', type: 'bit', default: false })
+  @Column({ name: 'is_featured', type: 'boolean', default: false })
   isFeatured: boolean;
 
   @Column({ name: 'status_id' })

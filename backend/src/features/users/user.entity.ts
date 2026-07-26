@@ -9,25 +9,25 @@ export class User extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ name: 'full_name', type: 'nvarchar', length: 255 })
+  @Column({ name: 'full_name', type: 'varchar', length: 255 })
   fullName: string;
 
-  @Column({ type: 'nvarchar', length: 255, unique: true })
+  @Column({ type: 'varchar', length: 255, unique: true })
   email: string;
 
-  @Column({ type: 'nvarchar', length: 20, nullable: true })
+  @Column({ type: 'varchar', length: 20, nullable: true })
   phone: string | null;
 
-  @Column({ type: 'nvarchar', length: 255, nullable: true })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   company: string | null;
 
-  @Column({ name: 'tax_code', type: 'nvarchar', length: 50, nullable: true })
+  @Column({ name: 'tax_code', type: 'varchar', length: 50, nullable: true })
   taxCode: string | null;
 
-  @Column({ type: 'nvarchar', length: 500, nullable: true })
+  @Column({ type: 'varchar', length: 500, nullable: true })
   address: string | null;
 
-  @Column({ name: 'password_hash', type: 'nvarchar', length: 255 })
+  @Column({ name: 'password_hash', type: 'varchar', length: 255 })
   @Exclude()
   passwordHash: string;
 
@@ -45,11 +45,11 @@ export class User extends BaseEntity {
   @JoinColumn({ name: 'status_id' })
   status: Status;
 
-  @Column({ name: 'refresh_token_hash', type: 'nvarchar', length: 255, nullable: true })
+  @Column({ name: 'refresh_token_hash', type: 'varchar', length: 255, nullable: true })
   @Exclude()
   refreshTokenHash: string | null;
 
-  @Column({ name: 'refresh_token_expires_at', type: 'datetime2', nullable: true })
+  @Column({ name: 'refresh_token_expires_at', type: 'timestamptz', nullable: true })
   @Exclude()
   refreshTokenExpiresAt: Date | null;
 }

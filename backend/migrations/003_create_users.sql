@@ -12,7 +12,7 @@ CREATE TABLE users (
   status_id INT NOT NULL,
   refresh_token_hash NVARCHAR(255) NULL,
   refresh_token_expires_at DATETIME2 NULL,
-  created_date DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME(),
+  created_date DATETIME2 NOT NULL DEFAULT CURRENT_TIMESTAMP,
   modified_date DATETIME2 NULL,
   deleted_date DATETIME2 NULL,
   CONSTRAINT UQ_users_email UNIQUE (email),

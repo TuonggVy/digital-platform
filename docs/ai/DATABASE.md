@@ -30,31 +30,36 @@
 
 ## 3. Danh sách migration đã chạy
 
-| File | Nội dung |
-|---|---|
-| `001_create_status.sql` | Bảng `status` (id, code, name, description) — generic lifecycle ACTIVE/INACTIVE/PENDING/DELETED |
-| `002_create_roles.sql` | Bảng `roles` (id, code, name) — ADMIN/STAFF/CUSTOMER |
-| `003_create_users.sql` | Bảng `users` |
-| `004_create_categories.sql` | Bảng `categories` |
-| `005_create_products.sql` | Bảng `products` |
-| `006_create_orders.sql` | Bảng `orders` + `order_items` — **tạo mới trong session này** (Order Module) |
+| File                        | Nội dung                                                                                        |
+| --------------------------- | ----------------------------------------------------------------------------------------------- |
+| `001_create_status.sql`     | Bảng `status` (id, code, name, description) — generic lifecycle ACTIVE/INACTIVE/PENDING/DELETED |
+| `002_create_roles.sql`      | Bảng `roles` (id, code, name) — ADMIN/STAFF/CUSTOMER                                            |
+| `003_create_users.sql`      | Bảng `users`                                                                                    |
+| `004_create_categories.sql` | Bảng `categories`                                                                               |
+| `005_create_products.sql`   | Bảng `products`                                                                                 |
+| `006_create_orders.sql`     | Bảng `orders` + `order_items` — **tạo mới trong session này** (Order Module)                    |
 
 ## 4. Schema chi tiết
 
 ### `status` (generic lifecycle — dùng chung Product/User/Category)
+
 ```sql
 id INT IDENTITY PK, code NVARCHAR(50), name NVARCHAR(100), description NVARCHAR(255) NULL
 ```
+
 Giá trị cố định (insert bởi seed, ID do IDENTITY tự gán 1..4 theo đúng thứ tự — khớp với `STATUS_CODE` trong `common/utils/constant.ts`):
 `1=ACTIVE, 2=INACTIVE, 3=PENDING, 4=DELETED`
 
 ### `roles`
+
 ```sql
 id INT IDENTITY PK, code NVARCHAR(50), name NVARCHAR(100)
 ```
+
 `ADMIN`, `STAFF`, `CUSTOMER` (khớp `ROLE_CODE` trong `constant.ts`).
 
 ### `categories`
+
 ```sql
 id UNIQUEIDENTIFIER PK DEFAULT NEWID(),
 name NVARCHAR(MAX)              -- simple-json LocalizedText {vi, en}
@@ -65,9 +70,11 @@ status_id INT FK → status(id)
 display_order INT DEFAULT 0
 created_date, modified_date, deleted_date
 ```
+
 Seed sẵn 3 category: `cloud`, `kaspersky`, `esim`.
 
 ### `users`
+
 ```sql
 id UNIQUEIDENTIFIER PK DEFAULT NEWID()
 full_name NVARCHAR(255)
@@ -85,6 +92,7 @@ created_date, modified_date, deleted_date
 ```
 
 ### `products`
+
 ```sql
 id UNIQUEIDENTIFIER PK DEFAULT NEWID()
 category_id UNIQUEIDENTIFIER FK → categories(id)
@@ -106,9 +114,11 @@ packages NVARCHAR(MAX) DEFAULT '[]'          -- simple-json ProductPackage[] —
 related_product_ids NVARCHAR(MAX) DEFAULT '[]'
 created_date, modified_date, deleted_date
 ```
+
 Cấu trúc `packages[]` (JSON, không có bảng riêng): mỗi phần tử `{id, name:{vi,en}, price, billingCycle, isPopular?, cloud?, kaspersky?, esim?}` — **không có field trạng thái active/inactive riêng cho từng package** (giới hạn đã biết, xem DECISIONS.md #4).
 
 ### `orders` (MỚI — Order Module)
+
 ```sql
 id UNIQUEIDENTIFIER PK DEFAULT NEWID()
 order_code NVARCHAR(30) UNIQUE           -- CONSTRAINT UQ_orders_order_code
@@ -123,13 +133,15 @@ customer_name NVARCHAR(255)
 customer_email NVARCHAR(255)
 customer_phone NVARCHAR(20)
 note NVARCHAR(MAX) NULL
-created_date DATETIME2 DEFAULT SYSUTCDATETIME()
+created_date DATETIME2 DEFAULT CURRENT_TIMESTAMP
 modified_date DATETIME2 NULL
 deleted_date DATETIME2 NULL
 ```
+
 `CK_orders_status` CHECK: `status IN ('PENDING','AWAITING_PAYMENT','PAID','PROCESSING','COMPLETED','CANCELLED','FAILED','REFUNDED')`.
 
 ### `order_items` (MỚI — Order Module)
+
 ```sql
 id UNIQUEIDENTIFIER PK DEFAULT NEWID()
 order_id UNIQUEIDENTIFIER FK → orders(id)     -- CONSTRAINT FK_order_items_order
@@ -141,8 +153,9 @@ package_name NVARCHAR(MAX) NULL   -- simple-json LocalizedText, snapshot
 unit_price DECIMAL(18,2)
 quantity INT
 total_price DECIMAL(18,2)
-created_date DATETIME2 DEFAULT SYSUTCDATETIME()
+created_date DATETIME2 DEFAULT CURRENT_TIMESTAMP
 ```
+
 Không có `modified_date`/`deleted_date` — xem DECISIONS.md #3 (snapshot bất biến).
 
 ## 5. Seed data (`backend/scripts/run_seed.js`)
@@ -159,10 +172,12 @@ Chạy: `npm run seed`. Idempotent (skip nếu đã tồn tại).
 ## 6. Dữ liệu test hiện có trong DB dev (tạo trong session này, KHÔNG qua seed script)
 
 ### Tài khoản CUSTOMER (tạo bằng SQL insert trực tiếp, bcrypt-hash password giống `seedAdmin()`)
+
 - `order-test-a@digital-platform.local` / `Customer@123` — `id: 5C0F3E29-A44D-4B59-AB51-289F74B3EE5C`
 - `order-test-b@digital-platform.local` / `Customer@123` — `id: A3BCE172-C4B2-4D6E-9F5A-3D368CAAE941`
 
 ### Product test (đã soft-delete sau khi hoàn tất test Bước 8 — KHÔNG còn hiện trong catalogue, nhưng vẫn còn record + được OrderItem tham chiếu)
+
 - `order-test-no-package` (`id: D85CC863-1905-4781-A2C6-735A465870EC`) — ACTIVE lúc tạo, không có package, `startingPrice: 50000`
 - `order-test-with-package` (`id: 0470D59C-553A-4E3A-8E09-33A1CBFCC2C4`) — có 1 package `pkg-basic` giá `99000`
 - `order-test-inactive` (`id: CC094E16-E4E8-414D-8600-032FA53CA7BF`) — tạo ACTIVE, chuyển `status_id=2` (INACTIVE) bằng SQL trực tiếp để test nhánh "Product không active" (không có API set trạng thái này)
@@ -170,9 +185,11 @@ Chạy: `npm run seed`. Idempotent (skip nếu đã tồn tại).
 Cả 3 hiện đã ở trạng thái `deleted_date IS NOT NULL` (soft-deleted qua `DELETE /admin/products/:id`).
 
 ### Product thật vẫn ACTIVE, có sẵn từ trước, có package
+
 - `cloud-server-starter` — package `pkg-1` ("Gói cơ bản"), giá `150000`
 
 ### Order test còn lại trong DB (~12 record, KHÔNG xoá — dữ liệu hợp lệ để tiếp tục test)
+
 Trải đủ các trạng thái: PENDING, AWAITING_PAYMENT, PAID, PROCESSING (chưa test riêng), CANCELLED, FAILED, REFUNDED — có thể dùng lại để test Admin/Customer flow ở phiên sau mà không cần tạo mới. Xem CHANGELOG.md để biết chính xác `orderCode` nào đang ở trạng thái nào tại thời điểm cuối Bước 9 (dữ liệu sẽ tiếp tục thay đổi nếu test thêm).
 
 ## 7. Lệnh hữu ích

@@ -9,7 +9,7 @@ export class Order extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ name: 'order_code', type: 'nvarchar', length: 30, unique: true })
+  @Column({ name: 'order_code', type: 'varchar', length: 30, unique: true })
   orderCode: string;
 
   @Column({ name: 'user_id' })
@@ -19,7 +19,7 @@ export class Order extends BaseEntity {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @Column({ type: 'nvarchar', length: 30, default: OrderStatus.PENDING })
+  @Column({ type: 'varchar', length: 30, default: OrderStatus.PENDING })
   status: OrderStatus;
 
   @Column({ type: 'decimal', precision: 18, scale: 2 })
@@ -34,20 +34,20 @@ export class Order extends BaseEntity {
   @Column({ name: 'total_amount', type: 'decimal', precision: 18, scale: 2 })
   totalAmount: number;
 
-  @Column({ type: 'nvarchar', length: 10, default: 'VND' })
+  @Column({ type: 'varchar', length: 10, default: 'VND' })
   currency: string;
 
-  @Column({ name: 'customer_name', type: 'nvarchar', length: 255 })
+  @Column({ name: 'customer_name', type: 'varchar', length: 255 })
   customerName: string;
 
-  @Column({ name: 'customer_email', type: 'nvarchar', length: 255 })
+  @Column({ name: 'customer_email', type: 'varchar', length: 255 })
   customerEmail: string;
 
-  @Column({ name: 'customer_phone', type: 'nvarchar', length: 20 })
+  @Column({ name: 'customer_phone', type: 'varchar', length: 20 })
   customerPhone: string;
 
-  @Column({ type: 'nvarchar', length: 'MAX', nullable: true })
-  note: string | null;
+  @Column({ type: 'text', nullable: true })
+note: string | null;
 
   @OneToMany(() => OrderItem, (item) => item.order)
   items: OrderItem[];
