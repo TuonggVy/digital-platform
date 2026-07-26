@@ -11,9 +11,6 @@ import { ProductGrid } from '@/components/product/ProductGrid'
 import { RevealOnScroll } from '@/components/animation/RevealOnScroll'
 import { StaggerContainer, StaggerItem } from '@/components/animation/StaggerContainer'
 import { ProductScrollHero } from '@/components/home/ProductScrollHero'
-import { CloudInfrastructureVisual } from '@/components/visuals/cloud3d/CloudInfrastructureVisual'
-import { SecurityPerimeterVisual } from '@/components/visuals/security3d/SecurityPerimeterVisual'
-import { EsimConnectionVisual } from '@/components/visuals/esim3d/EsimConnectionVisual'
 import { productService } from '@/services/productService'
 import { contentService } from '@/services/contentService'
 import { useLocale } from '@/hooks/useLocale'
@@ -110,6 +107,41 @@ function ReadoutHeading({
           {subtitle}
         </p>
       )}
+    </div>
+  )
+}
+
+function ServiceProductVisual({
+  src,
+  alt,
+  className,
+  imageClassName,
+}: {
+  src: string
+  alt: string
+  className?: string
+  imageClassName?: string
+}) {
+  return (
+    <div
+      className={cn(
+        'relative flex min-h-[320px] w-full items-center justify-center',
+        'sm:min-h-[390px] lg:min-h-[480px]',
+        className,
+      )}
+    >
+      <img
+        src={src}
+        alt={alt}
+        loading="lazy"
+        decoding="async"
+        className={cn(
+          'block h-auto w-auto max-w-full object-contain',
+          'transform-gpu [backface-visibility:hidden]',
+          'drop-shadow-[0_28px_24px_rgba(5,27,51,0.16)]',
+          imageClassName,
+        )}
+      />
     </div>
   )
 }
@@ -335,18 +367,11 @@ export function HomePage() {
           </RevealOnScroll>
 
           <RevealOnScroll delay={0.1} direction="right">
-            <div className="border border-home-line bg-home-ink p-4">
-              <div className="flex items-center justify-between border-b border-home-paper/10 pb-3">
-                <span className="font-data text-[11px] uppercase tracking-[0.12em] text-home-paper/50">
-                  cloud-region · uptime
-                </span>
-                <span className="inline-flex items-center gap-1.5 font-data text-[11px] text-home-wire">
-                  <span className="size-1.5 rounded-full bg-home-wire" />
-                  ONLINE
-                </span>
-              </div>
-              <CloudInfrastructureVisual className="mt-2 aspect-[620/380] w-full" />
-            </div>
+            <ServiceProductVisual
+              src="/images/home/cloud-service-3d-transparent.webp"
+              alt="Biểu tượng hạ tầng điện toán đám mây với hệ thống máy chủ"
+              imageClassName="max-h-[380px] drop-shadow-[0_28px_24px_rgba(5,27,51,0.16)] sm:max-h-[440px] lg:max-h-[500px]"
+            />
           </RevealOnScroll>
         </div>
       </section>
@@ -354,18 +379,13 @@ export function HomePage() {
       {/* ============ 8. KASPERSKY ============ */}
       <section className="border-b border-home-line bg-home-paper px-4 py-24 sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-14 lg:grid-cols-2">
-          <div className="order-2 border border-home-line bg-home-ink p-4 lg:order-1">
-            <div className="flex items-center justify-between border-b border-home-paper/10 pb-3">
-              <span className="font-data text-[11px] uppercase tracking-[0.12em] text-home-paper/50">
-                endpoint · posture
-              </span>
-              <span className="inline-flex items-center gap-1.5 font-data text-[11px] text-home-wire">
-                <span className="size-1.5 rounded-full bg-home-wire" />
-                PROTECTED
-              </span>
-            </div>
-            <SecurityPerimeterVisual className="mt-2 aspect-[620/380] w-full" />
-          </div>
+          <RevealOnScroll direction="left" className="order-2 lg:order-1">
+            <ServiceProductVisual
+              src="/images/home/kaspersky-security-3d-transparent.webp"
+              alt="Biểu tượng khiên bảo mật cho dịch vụ Kaspersky"
+              imageClassName="max-h-[320px] drop-shadow-[0_28px_24px_rgba(5,27,51,0.14)] sm:max-h-[380px] lg:max-h-[440px]"
+            />
+          </RevealOnScroll>
 
           <RevealOnScroll direction="right" delay={0.1} className="order-1 lg:order-2">
             <ReadoutHeading
@@ -417,18 +437,11 @@ export function HomePage() {
           </RevealOnScroll>
 
           <RevealOnScroll direction="right" delay={0.1}>
-            <div className="border border-home-line bg-home-ink p-4">
-              <div className="flex items-center justify-between border-b border-home-paper/10 pb-3">
-                <span className="font-data text-[11px] uppercase tracking-[0.12em] text-home-paper/50">
-                  roaming · coverage
-                </span>
-                <span className="inline-flex items-center gap-1.5 font-data text-[11px] text-home-wire">
-                  <span className="size-1.5 rounded-full bg-home-wire" />
-                  CONNECTED
-                </span>
-              </div>
-              <EsimConnectionVisual className="mt-2 aspect-[620/380] w-full" />
-            </div>
+            <ServiceProductVisual
+              src="/images/home/esim-service-3d-transparent.webp"
+              alt="Biểu tượng thẻ eSIM kỹ thuật số"
+              imageClassName="max-h-[320px] drop-shadow-[0_28px_24px_rgba(5,27,51,0.15)] sm:max-h-[380px] lg:max-h-[440px]"
+            />
           </RevealOnScroll>
         </div>
       </section>
