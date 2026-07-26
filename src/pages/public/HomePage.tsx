@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { ArrowRight, Star, CheckCircle2 } from 'lucide-react'
+import { ArrowRight, CheckCircle2 } from 'lucide-react'
 import { Seo } from '@/components/common/Seo'
 import { Accordion } from '@/components/common/Accordion'
 import { Tabs } from '@/components/common/Tabs'
@@ -10,7 +10,6 @@ import { Marquee } from '@/components/common/Marquee'
 import { ProductGrid } from '@/components/product/ProductGrid'
 import { RevealOnScroll } from '@/components/animation/RevealOnScroll'
 import { StaggerContainer, StaggerItem } from '@/components/animation/StaggerContainer'
-import { AnimatedCounter } from '@/components/animation/AnimatedCounter'
 import { ProductScrollHero } from '@/components/home/ProductScrollHero'
 import { CloudInfrastructureVisual } from '@/components/visuals/cloud3d/CloudInfrastructureVisual'
 import { SecurityPerimeterVisual } from '@/components/visuals/security3d/SecurityPerimeterVisual'
@@ -22,19 +21,12 @@ import { localize } from '@/utils/localize'
 import { cn } from '@/utils/cn'
 import { ROUTES } from '@/constants/routes'
 import { mockPartners } from '@/data/mocks/partners'
-import type { Faq, Product, Testimonial } from '@/types'
+import type { Faq, Product } from '@/types'
 
 const CATEGORIES = [
   { key: 'cloud', icon: 'Cloud', href: ROUTES.PRODUCTS_CLOUD, code: 'CLOUD' },
   { key: 'kaspersky', icon: 'ShieldCheck', href: ROUTES.PRODUCTS_KASPERSKY, code: 'SECURITY' },
   { key: 'esim', icon: 'Wifi', href: ROUTES.PRODUCTS_ESIM, code: 'ESIM' },
-] as const
-
-const WHY_US = [
-  { key: 'fast', icon: 'Zap' },
-  { key: 'transparent', icon: 'Eye' },
-  { key: 'payment', icon: 'CreditCard' },
-  { key: 'flexible', icon: 'Settings2' },
 ] as const
 
 const PROCESS_STEPS = [
@@ -130,7 +122,6 @@ export function HomePage() {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([])
   const [isFeaturedLoading, setIsFeaturedLoading] = useState(true)
 
-  const [testimonials, setTestimonials] = useState<Testimonial[]>([])
   const [faqs, setFaqs] = useState<Faq[]>([])
 
   useEffect(() => {
@@ -146,14 +137,11 @@ export function HomePage() {
   }, [featuredTab])
 
   useEffect(() => {
-    Promise.all([
-      contentService.getTestimonials(),
-      contentService.getFaqs('general'),
-      contentService.getFaqs('billing'),
-    ]).then(([testimonialData, generalFaqs, billingFaqs]) => {
-      setTestimonials(testimonialData)
-      setFaqs([...generalFaqs, ...billingFaqs])
-    })
+    Promise.all([contentService.getFaqs('general'), contentService.getFaqs('billing')]).then(
+      ([generalFaqs, billingFaqs]) => {
+        setFaqs([...generalFaqs, ...billingFaqs])
+      },
+    )
   }, [])
 
   return (
@@ -254,48 +242,6 @@ export function HomePage() {
               </StaggerItem>
             ))}
           </StaggerContainer>
-        </div>
-      </section>
-
-      {/* ============ 4. WHY CHOOSE US ============ */}
-      <section className="border-b border-home-line bg-home-paper px-4 py-24 sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-14 lg:grid-cols-2">
-          <RevealOnScroll direction="left">
-            <ReadoutHeading
-              align="left"
-              eyebrow={t('home.whyUs.eyebrow')}
-              title={t('home.whyUs.title')}
-              subtitle={t('home.whyUs.subtitle')}
-              className="mb-2"
-            />
-            <Link
-              to={ROUTES.ABOUT}
-              className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-home-graphite hover:gap-2.5 transition-[gap]"
-            >
-              {t('common.learnMore')}
-              <ArrowRight className="size-4 text-home-beacon" />
-            </Link>
-          </RevealOnScroll>
-
-          <RevealOnScroll direction="right" delay={0.1}>
-            <StaggerContainer className="grid grid-cols-2 gap-3">
-              {WHY_US.map((item) => (
-                <StaggerItem key={item.key}>
-                  <div className="flex h-full flex-col gap-2.5 border border-home-line border-l-2 border-l-home-wire bg-white/40 p-4">
-                    <span className="flex size-8 items-center justify-center rounded-md bg-home-ink text-home-wire">
-                      <DynamicIcon name={item.icon} className="size-4" />
-                    </span>
-                    <p className="font-display text-sm font-semibold text-home-graphite">
-                      {t(`home.whyUs.${item.key}.title`)}
-                    </p>
-                    <p className="line-clamp-2 text-xs leading-5 text-home-graphite-soft">
-                      {t(`home.whyUs.${item.key}.desc`)}
-                    </p>
-                  </div>
-                </StaggerItem>
-              ))}
-            </StaggerContainer>
-          </RevealOnScroll>
         </div>
       </section>
 
@@ -487,69 +433,6 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* ============ 10. STATS — dark chapter ============ */}
-      <section className="relative overflow-hidden bg-home-ink px-4 py-20 text-home-paper sm:px-6 lg:px-8">
-        <div className="bg-grid-home-dark pointer-events-none absolute inset-0 opacity-50" aria-hidden />
-        <StaggerContainer className="relative mx-auto grid max-w-7xl grid-cols-2 gap-8 text-center sm:grid-cols-4">
-          <StaggerItem>
-            <AnimatedCounter value={1500} suffix="+" className="font-display block text-3xl font-semibold sm:text-4xl" />
-            <p className="mt-2 font-data text-xs uppercase tracking-[0.1em] text-home-paper/50">{t('home.stats.customers')}</p>
-          </StaggerItem>
-          <StaggerItem>
-            <AnimatedCounter value={35} suffix="+" className="font-display block text-3xl font-semibold sm:text-4xl" />
-            <p className="mt-2 font-data text-xs uppercase tracking-[0.1em] text-home-paper/50">{t('home.stats.countries')}</p>
-          </StaggerItem>
-          <StaggerItem>
-            <AnimatedCounter value={99} suffix=".9%" className="font-display block text-3xl font-semibold sm:text-4xl" />
-            <p className="mt-2 font-data text-xs uppercase tracking-[0.1em] text-home-paper/50">{t('home.stats.uptime')}</p>
-          </StaggerItem>
-          <StaggerItem>
-            <AnimatedCounter value={24} suffix="/7" className="font-display block text-3xl font-semibold sm:text-4xl" />
-            <p className="mt-2 font-data text-xs uppercase tracking-[0.1em] text-home-paper/50">{t('home.stats.supportHours')}</p>
-          </StaggerItem>
-        </StaggerContainer>
-      </section>
-
-      {/* ============ 11. TESTIMONIALS ============ */}
-      {testimonials.length > 0 && (
-        <section className="border-b border-home-line bg-home-paper px-4 py-24 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-7xl">
-            <RevealOnScroll>
-              <ReadoutHeading eyebrow={t('home.testimonials.eyebrow')} title={t('home.testimonials.title')} className="mb-14" />
-            </RevealOnScroll>
-            <StaggerContainer className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {testimonials.slice(0, 6).map((testimonial) => (
-                <StaggerItem key={testimonial.id} className="h-full">
-                  <div className="flex h-full flex-col gap-4 border border-home-line bg-white/40 p-6">
-                    <div className="flex items-center gap-1">
-                      {Array.from({ length: 5 }).map((_, starIdx) => (
-                        <Star
-                          key={starIdx}
-                          className={cn(
-                            'size-3.5',
-                            starIdx < testimonial.rating ? 'fill-home-beacon text-home-beacon' : 'text-home-line',
-                          )}
-                        />
-                      ))}
-                    </div>
-                    <p className="line-clamp-4 flex-1 text-sm leading-relaxed text-home-graphite-soft">
-                      &ldquo;{localize(testimonial.content, locale)}&rdquo;
-                    </p>
-                    <div className="flex items-center gap-3 border-t border-home-line pt-4">
-                      <img src={testimonial.avatar} alt={testimonial.name} className="size-9 rounded-full bg-home-paper" />
-                      <div>
-                        <p className="text-sm font-semibold text-home-graphite">{testimonial.name}</p>
-                        <p className="text-xs text-home-graphite-soft">{localize(testimonial.role, locale)}</p>
-                      </div>
-                    </div>
-                  </div>
-                </StaggerItem>
-              ))}
-            </StaggerContainer>
-          </div>
-        </section>
-      )}
-
       {/* ============ 12. FAQ ============ */}
       {faqs.length > 0 && (
         <section className="border-b border-home-line bg-home-paper px-4 py-24 sm:px-6 lg:px-8">
@@ -569,29 +452,6 @@ export function HomePage() {
           </div>
         </section>
       )}
-
-      {/* ============ 13. FINAL CTA ============ */}
-      <section className="relative overflow-hidden bg-home-ink px-4 py-24 text-center text-home-paper sm:px-6 lg:px-8">
-        <div className="bg-grid-home-dark pointer-events-none absolute inset-0 opacity-40" aria-hidden />
-        <RevealOnScroll className="relative mx-auto max-w-2xl">
-          <h2 className="font-display text-3xl font-semibold tracking-tight sm:text-4xl">{t('home.cta.title')}</h2>
-          <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Link
-              to={ROUTES.PRODUCTS}
-              className="group inline-flex items-center gap-2 rounded-md bg-home-beacon px-6 py-3 text-sm font-semibold text-white shadow-[0_8px_24px_-8px_rgba(0,102,179,0.55)] transition-colors hover:bg-home-beacon/90 focus-ring"
-            >
-              {t('home.cta.primary')}
-              <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
-            </Link>
-            <Link
-              to={ROUTES.CONTACT}
-              className="inline-flex items-center gap-2 rounded-md border border-home-paper/20 px-6 py-3 text-sm font-semibold text-home-paper transition-colors hover:border-home-paper/40 hover:bg-home-paper/5 focus-ring"
-            >
-              {t('home.cta.secondary')}
-            </Link>
-          </div>
-        </RevealOnScroll>
-      </section>
     </div>
   )
 }
