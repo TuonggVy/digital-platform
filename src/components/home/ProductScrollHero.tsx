@@ -16,7 +16,7 @@ import { ArrowRight } from 'lucide-react'
 import { cn } from '@/utils/cn'
 import { ROUTES } from '@/constants/routes'
 
-const HERO_IMAGE = '/images/hero/cloud-hero.webp'
+const HERO_IMAGE = '/images/hero/cloud-hero-2.webp'
 
 /** A pure visual showcase, not a commerce listing — no `href`/`tagline` (there is no Link, no
  *  description). `label` is the small eyebrow above the name; `badge` is the short descriptor
@@ -33,21 +33,21 @@ const PRODUCTS: Record<'cloud' | 'kaspersky' | 'esim', ShowcaseProduct> = {
   cloud: {
     id: 'cloud',
     name: 'Cloud Server',
-    image: '/images/hero/cloud-card.webp',
+    image: '/images/hero/cloud-card-2.webp',
     label: 'VTC TELECOM',
     badge: 'HẠ TẦNG ĐÁM MÂY',
   },
   kaspersky: {
     id: 'kaspersky',
     name: 'Kaspersky Security',
-    image: '/images/hero/kaspersky-card.webp',
+    image: '/images/hero/kaspersky-card-2.webp',
     label: 'VTC TELECOM',
     badge: 'BẢO MẬT THIẾT BỊ',
   },
   esim: {
     id: 'esim',
     name: 'eSIM Data',
-    image: '/images/hero/esim-card.webp',
+    image: '/images/hero/esim-card-2.webp',
     label: 'VTC TELECOM',
     badge: 'KẾT NỐI TOÀN CẦU',
   },
@@ -103,6 +103,12 @@ const POST_LANDING_BLOCK_MS = 32
  *  for its whole duration. */
 const HANDOFF_DURATION = 0.08
 const HANDOFF_EASE = 'linear' as const
+
+/** Native/programmatic jumps (for example a very fast upward fling or macOS Cmd+ArrowUp) can
+ *  move the document straight from below Product Lineup to Hero without passing through the
+ *  controlled reverse hand-off. Reconcile the image layers whenever raw scroll progress reaches
+ *  either endpoint so Hero can never be left with all three image layers hidden. */
+const SCROLL_ENDPOINT_EPSILON = 0.002
 
 const SIDE_SHOWCASE_CLASS = 'h-[clamp(19rem,42svh,27rem)]'
 const CLOUD_SHOWCASE_CLASS = 'h-[clamp(23rem,50svh,32rem)]'
@@ -255,11 +261,34 @@ function HeroProductsExperience() {
 
   useEffect(() => {
     return scrollYProgress.on('change', (progress) => {
-      if (!isAutoScrollingRef.current) {
-        visualProgress.set(progress)
+      if (isAutoScrollingRef.current) return
+
+      visualProgress.set(progress)
+
+      // A native/programmatic jump can bypass `animatePageScrollTo` completely. In that case the
+      // previous Product state may still be: Hero source hidden, shared portal hidden, real Cloud
+      // card visible. Reaching progress 0 with those values leaves the Hero with no image at all.
+      // Always restore a canonical layer state at both raw-scroll endpoints.
+      if (progress <= SCROLL_ENDPOINT_EPSILON) {
+        sharedActive.set(0)
+        sharedLayerVisible.set(1)
+        handoffProgress.set(0)
+        return
+      }
+
+      if (progress >= 1 - SCROLL_ENDPOINT_EPSILON) {
+        sharedActive.set(1)
+        sharedLayerVisible.set(0)
+        handoffProgress.set(1)
       }
     })
-  }, [scrollYProgress, visualProgress])
+  }, [
+    scrollYProgress,
+    visualProgress,
+    handoffProgress,
+    sharedActive,
+    sharedLayerVisible,
+  ])
 
   useLayoutEffect(() => {
     const heroVisual = heroVisualRef.current
@@ -602,6 +631,50 @@ function HeroProductsExperience() {
       // Everywhere else, native scroll handles it.
     }
 
+    function jumpToHeroImmediately(heroY: number) {
+      // Cmd+ArrowUp/Home is a document-level jump, not a request to replay the Product→Hero
+      // showcase animation from an arbitrary page position. Put every layer into the canonical
+      // Hero state synchronously BEFORE moving the document so there is no one-frame blank.
+      const wasAutoScrolling = isAutoScrollingRef.current
+
+      scrollAnimationRef.current?.stop()
+      handoffAnimationRef.current?.stop()
+
+      if (activationRafRef.current !== null) {
+        cancelAnimationFrame(activationRafRef.current)
+        activationRafRef.current = null
+      }
+
+      // If a controlled transition was in flight, first restore the page's original scroll
+      // behavior before creating this one-shot instant jump. Otherwise `forceInstantScrollBehavior`
+      // would overwrite the saved original value with the temporary `'auto'` value.
+      if (wasAutoScrolling) {
+        restoreScrollBehavior()
+      }
+
+      isAutoScrollingRef.current = false
+      blockWheelUntilRef.current = 0
+
+      visualProgress.set(0)
+      handoffProgress.set(0)
+      sharedLayerVisible.set(1)
+      sharedActive.set(0)
+
+      forceInstantScrollBehavior()
+      window.scrollTo(0, heroY)
+      restoreScrollBehavior()
+
+      // Re-assert after the browser's scroll bookkeeping/useScroll update and refresh geometry at
+      // the resting Hero position. This also protects against very large inertial wheel jumps.
+      requestAnimationFrame(() => {
+        visualProgress.set(0)
+        handoffProgress.set(0)
+        sharedLayerVisible.set(1)
+        sharedActive.set(0)
+        measureRectsRef.current?.()
+      })
+    }
+
     function handleKeyDown(event: KeyboardEvent) {
       const target = event.target as HTMLElement | null
       const tag = target?.tagName
@@ -609,17 +682,27 @@ function HeroProductsExperience() {
         return
       }
 
+      const isJumpToTopKey = event.key === 'Home' || (event.metaKey && event.key === 'ArrowUp')
       const isDownKey = event.key === 'ArrowDown' || event.key === 'PageDown' || event.key === ' '
       const isUpKey = event.key === 'ArrowUp' || event.key === 'PageUp'
-      if (!isDownKey && !isUpKey) return
+      if (!isJumpToTopKey && !isDownKey && !isUpKey) return
+
+      const boundaries = getScrollBoundaries()
+      if (!boundaries) return
+
+      // Capture the macOS "go to top" shortcut from anywhere on the page. The old handler only
+      // understood ArrowUp/PageUp while already near Product Lineup, so Cmd+ArrowUp jumped the
+      // browser to Hero while leaving the Product hand-off state behind.
+      if (isJumpToTopKey) {
+        event.preventDefault()
+        jumpToHeroImmediately(boundaries.heroY)
+        return
+      }
 
       if (isAutoScrollingRef.current) {
         event.preventDefault()
         return
       }
-
-      const boundaries = getScrollBoundaries()
-      if (!boundaries) return
 
       const currentY = window.scrollY
       const progress = visualProgress.get()
@@ -832,6 +915,7 @@ function HeroProductsExperience() {
 
       <section
         ref={productSectionRef}
+        data-home-navbar-solid-start
         className="relative z-20 flex min-h-[100svh] w-full flex-col items-center justify-center gap-10 rounded-t-[48px] bg-white px-6 py-20 sm:px-8 lg:gap-14 lg:px-10 lg:py-24"
       >
         <motion.div className="max-w-2xl text-center" style={{ opacity: headingOpacity, y: headingY }}>
@@ -1160,7 +1244,10 @@ function SimplifiedHero() {
         </div>
       </section>
 
-      <section className="relative z-10 rounded-t-[40px] bg-home-paper px-6 py-16 sm:px-8">
+      <section
+        data-home-navbar-solid-start
+        className="relative z-10 rounded-t-[40px] bg-home-paper px-6 py-16 sm:px-8"
+      >
         <div className="mx-auto max-w-md text-center">
           <span className="inline-flex items-center gap-2 font-data text-xs uppercase tracking-[0.16em] text-home-beacon">
             <span className="size-1.5 rounded-full bg-home-beacon" />

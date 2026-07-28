@@ -26,6 +26,20 @@
   --home-wire: #00aeef;
   --home-beacon: #0066b3;
   --home-line: #dce6f0;
+
+  /* Admin Portal — namespaced so a future admin-only palette/radius/shadow
+     change never touches the storefront tokens above. Admin always renders
+     light regardless of the storefront's .dark toggle, so there is no dark
+     variant for these. */
+  --admin-app-bg: #eceef1;
+  --admin-surface: #ffffff;
+  --admin-surface-muted: #f8f9fa;
+  --admin-border: rgba(15, 23, 42, 0.07);
+  --admin-border-strong: rgba(15, 23, 42, 0.12);
+  --admin-text: #111827;
+  --admin-text-muted: #667085;
+  --admin-primary: #0066b3;
+  --admin-primary-soft: rgba(0, 102, 179, 0.09);
 }
 
 .dark {
@@ -64,6 +78,24 @@
   --color-home-wire: var(--home-wire);
   --color-home-beacon: var(--home-beacon);
   --color-home-line: var(--home-line);
+
+  /* Admin Portal tokens */
+  --color-admin-app-bg: var(--admin-app-bg);
+  --color-admin-surface: var(--admin-surface);
+  --color-admin-surface-muted: var(--admin-surface-muted);
+  --color-admin-border: var(--admin-border);
+  --color-admin-border-strong: var(--admin-border-strong);
+  --color-admin-text: var(--admin-text);
+  --color-admin-text-muted: var(--admin-text-muted);
+  --color-admin-primary: var(--admin-primary);
+  --color-admin-primary-soft: var(--admin-primary-soft);
+
+  --radius-admin-surface: 26px;
+  --radius-admin-lg: 20px;
+  --radius-admin-md: 16px;
+
+  --shadow-admin-card: 0 12px 30px -24px rgba(15, 23, 42, 0.24);
+  --shadow-admin-nav-active: 0 6px 18px -12px rgba(15, 23, 42, 0.28);
 }
 
 @media (prefers-reduced-motion: reduce) {

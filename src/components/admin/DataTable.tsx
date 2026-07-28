@@ -31,10 +31,10 @@ export function DataTable<T>({
   if (data.length === 0) return <EmptyState title={emptyTitle} description={emptyDescription} />
 
   return (
-    <div className="overflow-x-auto rounded-2xl border border-border">
+    <div className="overflow-x-auto rounded-admin-lg border border-admin-border bg-admin-surface shadow-admin-card">
       <table className="w-full min-w-[720px] border-collapse text-sm">
         <thead>
-          <tr className="border-b border-border bg-surface/60 text-left text-xs font-semibold uppercase tracking-wide text-text-secondary">
+          <tr className="border-b border-admin-border bg-admin-surface-muted text-left text-xs font-semibold uppercase tracking-wide text-admin-text-muted">
             {columns.map((col) => (
               <th key={col.key} className={cn('px-4 py-3 font-semibold', col.className)}>
                 {col.header}
@@ -46,12 +46,12 @@ export function DataTable<T>({
           {data.map((row) => (
             <tr
               key={rowKey(row)}
-              className="border-b border-border last:border-0 hover:bg-surface/40"
+              className="border-b border-admin-border last:border-0 hover:bg-admin-surface-muted"
             >
               {columns.map((col) => (
                 <td
                   key={col.key}
-                  className={cn('px-4 py-3 align-middle text-text-primary', col.className)}
+                  className={cn('px-4 py-4 align-middle text-admin-text', col.className)}
                 >
                   {col.render(row)}
                 </td>

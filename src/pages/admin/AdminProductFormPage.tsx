@@ -229,6 +229,7 @@ export function AdminProductFormPage() {
         title={
           isEditMode ? t('admin.products.form.editTitle') : t('admin.products.form.createTitle')
         }
+        onBack={() => navigate(ROUTES.ADMIN_PRODUCTS)}
       />
 
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">

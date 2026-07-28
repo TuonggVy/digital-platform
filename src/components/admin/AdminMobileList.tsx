@@ -29,7 +29,7 @@ export function AdminMobileList<T>({
     return (
       <div className="flex flex-col gap-3" aria-busy="true">
         {Array.from({ length: 3 }).map((_, i) => (
-          <div key={i} className="rounded-2xl border border-border p-4">
+          <div key={i} className="rounded-admin-md border border-admin-border bg-admin-surface p-4 shadow-admin-card">
             <Skeleton className="mb-2 h-4 w-2/3" />
             <Skeleton className="h-3 w-1/2" />
           </div>
@@ -45,7 +45,7 @@ export function AdminMobileList<T>({
   return (
     <div className={cn('flex flex-col gap-3', className)}>
       {data.map((row) => (
-        <div key={rowKey(row)} className="rounded-2xl border border-border p-4">
+        <div key={rowKey(row)} className="rounded-admin-md border border-admin-border bg-admin-surface p-4 shadow-admin-card">
           {renderCard(row)}
         </div>
       ))}

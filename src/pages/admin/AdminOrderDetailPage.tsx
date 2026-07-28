@@ -135,7 +135,7 @@ export function AdminOrderDetailPage() {
             <p>{formatDateTime(order.createdDate, locale)}</p>
           </>
         }
-        meta={<BackendOrderStatusBadge status={order.status} tone="dark" />}
+        meta={<BackendOrderStatusBadge status={order.status} />}
       />
 
       <div className="rounded-2xl border border-border p-5">

@@ -4,7 +4,7 @@ import {
   Package,
   ShoppingBag,
   Users,
-  Server,
+  Cloud,
   KeyRound,
   Wifi,
   LifeBuoy,
@@ -53,13 +53,7 @@ export const ADMIN_MENU_GROUPS: SidebarGroup[] = [
     key: 'services',
     label: 'admin.sidebar.groups.services',
     items: [
-      {
-        to: ROUTES.ADMIN_SERVICES,
-        key: 'admin.sidebar.services',
-        icon: Server,
-        badge: 2,
-        badgeVariant: 'warning',
-      },
+      { to: ROUTES.ADMIN_CLOUD, key: 'nav.megamenu.cloud', icon: Cloud },
       { to: ROUTES.ADMIN_LICENSES, key: 'admin.sidebar.licenses', icon: KeyRound },
       { to: ROUTES.ADMIN_ESIMS, key: 'admin.sidebar.esims', icon: Wifi },
     ],

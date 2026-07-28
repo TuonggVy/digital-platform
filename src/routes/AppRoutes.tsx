@@ -49,9 +49,9 @@ import { AdminOrdersPage } from '@/pages/admin/AdminOrdersPage'
 import { AdminOrderDetailPage } from '@/pages/admin/AdminOrderDetailPage'
 import { AdminCustomersPage } from '@/pages/admin/AdminCustomersPage'
 import { AdminCustomerDetailPage } from '@/pages/admin/AdminCustomerDetailPage'
-import { AdminServicesPage } from '@/pages/admin/AdminServicesPage'
-import { AdminLicensesPage } from '@/pages/admin/AdminLicensesPage'
-import { AdminEsimsPage } from '@/pages/admin/AdminEsimsPage'
+import { AdminCloudServicesPage } from '@/pages/admin/AdminCloudServicesPage'
+import { AdminKasperskyServicesPage } from '@/pages/admin/AdminKasperskyServicesPage'
+import { AdminEsimServicesPage } from '@/pages/admin/AdminEsimServicesPage'
 import { AdminTicketsPage } from '@/pages/admin/AdminTicketsPage'
 import { AdminContentPage } from '@/pages/admin/AdminContentPage'
 
@@ -117,9 +117,9 @@ export function AppRoutes() {
           <Route path="/admin/orders/:orderId" element={<AdminOrderDetailPage />} />
           <Route path="/admin/customers" element={<AdminCustomersPage />} />
           <Route path="/admin/customers/:customerId" element={<AdminCustomerDetailPage />} />
-          <Route path="/admin/services" element={<AdminServicesPage />} />
-          <Route path="/admin/licenses" element={<AdminLicensesPage />} />
-          <Route path="/admin/esims" element={<AdminEsimsPage />} />
+          <Route path="/admin/cloud" element={<AdminCloudServicesPage />} />
+          <Route path="/admin/licenses" element={<AdminKasperskyServicesPage />} />
+          <Route path="/admin/esims" element={<AdminEsimServicesPage />} />
           <Route path="/admin/tickets" element={<AdminTicketsPage />} />
           <Route path="/admin/content" element={<AdminContentPage />} />
         </Route>

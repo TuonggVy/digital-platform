@@ -881,14 +881,13 @@
       "groups": {
         "overview": "Overview",
         "business": "Business",
-        "services": "Service Management",
+        "services": "Customer Services",
         "operation": "Operations"
       },
       "dashboard": "Dashboard",
       "products": "Products",
       "orders": "Orders",
       "customers": "Customers",
-      "services": "Cloud Services",
       "licenses": "Kaspersky Licenses",
       "esims": "eSIM",
       "tickets": "Support",
@@ -913,7 +912,6 @@
       "categoryChart": "Orders by category",
       "recentOrders": "Recent orders",
       "topProducts": "Top-selling products",
-      "lowStockAlert": "Low license & eSIM stock alerts",
       "subtitle": "Track orders, services and operational activity in real time.",
       "lastUpdated": "Last updated",
       "refresh": "Refresh",
@@ -929,21 +927,13 @@
         "cloud": "Cloud",
         "kaspersky": "Kaspersky",
         "esim": "eSIM",
-        "licenseStock": "License stock",
-        "esimStock": "eSIM stock",
-        "noServices": "No services yet",
-        "noStock": "No stock yet"
+        "noServices": "No services yet"
       },
       "attention": {
         "title": "Attention required",
-        "lowStockLicenses": "License stock running low",
-        "lowStockEsims": "eSIM stock running low",
         "expiringSoon": "Services expiring soon",
         "suspended": "Suspended services",
-        "empty": "No items need attention",
-        "viewLicenses": "View license stock",
-        "viewEsims": "View eSIM stock",
-        "viewServices": "View services"
+        "empty": "No items need attention"
       },
       "quickActions": {
         "title": "Quick actions"
@@ -1050,8 +1040,9 @@
       "noPaymentYet": "No payment yet"
     },
     "services": {
-      "title": "Manage services",
-      "description": "Track Cloud, Kaspersky and eSIM services provisioned for customers.",
+      "cloudDescription": "Track Cloud services provisioned for customers.",
+      "kasperskyDescription": "Track Kaspersky licenses provisioned for customers.",
+      "esimDescription": "Track eSIM services provisioned for customers.",
       "noServices": "No services found",
       "startDate": "Start date",
       "expiryDate": "Expiry date",
@@ -1076,55 +1067,10 @@
       "resultsCount": "{{count}} services"
     },
     "licenses": {
-      "title": "Kaspersky license stock",
-      "description": "Manage the Kaspersky license stock and assignments to orders.",
-      "addNew": "Add license",
-      "key": "License key",
-      "product": "Product",
-      "duration": "Duration",
-      "status": "Status",
-      "assignedOrder": "Assigned order",
-      "expiryDate": "Expiry date",
-      "unassigned": "Unassigned",
-      "modalTitle": "Add new license",
-      "productName": "Product name",
-      "statuses": {
-        "AVAILABLE": "Available",
-        "ASSIGNED": "Assigned",
-        "EXPIRED": "Expired"
-      },
-      "cancel": "Cancel",
-      "save": "Save",
-      "added": "License added",
-      "noLicenses": "No licenses in stock yet",
-      "searchPlaceholder": "Search by license key or product...",
-      "resultsCount": "{{count}} licenses"
+      "title": "Kaspersky Licenses"
     },
     "esims": {
-      "title": "eSIM stock",
-      "description": "Manage the eSIM stock and assignments to orders.",
-      "addNew": "Add eSIM",
-      "code": "eSIM code",
-      "country": "Country",
-      "dataAmount": "Data amount",
-      "days": "Days",
-      "status": "Status",
-      "assignedOrder": "Assigned order",
-      "modalTitle": "Add new eSIM",
-      "product": "Product",
-      "statuses": {
-        "AVAILABLE": "Available",
-        "ASSIGNED": "Assigned",
-        "USED": "Used"
-      },
-      "cancel": "Cancel",
-      "save": "Save",
-      "added": "eSIM added",
-      "noEsims": "No eSIMs in stock yet",
-      "searchPlaceholder": "Search by eSIM code or country...",
-      "sortDaysAsc": "Days: low to high",
-      "sortDaysDesc": "Days: high to low",
-      "resultsCount": "{{count}} eSIMs"
+      "title": "eSIM Services"
     },
     "tickets": {
       "code": "Code",
