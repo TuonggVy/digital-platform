@@ -11,22 +11,41 @@ export function AdminLayout() {
   const location = useLocation()
 
   return (
-    <div className="min-h-screen bg-surface/30">
-      <div className="flex min-h-screen">
-        <AdminSidebar mobileOpen={mobileOpen} onMobileClose={() => setMobileOpen(false)} />
-        <div className="flex min-h-screen min-w-0 flex-1 flex-col">
-          <AdminHeader mobileOpen={mobileOpen} onMenuClick={() => setMobileOpen(true)} />
-          <div className="mx-auto flex w-full max-w-[1600px] flex-1 px-4 py-6 sm:px-6">
-            <main className="min-w-0 flex-1">
-              {/* Keyed by path so navigating away from a crashed page clears the boundary. */}
-              <AdminErrorBoundary key={location.pathname}>
-                <PageTransition>
-                  <Outlet />
-                </PageTransition>
-              </AdminErrorBoundary>
-            </main>
+    // No outer "card" frame — the admin app is flat, full-bleed background. Only `main`
+    // (the white content surface) keeps its own rounded corner; sidebar/header sit directly
+    // on the flat bg-admin-app-bg with no enclosing rounded/bordered wrapper around them.
+    <div className="flex h-screen bg-admin-app-bg">
+      <AdminSidebar mobileOpen={mobileOpen} onMobileClose={() => setMobileOpen(false)} />
+      <div className="flex min-w-0 flex-1 flex-col">
+        <AdminHeader mobileOpen={mobileOpen} onMenuClick={() => setMobileOpen(true)} />
+        {/* main is the only scrolling region — header and sidebar stay put without needing `sticky`. */}
+        <main
+  className="
+    mr-3
+    min-w-0
+    flex-1
+    overflow-y-auto
+    border-x-[1.5px]
+    border-t-[1.5px]
+    border-[#D8DEE8]
+    bg-admin-surface
+    p-4
+    sm:p-6
+    lg:mr-4
+    lg:rounded-tl-admin-surface
+    lg:rounded-tr-[24px]
+    lg:p-8
+  "
+>
+          <div className="mx-auto w-full max-w-[1600px]">
+            {/* Keyed by path so navigating away from a crashed page clears the boundary. */}
+            <AdminErrorBoundary key={location.pathname}>
+              <PageTransition>
+                <Outlet />
+              </PageTransition>
+            </AdminErrorBoundary>
           </div>
-        </div>
+        </main>
       </div>
       <ToastContainer />
     </div>

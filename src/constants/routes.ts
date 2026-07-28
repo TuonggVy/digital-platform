@@ -43,7 +43,7 @@ export const ROUTES = {
   ADMIN_ORDER_DETAIL: (orderId: string) => `/admin/orders/${orderId}`,
   ADMIN_CUSTOMERS: '/admin/customers',
   ADMIN_CUSTOMER_DETAIL: (customerId: string) => `/admin/customers/${customerId}`,
-  ADMIN_SERVICES: '/admin/services',
+  ADMIN_CLOUD: '/admin/cloud',
   ADMIN_LICENSES: '/admin/licenses',
   ADMIN_ESIMS: '/admin/esims',
   ADMIN_TICKETS: '/admin/tickets',

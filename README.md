@@ -38,7 +38,7 @@ You can also register a new account at `/register` — it is created as a `custo
 `/account/tickets`, `/account/tickets/new`, `/account/profile`, `/account/security`.
 
 **Admin** (`AdminRoute` + `AdminLayout`, requires the `admin` role): `/admin`, `/admin/products`,
-`/admin/products/new`, `/admin/products/:id/edit`, `/admin/orders`, `/admin/customers`, `/admin/services`,
+`/admin/products/new`, `/admin/products/:id/edit`, `/admin/orders`, `/admin/customers`, `/admin/cloud`,
 `/admin/licenses`, `/admin/esims`, `/admin/tickets`, `/admin/content`.
 
 Route guards live in `src/routes/` (`GuestRoute.tsx`, `CustomerRoute.tsx`, `AdminRoute.tsx`). An unauthenticated user

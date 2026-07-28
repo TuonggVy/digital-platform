@@ -881,14 +881,13 @@
       "groups": {
         "overview": "Tổng quan",
         "business": "Kinh doanh",
-        "services": "Quản lý dịch vụ",
+        "services": "Dịch vụ khách hàng",
         "operation": "Vận hành"
       },
       "dashboard": "Tổng quan",
       "products": "Sản phẩm",
       "orders": "Đơn hàng",
       "customers": "Khách hàng",
-      "services": "Dịch vụ Cloud",
       "licenses": "License Kaspersky",
       "esims": "eSIM",
       "tickets": "Hỗ trợ",
@@ -913,7 +912,6 @@
       "categoryChart": "Đơn hàng theo danh mục",
       "recentOrders": "Đơn hàng gần đây",
       "topProducts": "Sản phẩm bán chạy",
-      "lowStockAlert": "Cảnh báo kho license & eSIM sắp hết",
       "subtitle": "Theo dõi đơn hàng, dịch vụ và hoạt động vận hành theo thời gian thực.",
       "lastUpdated": "Cập nhật lúc",
       "refresh": "Làm mới",
@@ -929,21 +927,13 @@
         "cloud": "Cloud",
         "kaspersky": "Kaspersky",
         "esim": "eSIM",
-        "licenseStock": "Kho license",
-        "esimStock": "Kho eSIM",
-        "noServices": "Chưa có dịch vụ nào",
-        "noStock": "Chưa có tồn kho"
+        "noServices": "Chưa có dịch vụ nào"
       },
       "attention": {
         "title": "Cần chú ý",
-        "lowStockLicenses": "Kho license sắp hết",
-        "lowStockEsims": "Kho eSIM sắp hết",
         "expiringSoon": "Dịch vụ sắp hết hạn",
         "suspended": "Dịch vụ bị tạm ngưng",
-        "empty": "Không có hạng mục cần xử lý",
-        "viewLicenses": "Xem kho license",
-        "viewEsims": "Xem kho eSIM",
-        "viewServices": "Xem dịch vụ"
+        "empty": "Không có hạng mục cần xử lý"
       },
       "quickActions": {
         "title": "Thao tác nhanh"
@@ -1050,8 +1040,9 @@
       "noPaymentYet": "Chưa có giao dịch thanh toán nào"
     },
     "services": {
-      "title": "Quản lý dịch vụ",
-      "description": "Theo dõi dịch vụ Cloud, Kaspersky và eSIM đã cấp cho khách hàng.",
+      "cloudDescription": "Theo dõi dịch vụ Cloud đã cấp cho khách hàng.",
+      "kasperskyDescription": "Theo dõi license Kaspersky đã cấp cho khách hàng.",
+      "esimDescription": "Theo dõi dịch vụ eSIM đã cấp cho khách hàng.",
       "noServices": "Không có dịch vụ nào",
       "startDate": "Ngày bắt đầu",
       "expiryDate": "Ngày hết hạn",
@@ -1076,55 +1067,10 @@
       "resultsCount": "{{count}} dịch vụ"
     },
     "licenses": {
-      "title": "Kho license Kaspersky",
-      "description": "Quản lý kho license Kaspersky và gán cho đơn hàng.",
-      "addNew": "Thêm license",
-      "key": "License key",
-      "product": "Sản phẩm",
-      "duration": "Thời hạn",
-      "status": "Trạng thái",
-      "assignedOrder": "Gán cho đơn hàng",
-      "expiryDate": "Ngày hết hạn",
-      "unassigned": "Chưa gán",
-      "modalTitle": "Thêm license mới",
-      "productName": "Tên sản phẩm",
-      "statuses": {
-        "AVAILABLE": "Còn hàng",
-        "ASSIGNED": "Đã gán",
-        "EXPIRED": "Hết hạn"
-      },
-      "cancel": "Hủy",
-      "save": "Lưu",
-      "added": "Đã thêm license mới",
-      "noLicenses": "Chưa có license nào trong kho",
-      "searchPlaceholder": "Tìm theo license key hoặc sản phẩm...",
-      "resultsCount": "{{count}} license"
+      "title": "License Kaspersky"
     },
     "esims": {
-      "title": "Kho eSIM",
-      "description": "Quản lý kho eSIM và gán cho đơn hàng.",
-      "addNew": "Thêm eSIM",
-      "code": "Mã eSIM",
-      "country": "Quốc gia",
-      "dataAmount": "Dung lượng",
-      "days": "Số ngày",
-      "status": "Trạng thái",
-      "assignedOrder": "Gán cho đơn hàng",
-      "modalTitle": "Thêm eSIM mới",
-      "product": "Sản phẩm",
-      "statuses": {
-        "AVAILABLE": "Còn hàng",
-        "ASSIGNED": "Đã gán",
-        "USED": "Đã sử dụng"
-      },
-      "cancel": "Hủy",
-      "save": "Lưu",
-      "added": "Đã thêm eSIM mới",
-      "noEsims": "Chưa có eSIM nào trong kho",
-      "searchPlaceholder": "Tìm theo mã eSIM hoặc quốc gia...",
-      "sortDaysAsc": "Số ngày: thấp đến cao",
-      "sortDaysDesc": "Số ngày: cao đến thấp",
-      "resultsCount": "{{count}} eSIM"
+      "title": "Dịch vụ eSIM"
     },
     "tickets": {
       "code": "Mã",

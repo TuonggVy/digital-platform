@@ -23,13 +23,13 @@ export function AdminHeader({ mobileOpen = false, onMenuClick }: AdminHeaderProp
   const logout = useAuthStore((s) => s.logout)
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b border-border bg-background/90 px-4 backdrop-blur-lg sm:px-6">
+    <header className="flex h-[72px] shrink-0 items-center gap-4 bg-transparent px-5 sm:px-7">
       <button
         type="button"
         aria-label={t('admin.sidebar.openMenu')}
         aria-expanded={mobileOpen}
         onClick={onMenuClick}
-        className="flex size-9 shrink-0 items-center justify-center rounded-lg text-text-secondary hover:bg-surface focus-ring lg:hidden"
+        className="flex size-9 shrink-0 items-center justify-center rounded-lg text-admin-text-muted hover:bg-black/[0.03] focus-ring lg:hidden"
       >
         <Menu aria-hidden="true" className="size-5" />
       </button>
@@ -37,7 +37,7 @@ export function AdminHeader({ mobileOpen = false, onMenuClick }: AdminHeaderProp
       <div className="ml-auto flex items-center gap-2">
         <Link
           to={ROUTES.HOME}
-          className="hidden items-center gap-1.5 rounded-lg px-3 py-2 text-sm text-text-secondary hover:bg-surface sm:flex"
+          className="hidden items-center gap-1.5 rounded-lg px-3 py-2 text-sm text-admin-text-muted hover:bg-black/[0.03] sm:flex"
         >
           <ExternalLink className="size-4" />
           {t('common.viewDetails')}
@@ -46,7 +46,7 @@ export function AdminHeader({ mobileOpen = false, onMenuClick }: AdminHeaderProp
 
         <Dropdown
           trigger={
-            <span className="relative flex size-9 items-center justify-center rounded-lg text-text-secondary hover:bg-surface focus-ring">
+            <span className="relative flex size-9 items-center justify-center rounded-lg text-admin-text-muted hover:bg-black/[0.03] focus-ring">
               <Bell className="size-5" />
               <span className="absolute -right-0.5 -top-0.5 flex size-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-semibold text-white">
                 {NOTIFICATIONS.length}
@@ -66,7 +66,7 @@ export function AdminHeader({ mobileOpen = false, onMenuClick }: AdminHeaderProp
 
         <Dropdown
           trigger={
-            <span className="flex size-9 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary focus-ring">
+            <span className="flex size-9 items-center justify-center rounded-full bg-admin-primary-soft text-sm font-semibold text-admin-primary focus-ring">
               {currentUser?.name.charAt(0)}
             </span>
           }

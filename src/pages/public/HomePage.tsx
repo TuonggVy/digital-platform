@@ -120,10 +120,10 @@ function ServiceProductVisual({
   return (
     <div
       className={cn(
-        'relative flex min-h-[320px] w-full items-center justify-center',
-        'sm:min-h-[390px] lg:min-h-[480px]',
-        className,
-      )}
+  'relative flex min-h-[260px] w-full items-center justify-center',
+  'sm:min-h-[310px] lg:min-h-[400px]',
+  className,
+)}
     >
       <img
         src={src}
@@ -204,42 +204,58 @@ function ProductStoryPanel({
     offset: ['start end', 'end start'],
   })
 
-  const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 120,
-    damping: 34,
-    mass: 0.2,
+  const panelProgress = useSpring(scrollYProgress, {
+    stiffness: 95,
+    damping: 28,
+    mass: 0.35,
     restDelta: 0.001,
   })
 
-  const textY = useTransform(smoothProgress, (p) => {
+  const textY = useTransform(panelProgress, (p) => {
     if (reducedRef.current) return 0
-    const amplitude = desktopRef.current ? 1 : 0.35
-    return lerpRange(p, [0, 0.5, 1], [54, 0, -54]) * amplitude
+    const amplitude = desktopRef.current ? 1 : 0.45
+    return lerpRange(p, [0, 0.2, 0.42, 0.82, 1], [72, 72, 0, 0, -42]) * amplitude
   })
-  const textOpacity = useTransform(smoothProgress, (p) =>
-    reducedRef.current ? 1 : lerpRange(p, [0, 0.16, 0.82, 1], [0, 1, 1, 0]),
-  )
+  const textOpacity = useTransform(panelProgress, (p) => {
+    if (reducedRef.current) return 1
+    return lerpRange(p, [0, 0.2, 0.42, 0.84, 1], [0, 0, 1, 1, 0])
+  })
 
-  const imageY = useTransform(smoothProgress, (p) => {
+  const imageY = useTransform(panelProgress, (p) => {
     if (reducedRef.current) return 0
-    const amplitude = desktopRef.current ? 1 : 0.35
-    return lerpRange(p, [0, 0.5, 1], [86, 0, -72]) * amplitude
+    const amplitude = desktopRef.current ? 1 : 0.45
+    return lerpRange(p, [0, 0.22, 0.46, 0.84, 1], [104, 104, 0, 0, -56]) * amplitude
   })
-  const imageScale = useTransform(smoothProgress, (p) =>
-    reducedRef.current ? 1 : lerpRange(p, [0, 0.42, 0.72, 1], [0.92, 1, 1, 0.95]),
-  )
-  const imageOpacity = useTransform(smoothProgress, (p) =>
-    reducedRef.current ? 1 : lerpRange(p, [0, 0.14, 0.84, 1], [0, 1, 1, 0]),
-  )
+  const imageScale = useTransform(panelProgress, (p) => {
+    if (reducedRef.current) return 1
+    return lerpRange(p, [0, 0.22, 0.46, 0.84, 1], [0.94, 0.94, 1, 1, 0.97])
+  })
+  const imageOpacity = useTransform(panelProgress, (p) => {
+    if (reducedRef.current) return 1
+    return lerpRange(p, [0, 0.22, 0.46, 0.86, 1], [0, 0, 1, 1, 0])
+  })
 
   const isImageRight = imagePosition === 'right'
 
   return (
     <section
-      ref={panelRef}
-      className="relative flex min-h-[85svh] items-center px-4 py-20 sm:px-6 lg:min-h-[100svh] lg:px-8 lg:py-24"
-    >
-      <div className="mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16">
+  ref={panelRef}
+  className="
+    relative
+    flex
+    min-h-[68svh]
+    items-center
+    px-4
+    py-12
+    sm:min-h-[72svh]
+    sm:px-6
+    sm:py-14
+    lg:min-h-[76svh]
+    lg:px-8
+    lg:py-16
+  "
+>
+      <div className="mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-8 lg:grid-cols-2 lg:gap-12">
         <motion.div
           style={{ y: textY, opacity: textOpacity }}
           className={cn(
@@ -259,8 +275,6 @@ function ProductStoryPanel({
           {image}
         </motion.div>
       </div>
-
-      <div className="pointer-events-none absolute inset-x-[8%] bottom-0 h-px bg-white/5" aria-hidden />
     </section>
   )
 }
@@ -292,40 +306,43 @@ function ProductStoryChapter() {
     offset: ['start start', 'end end'],
   })
 
-  const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 110,
-    damping: 32,
-    mass: 0.25,
-    restDelta: 0.001,
+  // Deliberately a separate, slower spring from ProductStoryPanel's own `panelProgress` — the
+  // background (grid + ambient glows) should drift a beat behind the content, not track scroll
+  // 1:1, so it reads as an ambient layer rather than something the user is directly dragging.
+  const backgroundProgress = useSpring(scrollYProgress, {
+    stiffness: 48,
+    damping: 26,
+    mass: 0.9,
+    restDelta: 0.0005,
   })
 
   const amplitude = () => (reducedRef.current ? 0 : desktopRef.current ? 1 : 0.5)
 
-  const gridY = useTransform(smoothProgress, (p) => `${lerpRange(p, [0, 1], [-6, 8]) * amplitude()}%`)
+  const gridY = useTransform(backgroundProgress, (p) => `${lerpRange(p, [0, 1], [-6, 8]) * amplitude()}%`)
   const gridX = useTransform(
-    smoothProgress,
+    backgroundProgress,
     (p) => `${lerpRange(p, [0, 0.5, 1], [-2, 2, -1]) * amplitude()}%`,
   )
-  const gridScale = useTransform(smoothProgress, (p) => {
+  const gridScale = useTransform(backgroundProgress, (p) => {
     const base = lerpRange(p, [0, 0.5, 1], [1.04, 1.09, 1.05])
     return 1 + (base - 1) * amplitude()
   })
 
   const primaryGlowX = useTransform(
-    smoothProgress,
+    backgroundProgress,
     (p) => `${lerpRange(p, [0, 0.5, 1], [-18, 18, -8]) * amplitude()}%`,
   )
   const primaryGlowY = useTransform(
-    smoothProgress,
+    backgroundProgress,
     (p) => `${lerpRange(p, [0, 0.5, 1], [-8, 16, 30]) * amplitude()}%`,
   )
-  const primaryGlowScale = useTransform(smoothProgress, (p) => {
+  const primaryGlowScale = useTransform(backgroundProgress, (p) => {
     const base = lerpRange(p, [0, 0.5, 1], [0.9, 1.15, 1])
     return 1 + (base - 1) * amplitude()
   })
 
-  const secondaryGlowX = useTransform(smoothProgress, (p) => `${lerpRange(p, [0, 1], [24, -18]) * amplitude()}%`)
-  const secondaryGlowY = useTransform(smoothProgress, (p) => `${lerpRange(p, [0, 1], [20, -10]) * amplitude()}%`)
+  const secondaryGlowX = useTransform(backgroundProgress, (p) => `${lerpRange(p, [0, 1], [24, -18]) * amplitude()}%`)
+  const secondaryGlowY = useTransform(backgroundProgress, (p) => `${lerpRange(p, [0, 1], [20, -10]) * amplitude()}%`)
 
   return (
     <section ref={storyRef} className="relative isolate bg-home-ink text-home-paper">
@@ -375,7 +392,7 @@ function ProductStoryChapter() {
             eyebrow={t('home.cloudSection.eyebrow')}
             title={t('home.cloudSection.title')}
             subtitle={t('home.cloudSection.subtitle')}
-            className="mb-8"
+            className="mb-6"
           />
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {CLOUD_FEATURES.map((feature) => (
@@ -408,7 +425,7 @@ function ProductStoryChapter() {
             eyebrow={t('home.kasperskySection.eyebrow')}
             title={t('home.kasperskySection.title')}
             subtitle={t('home.kasperskySection.subtitle')}
-            className="mb-8"
+            className="mb-6"
           />
           <div className="flex flex-col gap-3">
             {KASPERSKY_FEATURES.map((feature) => (
@@ -436,7 +453,7 @@ function ProductStoryChapter() {
             eyebrow={t('home.esimSection.eyebrow')}
             title={t('home.esimSection.title')}
             subtitle={t('home.esimSection.subtitle')}
-            className="mb-8"
+            className="mb-6"
           />
           <div className="flex flex-col gap-3">
             {ESIM_FEATURES.map((feature) => (

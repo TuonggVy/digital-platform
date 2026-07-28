@@ -13,14 +13,10 @@ import {
   Package,
 } from 'lucide-react'
 import { serviceService } from '@/services/serviceService'
-import { productService } from '@/services/productService'
-import { inventoryService } from '@/services/inventoryService'
 import { orderApiService } from '@/services/orderApiService'
 import type { BackendOrder } from '@/services/orderApiService'
 import { customerApiService } from '@/services/customerApiService'
 import type { CustomerService, ServiceStatus } from '@/types'
-import type { LicenseStockItem, LicenseStatus } from '@/data/mocks/licenses'
-import type { EsimStockItem, EsimStockStatus } from '@/data/mocks/esimInventory'
 import { Seo } from '@/components/common/Seo'
 import { DataTable } from '@/components/admin/DataTable'
 import { BackendOrderStatusBadge } from '@/components/common/BackendOrderStatusBadge'
@@ -45,13 +41,6 @@ import { ROUTES } from '@/constants/routes'
 
 interface CoreData {
   services: CustomerService[]
-  licenses: LicenseStockItem[]
-  esimStock: EsimStockItem[]
-}
-
-interface LowStockItem {
-  productName: string
-  available: number
 }
 
 const RECENT_ORDERS_COUNT = 5
@@ -71,20 +60,6 @@ const SERVICE_STATUS_TONE: Record<ServiceStatus, string> = {
   SUSPENDED: 'bg-text-secondary/40',
 }
 
-const LICENSE_STATUS_ORDER: LicenseStatus[] = ['AVAILABLE', 'ASSIGNED', 'EXPIRED']
-const LICENSE_STATUS_TONE: Record<LicenseStatus, string> = {
-  AVAILABLE: 'bg-primary',
-  ASSIGNED: 'bg-text-secondary/40',
-  EXPIRED: 'bg-red-500',
-}
-
-const ESIM_STOCK_STATUS_ORDER: EsimStockStatus[] = ['AVAILABLE', 'ASSIGNED', 'USED']
-const ESIM_STOCK_STATUS_TONE: Record<EsimStockStatus, string> = {
-  AVAILABLE: 'bg-primary',
-  ASSIGNED: 'bg-amber-500',
-  USED: 'bg-text-secondary/40',
-}
-
 function buildServiceSegments(list: CustomerService[], t: (key: string) => string): DistributionSegment[] {
   return SERVICE_STATUS_ORDER.map((status) => ({
     key: status,
@@ -92,55 +67,6 @@ function buildServiceSegments(list: CustomerService[], t: (key: string) => strin
     count: list.filter((service) => service.status === status).length,
     toneClass: SERVICE_STATUS_TONE[status],
   }))
-}
-
-function buildLicenseSegments(list: LicenseStockItem[], t: (key: string) => string): DistributionSegment[] {
-  return LICENSE_STATUS_ORDER.map((status) => ({
-    key: status,
-    label: t(`admin.licenses.statuses.${status}`),
-    count: list.filter((license) => license.status === status).length,
-    toneClass: LICENSE_STATUS_TONE[status],
-  }))
-}
-
-function buildEsimStockSegments(list: EsimStockItem[], t: (key: string) => string): DistributionSegment[] {
-  return ESIM_STOCK_STATUS_ORDER.map((status) => ({
-    key: status,
-    label: t(`admin.esims.statuses.${status}`),
-    count: list.filter((item) => item.status === status).length,
-    toneClass: ESIM_STOCK_STATUS_TONE[status],
-  }))
-}
-
-function computeLowStock(
-  licenses: LicenseStockItem[],
-  esimStock: EsimStockItem[],
-  productNameById: Map<string, string>,
-): { lowStockLicenses: LowStockItem[]; lowStockEsims: LowStockItem[] } {
-  const licenseAvailable = new Map<string, LowStockItem>()
-  for (const license of licenses) {
-    if (license.status !== 'AVAILABLE') continue
-    const entry = licenseAvailable.get(license.productId) ?? {
-      productName: license.productName,
-      available: 0,
-    }
-    entry.available += 1
-    licenseAvailable.set(license.productId, entry)
-  }
-
-  const esimAvailable = new Map<string, LowStockItem>()
-  for (const esim of esimStock) {
-    if (esim.status !== 'AVAILABLE') continue
-    const productName = productNameById.get(esim.productId) ?? esim.productId
-    const entry = esimAvailable.get(esim.productId) ?? { productName, available: 0 }
-    entry.available += 1
-    esimAvailable.set(esim.productId, entry)
-  }
-
-  return {
-    lowStockLicenses: Array.from(licenseAvailable.values()).filter((item) => item.available < 2),
-    lowStockEsims: Array.from(esimAvailable.values()).filter((item) => item.available < 2),
-  }
 }
 
 function MetricValueSkeleton() {
@@ -153,7 +79,6 @@ export function AdminDashboardPage() {
 
   const [coreData, setCoreData] = useState<CoreData | null>(null)
   const [coreError, setCoreError] = useState<string | null>(null)
-  const [productNameById, setProductNameById] = useState<Map<string, string>>(new Map())
 
   const [recentOrders, setRecentOrders] = useState<BackendOrder[]>([])
   const [ordersTotal, setOrdersTotal] = useState<number | null>(null)
@@ -171,29 +96,13 @@ export function AdminDashboardPage() {
   const loadCoreData = useCallback(async () => {
     setCoreError(null)
     try {
-      const [services, licenses, esimStock] = await Promise.all([
-        serviceService.getAllForAdmin(),
-        inventoryService.getLicenses(),
-        inventoryService.getEsimStock(),
-      ])
-      setCoreData({ services, licenses, esimStock })
+      const services = await serviceService.getAllForAdmin()
+      setCoreData({ services })
     } catch (err) {
       setCoreData(null)
       setCoreError(err instanceof Error ? err.message : t('toast.genericError'))
     }
   }, [t])
-
-  // Product names are only used to label eSIM low-stock rows (falling back to the raw
-  // product ID otherwise), so this is kept separate from loadCoreData: a Products API
-  // failure should never take down the services/inventory sections above.
-  const loadProductNames = useCallback(async () => {
-    try {
-      const products = await productService.getAllForAdmin()
-      setProductNameById(new Map(products.map((p) => [p.id, p.name[locale]])))
-    } catch {
-      // Non-fatal — low-stock eSIM labels simply fall back to their raw product ID.
-    }
-  }, [locale])
 
   // Kept independent from the fetch above (and from the orders fetch below) so a
   // Customer API failure never blocks the rest of the dashboard from rendering.
@@ -229,18 +138,16 @@ export function AdminDashboardPage() {
 
   const refreshAll = useCallback(async () => {
     setIsRefreshing(true)
-    await Promise.allSettled([loadCoreData(), loadProductNames(), loadCustomerCount(), loadOrderStats()])
+    await Promise.allSettled([loadCoreData(), loadCustomerCount(), loadOrderStats()])
     setLastUpdated(new Date())
     setIsRefreshing(false)
-  }, [loadCoreData, loadProductNames, loadCustomerCount, loadOrderStats])
+  }, [loadCoreData, loadCustomerCount, loadOrderStats])
 
   useEffect(() => {
     refreshAll()
   }, [refreshAll])
 
   const services = coreData?.services ?? []
-  const licenses = coreData?.licenses ?? []
-  const esimStock = coreData?.esimStock ?? []
 
   const cloudServices = services.filter((s) => s.type === 'cloud')
   const kasperskyServices = services.filter((s) => s.type === 'kaspersky')
@@ -250,8 +157,6 @@ export function AdminDashboardPage() {
   const expiringSoonServices = services.filter((s) => s.status === 'EXPIRING_SOON')
   const suspendedServices = services.filter((s) => s.status === 'SUSPENDED')
   const attentionServiceCount = expiringSoonServices.length + suspendedServices.length
-
-  const { lowStockLicenses, lowStockEsims } = computeLowStock(licenses, esimStock, productNameById)
 
   const anyMetricSourceSettled =
     coreData !== null || coreError !== null || customerCount !== null || customerError || !ordersLoading
@@ -265,7 +170,7 @@ export function AdminDashboardPage() {
     healthStatus = 'loading'
   } else if (coreError || customerError || ordersError) {
     healthStatus = 'unknown'
-  } else if (attentionServiceCount > 0 || lowStockLicenses.length > 0 || lowStockEsims.length > 0) {
+  } else if (attentionServiceCount > 0) {
     healthStatus = 'attention'
   } else {
     healthStatus = 'healthy'
@@ -276,7 +181,7 @@ export function AdminDashboardPage() {
       key: 'cloud',
       label: t('admin.dashboard.serviceOverview.cloud'),
       icon: <Cloud className="size-4" />,
-      href: ROUTES.ADMIN_SERVICES,
+      href: ROUTES.ADMIN_CLOUD,
       serviceTotal: cloudServices.length,
       serviceSegments: buildServiceSegments(cloudServices, t),
       serviceEmptyLabel: t('admin.dashboard.serviceOverview.noServices'),
@@ -289,12 +194,6 @@ export function AdminDashboardPage() {
       serviceTotal: kasperskyServices.length,
       serviceSegments: buildServiceSegments(kasperskyServices, t),
       serviceEmptyLabel: t('admin.dashboard.serviceOverview.noServices'),
-      stock: {
-        label: t('admin.dashboard.serviceOverview.licenseStock'),
-        total: licenses.length,
-        segments: buildLicenseSegments(licenses, t),
-        emptyLabel: t('admin.dashboard.serviceOverview.noStock'),
-      },
     },
     {
       key: 'esim',
@@ -304,52 +203,26 @@ export function AdminDashboardPage() {
       serviceTotal: esimServices.length,
       serviceSegments: buildServiceSegments(esimServices, t),
       serviceEmptyLabel: t('admin.dashboard.serviceOverview.noServices'),
-      stock: {
-        label: t('admin.dashboard.serviceOverview.esimStock'),
-        total: esimStock.length,
-        segments: buildEsimStockSegments(esimStock, t),
-        emptyLabel: t('admin.dashboard.serviceOverview.noStock'),
-      },
     },
   ]
 
   const attentionGroups: AttentionGroup[] = [
     {
-      key: 'lowStockLicenses',
-      label: t('admin.dashboard.attention.lowStockLicenses'),
-      count: lowStockLicenses.length,
-      href: ROUTES.ADMIN_LICENSES,
-      actionLabel: t('admin.dashboard.attention.viewLicenses'),
-      items: lowStockLicenses.map((item) => `${item.productName}: ${item.available}`),
-    },
-    {
-      key: 'lowStockEsims',
-      label: t('admin.dashboard.attention.lowStockEsims'),
-      count: lowStockEsims.length,
-      href: ROUTES.ADMIN_ESIMS,
-      actionLabel: t('admin.dashboard.attention.viewEsims'),
-      items: lowStockEsims.map((item) => `${item.productName}: ${item.available}`),
-    },
-    {
       key: 'expiringSoon',
       label: t('admin.dashboard.attention.expiringSoon'),
       count: expiringSoonServices.length,
-      href: ROUTES.ADMIN_SERVICES,
-      actionLabel: t('admin.dashboard.attention.viewServices'),
     },
     {
       key: 'suspended',
       label: t('admin.dashboard.attention.suspended'),
       count: suspendedServices.length,
-      href: ROUTES.ADMIN_SERVICES,
-      actionLabel: t('admin.dashboard.attention.viewServices'),
     },
   ]
 
   const quickActions: QuickAction[] = [
     { key: 'orders', label: t('admin.sidebar.orders'), href: ROUTES.ADMIN_ORDERS, icon: <ShoppingBag className="size-4" /> },
     { key: 'products', label: t('admin.sidebar.products'), href: ROUTES.ADMIN_PRODUCTS, icon: <Package className="size-4" /> },
-    { key: 'services', label: t('admin.sidebar.services'), href: ROUTES.ADMIN_SERVICES, icon: <Server className="size-4" /> },
+    { key: 'cloud', label: t('nav.megamenu.cloud'), href: ROUTES.ADMIN_CLOUD, icon: <Cloud className="size-4" /> },
     { key: 'licenses', label: t('admin.sidebar.licenses'), href: ROUTES.ADMIN_LICENSES, icon: <KeyRound className="size-4" /> },
     { key: 'esims', label: t('admin.sidebar.esims'), href: ROUTES.ADMIN_ESIMS, icon: <Wifi className="size-4" /> },
   ]
@@ -402,7 +275,6 @@ export function AdminDashboardPage() {
           <StatCard
             icon={<Server className="size-5" />}
             label={t('admin.dashboard.activeServices')}
-            href={ROUTES.ADMIN_SERVICES}
             value={
               coreData === null && !coreError ? (
                 <MetricValueSkeleton />
@@ -416,7 +288,6 @@ export function AdminDashboardPage() {
           <StatCard
             icon={<AlertTriangle className="size-5" />}
             label={t('admin.dashboard.servicesNeedingAttention')}
-            href={ROUTES.ADMIN_SERVICES}
             tone={attentionServiceCount > 0 ? 'attention' : 'default'}
             value={
               coreData === null && !coreError ? (

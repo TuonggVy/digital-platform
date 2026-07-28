@@ -78,7 +78,7 @@ export function AdminCustomerDetailPage() {
         ]}
         description={customer.email}
         meta={
-          <Badge variant={customer.status === 'ACTIVE' ? 'success' : 'neutral'} tone="dark">
+          <Badge variant={customer.status === 'ACTIVE' ? 'success' : 'neutral'}>
             {t(`admin.customers.status${customer.status === 'ACTIVE' ? 'Active' : 'Inactive'}`)}
           </Badge>
         }

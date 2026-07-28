@@ -61,7 +61,7 @@ export function AdminSidebar({ mobileOpen = false, onMobileClose }: AdminSidebar
 
   function renderNav(navCollapsed: boolean, onNavigate?: () => void) {
     return (
-      <nav className="flex-1 overflow-y-auto px-3 py-3">
+      <nav className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden px-4 py-4">
         {ADMIN_MENU_GROUPS.map((group, idx) => (
           <AdminSidebarGroup
             key={group.key}
@@ -77,21 +77,21 @@ export function AdminSidebar({ mobileOpen = false, onMobileClose }: AdminSidebar
 
   return (
     <>
-      {/* Desktop: in-flow flex sidebar, own width drives the layout gap in AdminLayout */}
+      {/* Desktop: in-flow flex sidebar, blends into the shell background — no border, no fill. */}
       <aside
         className={cn(
-          'sticky top-0 hidden h-screen shrink-0 flex-col border-r border-border bg-background transition-[width] duration-300 ease-in-out lg:flex',
-          collapsed ? 'w-20' : 'w-[272px]',
+          'relative z-[120] hidden h-full shrink-0 flex-col bg-transparent transition-[width] duration-300 ease-in-out lg:flex',
+          collapsed ? 'w-20' : 'w-[232px]',
         )}
       >
-        <div className={cn('flex h-16 shrink-0 items-center border-b border-border', collapsed ? 'justify-center px-2' : 'justify-between px-4')}>
+        <div className={cn('flex h-16 shrink-0 items-center pb-3', collapsed ? 'justify-center px-2' : 'justify-between px-4')}>
           {renderBrand(collapsed)}
           {!collapsed && (
             <button
               type="button"
               aria-label={t('admin.sidebar.collapse')}
               onClick={() => setCollapsed(true)}
-              className="flex size-8 shrink-0 items-center justify-center rounded-lg text-text-secondary transition-colors hover:bg-surface hover:text-text-primary focus-ring"
+              className="flex size-8 shrink-0 items-center justify-center rounded-lg text-admin-text-muted transition-colors hover:bg-black/[0.03] hover:text-admin-text focus-ring"
             >
               <ChevronLeft aria-hidden="true" className="size-4" />
             </button>

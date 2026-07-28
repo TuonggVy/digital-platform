@@ -163,7 +163,7 @@ AdminRoute (chặn nếu currentUser.role !== 'admin', redirect /account; chưa 
     /admin                          AdminDashboardPage  ← đã migrate 1 phần (Bước 9)
     /admin/orders                   AdminOrdersPage      ← đã migrate (Bước 9)
     /admin/orders/:orderId          AdminOrderDetailPage ← MỚI, tạo ở Bước 9
-    /admin/products, /admin/customers, /admin/services, ... (mix mock/thật, xem CHANGELOG)
+    /admin/products, /admin/customers, /admin/cloud, /admin/licenses, /admin/esims, ... (mix mock/thật, xem CHANGELOG)
 ```
 
 `AdminRoute`/`CustomerRoute`/`GuestRoute` là guard **client-side** (kiểm tra `useAuthStore().currentUser`), độc lập với guard **server-side** (`JwtAuthGuard`/`RolesGuard` của NestJS) — cả hai lớp đều có, không lớp nào thay thế lớp kia.

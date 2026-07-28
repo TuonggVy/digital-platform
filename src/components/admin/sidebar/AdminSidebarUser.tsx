@@ -27,8 +27,12 @@ export function AdminSidebarUser({ collapsed }: AdminSidebarUserProps) {
   }
 
   return (
-    <div className="border-t border-border p-3">
-      <div ref={anchorRef} className="relative">
+    // No overflow-hidden here — the account menu opens upward (placement="top") past this
+    // wrapper's own box, and overflow-hidden would clip it since it renders outside these
+    // bounds. The sidebar-width overflow this div used to guard against is instead prevented
+    // by the trigger's own fixed width below, so no clipping ancestor is needed.
+    <div className="relative z-[130] w-full min-w-0 shrink-0 p-3 pt-5">
+      <div ref={anchorRef} className="relative min-w-0">
         <Dropdown
           placement="top"
           align="left"
@@ -36,19 +40,25 @@ export function AdminSidebarUser({ collapsed }: AdminSidebarUserProps) {
           trigger={
             <span
               className={cn(
-                'flex w-full items-center gap-2.5 rounded-xl p-1.5 text-left transition-colors hover:bg-surface focus-ring',
-                collapsed && 'justify-center',
+                // Dropdown's trigger <button> is a plain inline-block (shrink-to-fit) with no
+                // width of its own — a `w-full`/percentage child can't resolve against that when
+                // the row contains an unbreakable token (the email), so it silently overflows the
+                // sidebar. A fixed pixel width (matching the 232px sidebar minus this row's own
+                // padding) gives the shrink-to-fit button a definite size to fit instead, letting
+                // `truncate` below actually activate.
+                'flex items-center gap-2.5 rounded-xl p-1.5 text-left transition-colors hover:bg-black/[0.03] focus-ring',
+                collapsed ? 'w-full justify-center' : 'w-[208px]',
               )}
             >
-              <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
+              <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-admin-primary-soft text-sm font-semibold text-admin-primary">
                 {initial}
               </span>
               <span className={cn('min-w-0 flex-1', collapsed && 'sr-only')}>
-                <span className="block truncate text-sm font-medium text-text-primary">{name}</span>
-                <span className="block truncate text-xs text-text-secondary">{email}</span>
+                <span className="block truncate text-sm font-medium text-admin-text">{name}</span>
+                <span className="block truncate text-xs text-admin-text-muted">{email}</span>
               </span>
               {!collapsed && (
-                <MoreVertical aria-hidden="true" className="size-4 shrink-0 text-text-secondary" />
+                <MoreVertical aria-hidden="true" className="size-4 shrink-0 text-admin-text-muted" />
               )}
             </span>
           }

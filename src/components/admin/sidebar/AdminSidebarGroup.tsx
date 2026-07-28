@@ -14,9 +14,9 @@ export function AdminSidebarGroup({ group, collapsed, isFirst, onNavigate }: Adm
   const { t } = useTranslation()
 
   return (
-    <div className={cn(!isFirst && (collapsed ? 'mt-2 border-t border-border pt-2' : 'mt-1'))}>
+    <div className={cn(!isFirst && (collapsed ? 'mt-2 border-t border-admin-border pt-2' : 'mt-1'))}>
       {!collapsed && (
-        <p className="px-3 pb-1.5 pt-3 text-[11px] font-semibold uppercase tracking-wider text-text-secondary/70">
+        <p className="px-3.5 pb-1.5 pt-3 text-[11px] font-semibold uppercase tracking-wider text-admin-text-muted/70">
           {t(group.label)}
         </p>
       )}

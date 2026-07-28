@@ -60,7 +60,7 @@ export function SidebarTooltip({ anchorRef, label, enabled }: SidebarTooltipProp
           exit={{ opacity: 0, x: -4 }}
           transition={{ duration: 0.15, ease: 'easeOut' }}
           style={{ position: 'fixed', top: position.top, left: position.left, transform: 'translateY(-50%)' }}
-          className="pointer-events-none z-[60] whitespace-nowrap rounded-lg bg-[#111827] px-2.5 py-1.5 text-xs font-medium text-white shadow-lg"
+          className="pointer-events-none z-[60] whitespace-nowrap rounded-lg bg-admin-text px-2.5 py-1.5 text-xs font-medium text-white shadow-lg"
         >
           {label}
         </motion.span>
