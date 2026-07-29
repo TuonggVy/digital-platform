@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useFieldArray, useForm } from 'react-hook-form'
+import { Controller, useFieldArray, useForm } from 'react-hook-form'
+import type { FieldErrors } from 'react-hook-form'
 import { Plus, Trash2 } from 'lucide-react'
 import { productService } from '@/services/productService'
 import type { BillingCycle, Product, ProductCategory } from '@/types'
 import { Seo } from '@/components/common/Seo'
 import { PageHeader } from '@/components/admin/PageHeader'
 import { Input, Textarea } from '@/components/common/Input'
-import { Select } from '@/components/common/Select'
+import { AdminSelect } from '@/components/admin/AdminSelect'
 import { Checkbox } from '@/components/common/Checkbox'
 import { Button } from '@/components/common/Button'
 import { LoadingSpinner } from '@/components/common/LoadingSpinner'
@@ -142,7 +143,20 @@ export function AdminProductFormPage() {
       .finally(() => setIsLoading(false))
   }, [id, isEditMode, reset])
 
+  function onInvalid(formErrors: FieldErrors<ProductFormValues>) {
+    console.error('Product form validation errors:', formErrors)
+    showToast(t('toast.validationError'), 'error')
+
+    requestAnimationFrame(() => {
+      const firstInvalidElement = document.querySelector<HTMLElement>('[aria-invalid="true"]')
+      firstInvalidElement?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      firstInvalidElement?.focus()
+    })
+  }
+
   async function onSubmit(values: ProductFormValues) {
+    if (isSubmitting) return
+
     setIsSubmitting(true)
     try {
       const existingPackagesById = new Map((existingProduct?.packages ?? []).map((p) => [p.id, p]))
@@ -203,7 +217,11 @@ export function AdminProductFormPage() {
         await productService.createProduct(input)
         showToast(t('admin.products.form.created'), 'success')
       }
-      navigate(ROUTES.ADMIN_PRODUCTS)
+
+      navigate(ROUTES.ADMIN_PRODUCTS, { replace: true })
+    } catch (error) {
+      console.error('Failed to save product:', error)
+      showToast(error instanceof Error ? error.message : t('toast.genericError'), 'error')
     } finally {
       setIsSubmitting(false)
     }
@@ -232,7 +250,7 @@ export function AdminProductFormPage() {
         onBack={() => navigate(ROUTES.ADMIN_PRODUCTS)}
       />
 
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
+      <form onSubmit={handleSubmit(onSubmit, onInvalid)} className="flex flex-col gap-6" noValidate>
         <div className="rounded-2xl border border-border p-5">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <Input
@@ -246,24 +264,40 @@ export function AdminProductFormPage() {
               {...register('slug', { required: true })}
               error={errors.slug ? t('validation.required') : undefined}
             />
-            <Select
-              label={t('admin.products.form.category')}
-              {...register('category', { required: true })}
-              options={[
-                { value: 'cloud', label: t('nav.megamenu.cloud') },
-                { value: 'kaspersky', label: t('nav.megamenu.kaspersky') },
-                { value: 'esim', label: t('nav.megamenu.esim') },
-              ]}
+            <Controller
+              name="category"
+              control={control}
+              rules={{ required: true }}
+              render={({ field, fieldState }) => (
+                <AdminSelect
+                  variant="form"
+                  label={t('admin.products.form.category')}
+                  value={field.value}
+                  onValueChange={field.onChange}
+                  error={fieldState.error ? t('validation.required') : undefined}
+                  options={[
+                    { value: 'cloud', label: t('nav.megamenu.cloud') },
+                    { value: 'kaspersky', label: t('nav.megamenu.kaspersky') },
+                    { value: 'esim', label: t('nav.megamenu.esim') },
+                  ]}
+                />
+              )}
             />
             <Input
               label={t('admin.products.form.subCategory')}
               {...register('subCategory', { required: true })}
+              error={errors.subCategory ? t('validation.required') : undefined}
             />
             <Input
               type="number"
               step="1"
               label={t('admin.products.form.startingPrice')}
-              {...register('startingPrice', { required: true, valueAsNumber: true })}
+              {...register('startingPrice', {
+                required: true,
+                valueAsNumber: true,
+                validate: (value) => !Number.isNaN(value) || t('validation.required'),
+              })}
+              error={errors.startingPrice ? t('validation.required') : undefined}
             />
             <Input
               label={t('admin.products.form.badge')}
@@ -281,11 +315,13 @@ export function AdminProductFormPage() {
             <Textarea
               label={t('admin.products.form.shortDescVi')}
               {...register('shortDescVi', { required: true })}
+              error={errors.shortDescVi ? t('validation.required') : undefined}
             />
             <Textarea label={t('admin.products.form.shortDescEn')} {...register('shortDescEn')} />
             <Textarea
               label={t('admin.products.form.descriptionVi')}
               {...register('descriptionVi', { required: true })}
+              error={errors.descriptionVi ? t('validation.required') : undefined}
             />
             <Textarea
               label={t('admin.products.form.descriptionEn')}
@@ -379,6 +415,7 @@ export function AdminProductFormPage() {
                 <Input
                   placeholder={t('admin.products.form.packageNameVi')}
                   {...register(`packages.${index}.nameVi` as const, { required: true })}
+                  error={errors.packages?.[index]?.nameVi ? t('validation.required') : undefined}
                 />
                 <Input
                   placeholder={t('admin.products.form.packageNameEn')}
@@ -391,15 +428,26 @@ export function AdminProductFormPage() {
                   {...register(`packages.${index}.price` as const, {
                     required: true,
                     valueAsNumber: true,
+                    validate: (value) => !Number.isNaN(value) || t('validation.required'),
                   })}
+                  error={errors.packages?.[index]?.price ? t('validation.required') : undefined}
                 />
-                <Select
-                  {...register(`packages.${index}.billingCycle` as const)}
-                  options={[
-                    { value: 'monthly', label: t('common.monthly') },
-                    { value: 'yearly', label: t('common.yearly') },
-                    { value: 'one_time', label: t('common.oneTime') },
-                  ]}
+                <Controller
+                  name={`packages.${index}.billingCycle` as const}
+                  control={control}
+                  render={({ field }) => (
+                    <AdminSelect
+                      variant="form"
+                      size="sm"
+                      value={field.value}
+                      onValueChange={field.onChange}
+                      options={[
+                        { value: 'monthly', label: t('common.monthly') },
+                        { value: 'yearly', label: t('common.yearly') },
+                        { value: 'one_time', label: t('common.oneTime') },
+                      ]}
+                    />
+                  )}
                 />
                 <button
                   type="button"

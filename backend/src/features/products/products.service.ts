@@ -157,7 +157,7 @@ export class ProductsService {
     } as Partial<Product>);
     const saved = await this.productRepo.save(product);
     this.logger.log(`Product created: ${saved.id} (${saved.slug})`, 'ProductsService');
-    return saved;
+    return this.getByIdForAdmin(saved.id);
   }
 
   async updateProduct(id: string, dto: UpdateProductDto): Promise<Product> {
@@ -170,7 +170,7 @@ export class ProductsService {
     Object.assign(product, rest, { modifiedDate: new Date() }, categoryId ? { categoryId } : {});
     const saved = await this.productRepo.save(product);
     this.logger.log(`Product updated: ${saved.id}`, 'ProductsService');
-    return saved;
+    return this.getByIdForAdmin(saved.id);
   }
 
   async deleteProduct(id: string): Promise<void> {

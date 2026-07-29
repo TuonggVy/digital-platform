@@ -6,7 +6,7 @@ import { productService } from '@/services/productService'
 import type { Product, ProductCategory } from '@/types'
 import { Seo } from '@/components/common/Seo'
 import { SearchBar } from '@/components/common/SearchBar'
-import { Select } from '@/components/common/Select'
+import { AdminSelect, ALL_FILTER_VALUE } from '@/components/admin/AdminSelect'
 import { Badge } from '@/components/common/Badge'
 import { Button } from '@/components/common/Button'
 import { EmptyState } from '@/components/common/EmptyState'
@@ -117,20 +117,22 @@ export function AdminProductsPage() {
           placeholder={t('admin.products.searchPlaceholder')}
           className="sm:max-w-xs"
         />
-        <Select
-          value={category}
-          onChange={(e) => setCategory(e.target.value as ProductCategory | '')}
+        <AdminSelect
+          variant="filter"
+          value={category || ALL_FILTER_VALUE}
+          onValueChange={(v) => setCategory(v === ALL_FILTER_VALUE ? '' : (v as ProductCategory))}
           options={[
+            { value: ALL_FILTER_VALUE, label: t('admin.products.category') },
             { value: 'cloud', label: t('nav.megamenu.cloud') },
             { value: 'kaspersky', label: t('nav.megamenu.kaspersky') },
             { value: 'esim', label: t('nav.megamenu.esim') },
           ]}
-          placeholder={t('admin.products.category')}
           className="sm:w-56"
         />
-        <Select
+        <AdminSelect
+          variant="filter"
           value={sort}
-          onChange={(e) => setSort(e.target.value as ProductSort)}
+          onValueChange={(v) => setSort(v as ProductSort)}
           className="sm:w-56"
           options={[
             { value: 'name_asc', label: t('admin.products.sortNameAsc') },

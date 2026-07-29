@@ -9,7 +9,7 @@ import type { BackendPayment } from '@/services/paymentApiService'
 import { Seo } from '@/components/common/Seo'
 import { PageHeader } from '@/components/admin/PageHeader'
 import { Button } from '@/components/common/Button'
-import { Select } from '@/components/common/Select'
+import { AdminSelect, ALL_FILTER_VALUE } from '@/components/admin/AdminSelect'
 import { EmptyState } from '@/components/common/EmptyState'
 import { LoadingSpinner } from '@/components/common/LoadingSpinner'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
@@ -146,15 +146,20 @@ export function AdminOrderDetailPage() {
           <p className="text-sm text-text-secondary">{t('admin.orders.noValidNextStatus')}</p>
         ) : (
           <div className="flex flex-col gap-3 sm:max-w-sm">
-            <Select
-              value={pendingStatus}
-              onChange={(e) => setPendingStatus(e.target.value as BackendOrderStatus | '')}
-              placeholder={t('admin.orders.newStatus')}
+            <AdminSelect
+              variant="form"
+              value={pendingStatus || ALL_FILTER_VALUE}
+              onValueChange={(v) =>
+                setPendingStatus(v === ALL_FILTER_VALUE ? '' : (v as BackendOrderStatus))
+              }
               disabled={isUpdating}
-              options={nextStatusOptions.map((s) => ({
-                value: s,
-                label: t(`status.backendOrder.${s}`),
-              }))}
+              options={[
+                { value: ALL_FILTER_VALUE, label: t('admin.orders.newStatus') },
+                ...nextStatusOptions.map((s) => ({
+                  value: s,
+                  label: t(`status.backendOrder.${s}`),
+                })),
+              ]}
             />
             <Button
               disabled={!pendingStatus || isUpdating}
