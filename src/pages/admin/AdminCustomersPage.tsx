@@ -12,7 +12,7 @@ import { Seo } from '@/components/common/Seo'
 import { PageHeader } from '@/components/admin/PageHeader'
 import { DataTable } from '@/components/admin/DataTable'
 import { SearchBar } from '@/components/common/SearchBar'
-import { Select } from '@/components/common/Select'
+import { AdminSelect, ALL_FILTER_VALUE } from '@/components/admin/AdminSelect'
 import { Pagination } from '@/components/common/Pagination'
 import { EmptyState } from '@/components/common/EmptyState'
 import { Badge } from '@/components/common/Badge'
@@ -81,19 +81,21 @@ export function AdminCustomersPage() {
           placeholder={t('admin.customers.searchPlaceholder')}
           className="sm:max-w-xs"
         />
-        <Select
-          value={status}
-          onChange={(e) => setStatus(e.target.value as CustomerStatus | '')}
-          placeholder={t('common.all')}
+        <AdminSelect
+          variant="filter"
+          value={status || ALL_FILTER_VALUE}
+          onValueChange={(v) => setStatus(v === ALL_FILTER_VALUE ? '' : (v as CustomerStatus))}
           className="sm:w-56"
           options={[
+            { value: ALL_FILTER_VALUE, label: t('common.all') },
             { value: 'ACTIVE', label: t('admin.customers.statusActive') },
             { value: 'INACTIVE', label: t('admin.customers.statusInactive') },
           ]}
         />
-        <Select
+        <AdminSelect
+          variant="filter"
           value={sort}
-          onChange={(e) => setSort(e.target.value as GetAdminCustomersParams['sort'])}
+          onValueChange={(v) => setSort(v as GetAdminCustomersParams['sort'])}
           className="sm:w-56"
           options={[
             { value: 'newest', label: t('admin.customers.sortNewest') },

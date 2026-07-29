@@ -9,7 +9,7 @@ import { DataTable } from '@/components/admin/DataTable'
 import { AdminToolbar } from '@/components/admin/AdminToolbar'
 import { AdminMobileList } from '@/components/admin/AdminMobileList'
 import { SearchBar } from '@/components/common/SearchBar'
-import { Select } from '@/components/common/Select'
+import { AdminSelect, ALL_FILTER_VALUE } from '@/components/admin/AdminSelect'
 import { Drawer } from '@/components/common/Drawer'
 import { Textarea } from '@/components/common/Input'
 import { Button } from '@/components/common/Button'
@@ -170,26 +170,33 @@ export function AdminTicketsPage() {
           placeholder={t('admin.tickets.searchPlaceholder')}
           className="sm:max-w-xs"
         />
-        <Select
-          value={status}
-          onChange={(e) => setStatus(e.target.value as TicketStatus | '')}
-          placeholder={t('common.all')}
+        <AdminSelect
+          variant="filter"
+          value={status || ALL_FILTER_VALUE}
+          onValueChange={(v) => setStatus(v === ALL_FILTER_VALUE ? '' : (v as TicketStatus))}
           className="sm:w-48"
-          options={TICKET_STATUSES.map((s) => ({ value: s, label: t(`status.ticket.${s}`) }))}
+          options={[
+            { value: ALL_FILTER_VALUE, label: t('common.all') },
+            ...TICKET_STATUSES.map((s) => ({ value: s, label: t(`status.ticket.${s}`) })),
+          ]}
         />
-        <Select
-          value={priority}
-          onChange={(e) => setPriority(e.target.value as TicketPriority | '')}
-          placeholder={t('account.tickets.priority')}
+        <AdminSelect
+          variant="filter"
+          value={priority || ALL_FILTER_VALUE}
+          onValueChange={(v) => setPriority(v === ALL_FILTER_VALUE ? '' : (v as TicketPriority))}
           className="sm:w-48"
-          options={TICKET_PRIORITIES.map((p) => ({
-            value: p,
-            label: t(`account.tickets.priorities.${p}`),
-          }))}
+          options={[
+            { value: ALL_FILTER_VALUE, label: t('account.tickets.priority') },
+            ...TICKET_PRIORITIES.map((p) => ({
+              value: p,
+              label: t(`account.tickets.priorities.${p}`),
+            })),
+          ]}
         />
-        <Select
+        <AdminSelect
+          variant="filter"
           value={sort}
-          onChange={(e) => setSort(e.target.value as TicketSort)}
+          onValueChange={(v) => setSort(v as TicketSort)}
           className="sm:w-48"
           options={[
             { value: 'updated_desc', label: t('admin.tickets.sortUpdatedDesc') },
@@ -312,16 +319,16 @@ export function AdminTicketsPage() {
             </div>
 
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              <Select
+              <AdminSelect
                 label={t('admin.tickets.updateStatus')}
                 value={selectedTicket.status}
-                onChange={(e) => handleStatusChange(e.target.value as TicketStatus)}
+                onValueChange={(v) => handleStatusChange(v as TicketStatus)}
                 options={TICKET_STATUSES.map((s) => ({ value: s, label: t(`status.ticket.${s}`) }))}
               />
-              <Select
+              <AdminSelect
                 label={t('admin.tickets.updatePriority')}
                 value={selectedTicket.priority}
-                onChange={(e) => handlePriorityChange(e.target.value as TicketPriority)}
+                onValueChange={(v) => handlePriorityChange(v as TicketPriority)}
                 options={TICKET_PRIORITIES.map((p) => ({
                   value: p,
                   label: t(`account.tickets.priorities.${p}`),

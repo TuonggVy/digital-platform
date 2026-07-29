@@ -8,7 +8,7 @@ import { Seo } from '@/components/common/Seo'
 import { PageHeader } from '@/components/admin/PageHeader'
 import { DataTable } from '@/components/admin/DataTable'
 import { SearchBar } from '@/components/common/SearchBar'
-import { Select } from '@/components/common/Select'
+import { AdminSelect, ALL_FILTER_VALUE } from '@/components/admin/AdminSelect'
 import { Pagination } from '@/components/common/Pagination'
 import { EmptyState } from '@/components/common/EmptyState'
 import { BackendOrderStatusBadge } from '@/components/common/BackendOrderStatusBadge'
@@ -89,16 +89,20 @@ export function AdminOrdersPage() {
           placeholder={t('admin.orders.searchPlaceholder')}
           className="sm:max-w-xs"
         />
-        <Select
-          value={status}
-          onChange={(e) => setStatus(e.target.value as BackendOrderStatus | '')}
-          placeholder={t('common.all')}
+        <AdminSelect
+          variant="filter"
+          value={status || ALL_FILTER_VALUE}
+          onValueChange={(v) => setStatus(v === ALL_FILTER_VALUE ? '' : (v as BackendOrderStatus))}
           className="sm:w-56"
-          options={STATUS_OPTIONS.map((s) => ({ value: s, label: t(`status.backendOrder.${s}`) }))}
+          options={[
+            { value: ALL_FILTER_VALUE, label: t('common.all') },
+            ...STATUS_OPTIONS.map((s) => ({ value: s, label: t(`status.backendOrder.${s}`) })),
+          ]}
         />
-        <Select
+        <AdminSelect
+          variant="filter"
           value={sort}
-          onChange={(e) => setSort(e.target.value as GetAdminOrdersParams['sort'])}
+          onValueChange={(v) => setSort(v as GetAdminOrdersParams['sort'])}
           className="sm:w-56"
           options={[
             { value: 'newest', label: t('admin.orders.sortNewest') },

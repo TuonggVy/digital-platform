@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { AdminToolbar } from '@/components/admin/AdminToolbar'
 import { SearchBar } from '@/components/common/SearchBar'
-import { Select } from '@/components/common/Select'
+import { AdminSelect, ALL_FILTER_VALUE } from '@/components/admin/AdminSelect'
 import type { ServiceStatus } from '@/types'
 
 const STATUS_OPTIONS: ServiceStatus[] = [
@@ -53,16 +53,20 @@ export function ServiceFilterBar({
         placeholder={t('admin.services.searchPlaceholder')}
         className="sm:max-w-xs"
       />
-      <Select
-        value={status}
-        onChange={(e) => onStatusChange(e.target.value as ServiceStatus | '')}
-        placeholder={t('common.all')}
+      <AdminSelect
+        variant="filter"
+        value={status || ALL_FILTER_VALUE}
+        onValueChange={(v) => onStatusChange(v === ALL_FILTER_VALUE ? '' : (v as ServiceStatus))}
         className="sm:w-56"
-        options={STATUS_OPTIONS.map((s) => ({ value: s, label: t(`status.service.${s}`) }))}
+        options={[
+          { value: ALL_FILTER_VALUE, label: t('common.all') },
+          ...STATUS_OPTIONS.map((s) => ({ value: s, label: t(`status.service.${s}`) })),
+        ]}
       />
-      <Select
+      <AdminSelect
+        variant="filter"
         value={sort}
-        onChange={(e) => onSortChange(e.target.value as ServiceSort)}
+        onValueChange={(v) => onSortChange(v as ServiceSort)}
         className="sm:w-56"
         options={[
           { value: 'expiry_asc', label: t('admin.services.sortExpiryAsc') },

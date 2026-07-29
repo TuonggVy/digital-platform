@@ -23,7 +23,7 @@ export function AdminHeader({ mobileOpen = false, onMenuClick }: AdminHeaderProp
   const logout = useAuthStore((s) => s.logout)
 
   return (
-    <header className="flex h-[72px] shrink-0 items-center gap-4 bg-transparent px-5 sm:px-7">
+    <header className="flex h-[72px] shrink-0 items-center gap-4 bg-admin-surface px-5 sm:px-7">
       <button
         type="button"
         aria-label={t('admin.sidebar.openMenu')}
