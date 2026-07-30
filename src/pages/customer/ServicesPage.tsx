@@ -8,7 +8,7 @@ import { Seo } from '@/components/common/Seo'
 import { Tabs } from '@/components/common/Tabs'
 import { EmptyState } from '@/components/common/EmptyState'
 import { LoadingSpinner } from '@/components/common/LoadingSpinner'
-import { RevealOnScroll } from '@/components/animation/RevealOnScroll'
+import { AccountPageHeader } from '@/components/account/AccountPageHeader'
 import { StaggerContainer, StaggerItem } from '@/components/animation/StaggerContainer'
 import {
   CloudServiceCard,
@@ -57,11 +57,9 @@ export function ServicesPage() {
     <div className="flex flex-col gap-6">
       <Seo title={t('account.services.title')} />
 
-      <RevealOnScroll>
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <h1 className="text-2xl font-semibold text-text-primary sm:text-3xl">
-            {t('account.services.title')}
-          </h1>
+      <AccountPageHeader
+        title={t('account.services.title')}
+        actions={
           <Tabs
             value={activeTab}
             onChange={(v) => setActiveTab(v as ServiceTab)}
@@ -72,8 +70,8 @@ export function ServicesPage() {
               { value: 'esim', label: t('nav.megamenu.esim') },
             ]}
           />
-        </div>
-      </RevealOnScroll>
+        }
+      />
 
       {isLoading ? (
         <LoadingSpinner className="py-24" label={t('common.loading')} />

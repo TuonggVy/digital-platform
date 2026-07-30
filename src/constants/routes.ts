@@ -24,6 +24,7 @@ export const ROUTES = {
   CHECKOUT: '/checkout',
   CHECKOUT_SUCCESS: (orderCode: string) => `/checkout/success/${orderCode}`,
   CHECKOUT_PAYMENT: (orderId: string) => `/checkout/payment/${orderId}`,
+  PAYMENT_VNPAY_RETURN: '/payment/vnpay/return',
 
   ACCOUNT: '/account',
   ACCOUNT_ORDERS: '/account/orders',

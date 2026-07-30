@@ -10,7 +10,7 @@ import { Button } from '@/components/common/Button'
 import { EmptyState } from '@/components/common/EmptyState'
 import { LoadingSpinner } from '@/components/common/LoadingSpinner'
 import { TicketPriorityBadge, TicketStatusBadge } from '@/components/common/TicketStatusBadge'
-import { RevealOnScroll } from '@/components/animation/RevealOnScroll'
+import { AccountPageHeader } from '@/components/account/AccountPageHeader'
 import { StaggerContainer, StaggerItem } from '@/components/animation/StaggerContainer'
 import { useLocale } from '@/hooks/useLocale'
 import { formatDate, formatDateTime } from '@/utils/formatters'
@@ -39,16 +39,14 @@ export function TicketsPage() {
     <div className="flex flex-col gap-6">
       <Seo title={t('account.tickets.title')} />
 
-      <RevealOnScroll>
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <h1 className="text-2xl font-semibold text-text-primary sm:text-3xl">
-            {t('account.tickets.title')}
-          </h1>
+      <AccountPageHeader
+        title={t('account.tickets.title')}
+        actions={
           <Link to={ROUTES.ACCOUNT_TICKET_NEW}>
             <Button leftIcon={<Plus className="size-4" />}>{t('account.tickets.newTicket')}</Button>
           </Link>
-        </div>
-      </RevealOnScroll>
+        }
+      />
 
       {isLoading ? (
         <LoadingSpinner className="py-24" label={t('common.loading')} />

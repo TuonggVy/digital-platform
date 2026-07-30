@@ -14,6 +14,7 @@ import { Seo } from '@/components/common/Seo'
 import { Input } from '@/components/common/Input'
 import { Button } from '@/components/common/Button'
 import { Badge } from '@/components/common/Badge'
+import { AccountPageHeader } from '@/components/account/AccountPageHeader'
 import { RevealOnScroll } from '@/components/animation/RevealOnScroll'
 import { ROUTES } from '@/constants/routes'
 
@@ -123,11 +124,7 @@ export function SecurityPage() {
     <div className="mx-auto flex max-w-2xl flex-col gap-6">
       <Seo title={t('account.security.title')} />
 
-      <RevealOnScroll>
-        <h1 className="text-2xl font-semibold text-text-primary sm:text-3xl">
-          {t('account.security.title')}
-        </h1>
-      </RevealOnScroll>
+      <AccountPageHeader title={t('account.security.title')} />
 
       <RevealOnScroll>
         <form

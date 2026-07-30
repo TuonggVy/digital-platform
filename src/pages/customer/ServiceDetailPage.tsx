@@ -7,6 +7,7 @@ import type { CustomerService } from '@/types'
 import { Seo } from '@/components/common/Seo'
 import { Breadcrumb } from '@/components/common/Breadcrumb'
 import { LoadingSpinner } from '@/components/common/LoadingSpinner'
+import { AccountPageHeader } from '@/components/account/AccountPageHeader'
 import { RevealOnScroll } from '@/components/animation/RevealOnScroll'
 import {
   CloudServiceCard,
@@ -55,7 +56,17 @@ export function ServiceDetailPage() {
     }
   }
 
-  if (isLoading) return <LoadingSpinner className="py-32" label={t('common.loading')} />
+  if (isLoading) {
+    return (
+      <div className="flex flex-col gap-6">
+        <Breadcrumb
+          items={[{ label: t('account.services.title'), href: ROUTES.ACCOUNT_SERVICES }]}
+        />
+        <AccountPageHeader title={t('account.services.title')} />
+        <LoadingSpinner className="py-24" label={t('common.loading')} />
+      </div>
+    )
+  }
   if (!service) return null
 
   return (
@@ -68,6 +79,8 @@ export function ServiceDetailPage() {
           { label: service.productName },
         ]}
       />
+
+      <AccountPageHeader title={service.productName} description={service.packageName} />
 
       <RevealOnScroll>
         <div className="mx-auto w-full max-w-2xl">

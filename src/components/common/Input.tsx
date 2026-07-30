@@ -32,7 +32,7 @@ const INPUT_TONE_CLASSES = {
 } as const
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ label, error, hint, leftIcon, rightIcon, tone = 'light', className, id, ...props }, ref) => {
+  ({ label, error, hint, leftIcon, rightIcon, tone = 'light', className, id, required, ...props }, ref) => {
     const inputId = id ?? props.name
     const toneClasses = INPUT_TONE_CLASSES[tone]
     return (
@@ -40,6 +40,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <label htmlFor={inputId} className={cn('text-sm font-medium', toneClasses.label)}>
             {label}
+            {required && (
+              <span className={tone === 'dark' ? 'text-red-400' : 'text-red-500'} aria-hidden="true">
+                {' '}
+                *
+              </span>
+            )}
           </label>
         )}
         <div className="relative">
@@ -56,6 +62,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           <input
             ref={ref}
             id={inputId}
+            required={required}
+            aria-required={required || undefined}
             className={cn(
               'w-full rounded-xl border px-4 py-2.5 text-sm transition-colors focus-ring',
               'disabled:cursor-not-allowed disabled:opacity-50',
@@ -94,18 +102,26 @@ interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
 }
 
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ label, error, hint, className, id, ...props }, ref) => {
+  ({ label, error, hint, className, id, required, ...props }, ref) => {
     const inputId = id ?? props.name
     return (
       <div className="flex flex-col gap-1.5">
         {label && (
           <label htmlFor={inputId} className="text-sm font-medium text-text-primary">
             {label}
+            {required && (
+              <span className="text-red-500" aria-hidden="true">
+                {' '}
+                *
+              </span>
+            )}
           </label>
         )}
         <textarea
           ref={ref}
           id={inputId}
+          required={required}
+          aria-required={required || undefined}
           className={cn(
             'w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm text-text-primary',
             'placeholder:text-text-secondary transition-colors focus-ring focus:border-primary min-h-[120px] resize-y',

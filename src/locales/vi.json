@@ -642,19 +642,39 @@
   },
   "checkout": {
     "title": "Thanh toán",
+    "layout": {
+      "backToCart": "Quay lại giỏ hàng",
+      "backToOrders": "Quay lại đơn hàng của tôi",
+      "backStep": "Quay lại bước Thông tin"
+    },
     "steps": {
       "info": "Thông tin khách hàng",
+      "information": "Thông tin",
       "review": "Kiểm tra đơn hàng",
       "payment": "Thanh toán",
-      "complete": "Hoàn tất"
+      "complete": "Hoàn tất",
+      "mobileProgress": "Bước {{current}}/{{total}}"
     },
     "customerInfo": {
+      "title": "Thông tin thanh toán",
+      "description": "Thông tin này được dùng để xử lý và liên hệ với bạn về đơn hàng.",
       "fullName": "Họ tên",
       "email": "Email",
       "phone": "Số điện thoại",
       "company": "Tên công ty",
       "taxCode": "Mã số thuế",
-      "note": "Ghi chú"
+      "note": "Ghi chú",
+      "continue": "Tiếp tục thanh toán"
+    },
+    "review": {
+      "title": "Kiểm tra sản phẩm"
+    },
+    "summary": {
+      "appliedCoupon": "Mã giảm giá đang áp dụng"
+    },
+    "security": {
+      "notice1": "Thông tin thanh toán của bạn được xử lý an toàn.",
+      "notice2": "Digital Platform không lưu trữ thông tin thẻ ngân hàng."
     },
     "paymentMethod": {
       "title": "Phương thức thanh toán",
@@ -697,15 +717,27 @@
     "method": {
       "label": "Phương thức",
       "sandbox": "Sandbox (thử nghiệm)",
-      "bankTransfer": "Chuyển khoản ngân hàng"
+      "sandboxDescription": "Giả lập kết quả thanh toán — chỉ dùng để kiểm thử.",
+      "bankTransfer": "Chuyển khoản ngân hàng",
+      "bankTransferDescription": "Chuyển khoản theo thông tin thanh toán của đơn hàng.",
+      "vnpay": "VNPay",
+      "vnpayDescription": "Thanh toán an toàn qua thẻ ATM, tài khoản ngân hàng hoặc QR VNPay."
     },
     "createPayment": "Tạo giao dịch thanh toán",
+    "payWithVnpay": "Thanh toán qua VNPay",
+    "createBankTransfer": "Tạo thông tin chuyển khoản",
+    "createSandboxPayment": "Tạo thanh toán thử nghiệm",
+    "processing": "Đang xử lý...",
     "retry": "Thanh toán lại",
     "retryNotice": "Giao dịch trước đó không thành công. Tạo giao dịch mới để thử lại.",
     "sandboxInstructions": "Đây là môi trường thử nghiệm (sandbox). Nhấn một trong các nút bên dưới để giả lập kết quả thanh toán.",
     "sandboxSuccess": "Giả lập: Thanh toán thành công",
     "sandboxFailure": "Giả lập: Thanh toán thất bại",
     "sandboxCancel": "Giả lập: Huỷ giao dịch",
+    "devTools": {
+      "title": "Công cụ phát triển",
+      "description": "Các nút bên dưới chỉ hiển thị trong môi trường phát triển để giả lập kết quả thanh toán."
+    },
     "viewOrder": "Xem chi tiết đơn hàng",
     "orderSettled": "Đơn hàng này đã hoàn tất hoặc không còn cần thanh toán.",
     "payNow": "Thanh toán ngay",
@@ -715,7 +747,27 @@
     "failureReason": "Lý do thất bại",
     "noPaymentYet": "Chưa có giao dịch thanh toán nào",
     "provider": "Nhà cung cấp",
-    "transactionId": "Mã giao dịch nhà cung cấp"
+    "transactionId": "Mã giao dịch nhà cung cấp",
+    "return": {
+      "verifying": "Đang xác minh giao dịch thanh toán...",
+      "success": {
+        "title": "Thanh toán thành công",
+        "description": "Đơn hàng của bạn đã được xác nhận."
+      },
+      "failed": {
+        "title": "Thanh toán thất bại",
+        "description": "Giao dịch không thành công. Bạn có thể thử thanh toán lại."
+      },
+      "cancelled": {
+        "title": "Bạn đã hủy thanh toán",
+        "description": "Giao dịch đã bị hủy. Bạn có thể thử lại bất cứ lúc nào."
+      },
+      "notFound": {
+        "title": "Không tìm thấy giao dịch",
+        "description": "Chúng tôi không tìm thấy thông tin giao dịch này. Vui lòng kiểm tra lại đơn hàng của bạn."
+      },
+      "retry": "Thử thanh toán lại"
+    }
   },
   "account": {
     "sidebar": {

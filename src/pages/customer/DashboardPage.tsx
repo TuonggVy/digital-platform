@@ -14,6 +14,7 @@ import { EmptyState } from '@/components/common/EmptyState'
 import { LoadingSpinner } from '@/components/common/LoadingSpinner'
 import { BackendOrderStatusBadge } from '@/components/common/BackendOrderStatusBadge'
 import { ServiceStatusBadge } from '@/components/common/ServiceStatusBadge'
+import { AccountPageHeader } from '@/components/account/AccountPageHeader'
 import { RevealOnScroll } from '@/components/animation/RevealOnScroll'
 import { StaggerContainer, StaggerItem } from '@/components/animation/StaggerContainer'
 import { useLocale } from '@/hooks/useLocale'
@@ -78,7 +79,6 @@ export function DashboardPage() {
   }, [currentUser, t])
 
   if (!currentUser) return null
-  if (isLoading) return <LoadingSpinner className="py-32" label={t('common.loading')} />
 
   const activeServicesCount = services.filter((s) => s.status === 'ACTIVE').length
   const expiringServices = services.filter((s) => s.status === 'EXPIRING_SOON')
@@ -87,135 +87,140 @@ export function DashboardPage() {
     <div className="flex flex-col gap-8">
       <Seo title={t('account.sidebar.dashboard')} />
 
-      <RevealOnScroll>
-        <h1 className="text-2xl font-semibold text-text-primary sm:text-3xl">
-          {t('account.dashboard.greeting', { name: currentUser.name })}
-        </h1>
-      </RevealOnScroll>
+      <AccountPageHeader title={t('account.dashboard.greeting', { name: currentUser.name })} />
 
-      <StaggerContainer className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <StaggerItem>
-          <div className="flex items-center gap-3 rounded-2xl border border-border p-5">
-            <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
-              <Server className="size-5" />
-            </span>
-            <div>
-              <p className="text-xs text-text-secondary">{t('account.dashboard.activeServices')}</p>
-              <p className="text-2xl font-semibold text-text-primary">{activeServicesCount}</p>
-            </div>
-          </div>
-        </StaggerItem>
-        <StaggerItem>
-          <div className="flex items-center gap-3 rounded-2xl border border-border p-5">
-            <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-accent/10 text-accent">
-              <LifeBuoy className="size-5" />
-            </span>
-            <div>
-              <p className="text-xs text-text-secondary">{t('account.sidebar.tickets')}</p>
-              <p className="text-2xl font-semibold text-text-primary">{ticketCount}</p>
-            </div>
-          </div>
-        </StaggerItem>
-      </StaggerContainer>
+      {isLoading ? (
+        <LoadingSpinner className="py-24" label={t('common.loading')} />
+      ) : (
+        <>
+          <StaggerContainer className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <StaggerItem>
+              <div className="flex items-center gap-3 rounded-2xl border border-border p-5">
+                <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                  <Server className="size-5" />
+                </span>
+                <div>
+                  <p className="text-xs text-text-secondary">
+                    {t('account.dashboard.activeServices')}
+                  </p>
+                  <p className="text-2xl font-semibold text-text-primary">{activeServicesCount}</p>
+                </div>
+              </div>
+            </StaggerItem>
+            <StaggerItem>
+              <div className="flex items-center gap-3 rounded-2xl border border-border p-5">
+                <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-accent/10 text-accent">
+                  <LifeBuoy className="size-5" />
+                </span>
+                <div>
+                  <p className="text-xs text-text-secondary">{t('account.sidebar.tickets')}</p>
+                  <p className="text-2xl font-semibold text-text-primary">{ticketCount}</p>
+                </div>
+              </div>
+            </StaggerItem>
+          </StaggerContainer>
 
-      <RevealOnScroll>
-        <div className="rounded-2xl border border-border p-5">
-          <div className="mb-4 flex items-center justify-between gap-3">
-            <h2 className="text-lg font-semibold text-text-primary">
-              {t('account.dashboard.recentOrders')}
-            </h2>
-            <Link
-              to={ROUTES.ACCOUNT_ORDERS}
-              className="text-sm font-medium text-primary hover:underline"
-            >
-              {t('common.seeAll')}
-            </Link>
-          </div>
-          {ordersLoading ? (
-            <LoadingSpinner className="py-8" label={t('common.loading')} />
-          ) : ordersError ? (
-            <EmptyState
-              icon={<AlertCircle className="size-6" />}
-              title={t('common.error')}
-              description={ordersError}
-            />
-          ) : recentOrders.length === 0 ? (
-            <EmptyState title={t('account.orders.empty')} />
-          ) : (
-            <div className="flex flex-col divide-y divide-border">
-              {recentOrders.map((order) => (
+          <RevealOnScroll>
+            <div className="rounded-2xl border border-border p-5">
+              <div className="mb-4 flex items-center justify-between gap-3">
+                <h2 className="text-lg font-semibold text-text-primary">
+                  {t('account.dashboard.recentOrders')}
+                </h2>
                 <Link
-                  key={order.id}
-                  to={ROUTES.ACCOUNT_ORDER_DETAIL(order.id)}
-                  className="flex flex-wrap items-center justify-between gap-2 py-3 transition-colors hover:text-primary"
+                  to={ROUTES.ACCOUNT_ORDERS}
+                  className="text-sm font-medium text-primary hover:underline"
                 >
-                  <div>
-                    <p className="text-sm font-medium text-text-primary">{order.orderCode}</p>
-                    <p className="text-xs text-text-secondary">
-                      {formatDate(order.createdDate, locale)}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <span className="text-sm font-semibold text-text-primary">
-                      {formatCurrency(order.totalAmount, locale)}
-                    </span>
-                    <BackendOrderStatusBadge status={order.status} />
-                  </div>
+                  {t('common.seeAll')}
                 </Link>
-              ))}
+              </div>
+              {ordersLoading ? (
+                <LoadingSpinner className="py-8" label={t('common.loading')} />
+              ) : ordersError ? (
+                <EmptyState
+                  icon={<AlertCircle className="size-6" />}
+                  title={t('common.error')}
+                  description={ordersError}
+                />
+              ) : recentOrders.length === 0 ? (
+                <EmptyState title={t('account.orders.empty')} />
+              ) : (
+                <div className="flex flex-col divide-y divide-border">
+                  {recentOrders.map((order) => (
+                    <Link
+                      key={order.id}
+                      to={ROUTES.ACCOUNT_ORDER_DETAIL(order.id)}
+                      className="flex flex-wrap items-center justify-between gap-2 py-3 transition-colors hover:text-primary"
+                    >
+                      <div>
+                        <p className="text-sm font-medium text-text-primary">{order.orderCode}</p>
+                        <p className="text-xs text-text-secondary">
+                          {formatDate(order.createdDate, locale)}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <span className="text-sm font-semibold text-text-primary">
+                          {formatCurrency(order.totalAmount, locale)}
+                        </span>
+                        <BackendOrderStatusBadge status={order.status} />
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              )}
             </div>
+          </RevealOnScroll>
+
+          {expiringServices.length > 0 && (
+            <RevealOnScroll>
+              <div className="rounded-2xl border border-border p-5">
+                <h2 className="mb-4 text-lg font-semibold text-text-primary">
+                  {t('account.dashboard.expiringServices')}
+                </h2>
+                <div className="flex flex-col divide-y divide-border">
+                  {expiringServices.map((service) => (
+                    <Link
+                      key={service.id}
+                      to={ROUTES.ACCOUNT_SERVICE_DETAIL(service.id)}
+                      className="flex flex-wrap items-center justify-between gap-2 py-3 transition-colors hover:text-primary"
+                    >
+                      <div>
+                        <p className="text-sm font-medium text-text-primary">
+                          {service.productName} - {service.packageName}
+                        </p>
+                        <p className="text-xs text-text-secondary">
+                          {t('account.services.expiryDate')}:{' '}
+                          {formatDate(service.expiryDate, locale)}
+                        </p>
+                      </div>
+                      <ServiceStatusBadge status={service.status} />
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </RevealOnScroll>
           )}
-        </div>
-      </RevealOnScroll>
 
-      {expiringServices.length > 0 && (
-        <RevealOnScroll>
-          <div className="rounded-2xl border border-border p-5">
-            <h2 className="mb-4 text-lg font-semibold text-text-primary">
-              {t('account.dashboard.expiringServices')}
-            </h2>
-            <div className="flex flex-col divide-y divide-border">
-              {expiringServices.map((service) => (
-                <Link
-                  key={service.id}
-                  to={ROUTES.ACCOUNT_SERVICE_DETAIL(service.id)}
-                  className="flex flex-wrap items-center justify-between gap-2 py-3 transition-colors hover:text-primary"
-                >
-                  <div>
-                    <p className="text-sm font-medium text-text-primary">
-                      {service.productName} - {service.packageName}
-                    </p>
-                    <p className="text-xs text-text-secondary">
-                      {t('account.services.expiryDate')}: {formatDate(service.expiryDate, locale)}
-                    </p>
-                  </div>
-                  <ServiceStatusBadge status={service.status} />
+          <RevealOnScroll>
+            <div className="rounded-2xl border border-border p-5">
+              <h2 className="mb-4 text-lg font-semibold text-text-primary">
+                {t('account.dashboard.quickActions')}
+              </h2>
+              <div className="flex flex-wrap gap-3">
+                <Link to={ROUTES.PRODUCTS}>
+                  <Button leftIcon={<Compass className="size-4" />}>
+                    {t('account.dashboard.browseProducts')}
+                  </Button>
                 </Link>
-              ))}
+                <Link to={ROUTES.ACCOUNT_TICKET_NEW}>
+                  <Button variant="outline" leftIcon={<LifeBuoy className="size-4" />}>
+                    {t('account.dashboard.newTicket')}
+                  </Button>
+                </Link>
+              </div>
             </div>
-          </div>
-        </RevealOnScroll>
+          </RevealOnScroll>
+        </>
       )}
-
-      <RevealOnScroll>
-        <div className="rounded-2xl border border-border p-5">
-          <h2 className="mb-4 text-lg font-semibold text-text-primary">
-            {t('account.dashboard.quickActions')}
-          </h2>
-          <div className="flex flex-wrap gap-3">
-            <Link to={ROUTES.PRODUCTS}>
-              <Button leftIcon={<Compass className="size-4" />}>
-                {t('account.dashboard.browseProducts')}
-              </Button>
-            </Link>
-            <Link to={ROUTES.ACCOUNT_TICKET_NEW}>
-              <Button variant="outline" leftIcon={<LifeBuoy className="size-4" />}>
-                {t('account.dashboard.newTicket')}
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </RevealOnScroll>
     </div>
   )
 }
