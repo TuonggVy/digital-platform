@@ -10,6 +10,7 @@ import { useUiStore } from '@/stores/uiStore'
 import { Seo } from '@/components/common/Seo'
 import { Input } from '@/components/common/Input'
 import { Button } from '@/components/common/Button'
+import { AccountPageHeader } from '@/components/account/AccountPageHeader'
 import { RevealOnScroll } from '@/components/animation/RevealOnScroll'
 
 function buildProfileSchema(t: TFunction) {
@@ -76,11 +77,7 @@ export function ProfilePage() {
     <div className="mx-auto flex max-w-2xl flex-col gap-6">
       <Seo title={t('account.profile.title')} />
 
-      <RevealOnScroll>
-        <h1 className="text-2xl font-semibold text-text-primary sm:text-3xl">
-          {t('account.profile.title')}
-        </h1>
-      </RevealOnScroll>
+      <AccountPageHeader title={t('account.profile.title')} />
 
       <RevealOnScroll>
         <form

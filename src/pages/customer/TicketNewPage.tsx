@@ -15,6 +15,8 @@ import { Seo } from '@/components/common/Seo'
 import { Input, Textarea } from '@/components/common/Input'
 import { Select } from '@/components/common/Select'
 import { Button } from '@/components/common/Button'
+import { Breadcrumb } from '@/components/common/Breadcrumb'
+import { AccountPageHeader } from '@/components/account/AccountPageHeader'
 import { RevealOnScroll } from '@/components/animation/RevealOnScroll'
 import { ROUTES } from '@/constants/routes'
 
@@ -104,11 +106,14 @@ export function TicketNewPage() {
     <div className="mx-auto flex max-w-2xl flex-col gap-6">
       <Seo title={t('account.tickets.newTicket')} />
 
-      <RevealOnScroll>
-        <h1 className="text-2xl font-semibold text-text-primary sm:text-3xl">
-          {t('account.tickets.newTicket')}
-        </h1>
-      </RevealOnScroll>
+      <AccountPageHeader
+        title={t('account.tickets.newTicket')}
+        breadcrumb={
+          <Breadcrumb
+            items={[{ label: t('account.tickets.title'), href: ROUTES.ACCOUNT_TICKETS }]}
+          />
+        }
+      />
 
       <RevealOnScroll>
         <form

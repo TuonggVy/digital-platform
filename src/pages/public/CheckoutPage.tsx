@@ -1,26 +1,26 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
-import { useForm, useWatch } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import { ArrowRight } from 'lucide-react'
 import { useAuthStore } from '@/stores/authStore'
 import { useCartStore } from '@/stores/cartStore'
 import { useUiStore } from '@/stores/uiStore'
 import { useLocale } from '@/hooks/useLocale'
 import { ROUTES } from '@/constants/routes'
-import type { PaymentMethod } from '@/types'
 import { orderApiService } from '@/services/orderApiService'
 import type { CreateOrderRequest } from '@/services/orderApiService'
 import { Seo } from '@/components/common/Seo'
 import { Button } from '@/components/common/Button'
-import { Input, Textarea } from '@/components/common/Input'
-import { RadioGroup } from '@/components/common/RadioGroup'
-import { CartItemRow } from '@/components/cart/CartItemRow'
-import { RevealOnScroll } from '@/components/animation/RevealOnScroll'
-import { OrderSummaryCard } from '@/components/checkout/OrderSummaryCard'
-import { StepIndicator } from '@/components/checkout/StepIndicator'
-import { PaymentQrPanel } from '@/components/checkout/PaymentQrPanel'
+import { CheckoutLayout } from '@/components/checkout/CheckoutLayout'
+import { CheckoutReviewCard } from '@/components/checkout/CheckoutReviewCard'
+import { CheckoutProductReview } from '@/components/checkout/CheckoutProductReview'
+import { CheckoutOrderSummary } from '@/components/checkout/CheckoutOrderSummary'
+import { CheckoutCustomerForm, type CustomerInfoFormValues } from '@/components/checkout/CheckoutCustomerForm'
+import { CheckoutSecurityNotice } from '@/components/checkout/CheckoutSecurityNotice'
+import { MobileOrderSummary } from '@/components/checkout/MobileOrderSummary'
 
 const phoneRegex = /^[0-9+()\-\s]{8,15}$/
 
@@ -38,8 +38,12 @@ function buildCustomerInfoSchema(t: (key: string) => string) {
   })
 }
 
-type CustomerInfoFormValues = z.infer<ReturnType<typeof buildCustomerInfoSchema>>
-
+/**
+ * The "Information" step of checkout only — collect + validate customer info,
+ * create the order, then hand off to PaymentPage. Payment-method selection no
+ * longer lives here (see PaymentPage): creating an order only reserves it
+ * (status PENDING/AWAITING_PAYMENT), it is never treated as "paid".
+ */
 export function CheckoutPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
@@ -48,14 +52,16 @@ export function CheckoutPage() {
 
   const currentUser = useAuthStore((s) => s.currentUser)
   const cartItems = useCartStore((s) => s.items)
+  // Preview only — computed client-side from the cart for a responsive summary
+  // while typing. The order actually created below carries no price fields at
+  // all; `orderApiService.createOrder`'s response (and PaymentPage after it)
+  // is what reflects the backend's authoritative subtotal/discount/total.
   const subtotal = useCartStore((s) => s.subtotal)
   const discount = useCartStore((s) => s.discount)
   const total = useCartStore((s) => s.total)
   const appliedCoupon = useCartStore((s) => s.appliedCoupon)
   const clearCart = useCartStore((s) => s.clearCart)
 
-  const [step, setStep] = useState<1 | 2 | 3>(1)
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('vietqr')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [orderPlaced, setOrderPlaced] = useState(false)
 
@@ -63,8 +69,6 @@ export function CheckoutPage() {
   const {
     register,
     handleSubmit,
-    control,
-    getValues,
     formState: { errors },
   } = useForm<CustomerInfoFormValues>({
     resolver: zodResolver(schema),
@@ -77,7 +81,6 @@ export function CheckoutPage() {
       note: '',
     },
   })
-  const customerInfo = useWatch({ control })
 
   useEffect(() => {
     if (!currentUser) {
@@ -95,24 +98,12 @@ export function CheckoutPage() {
     return null
   }
 
-  const paymentOptions = [
-    { value: 'vietqr', label: t('checkout.paymentMethod.vietqr') },
-    { value: 'bank_transfer', label: t('checkout.paymentMethod.bank_transfer') },
-    { value: 'e_wallet', label: t('checkout.paymentMethod.e_wallet') },
-    { value: 'international_card', label: t('checkout.paymentMethod.international_card') },
-  ]
-
-  function goToStep2() {
-    setStep(2)
-  }
-
-  async function handlePlaceOrder() {
+  async function onSubmit(values: CustomerInfoFormValues) {
     if (isSubmitting) return
     setIsSubmitting(true)
     try {
-      const values = getValues()
-      // Backend is the sole source of truth for pricing — only productId/packageId/quantity
-      // and customer info are sent, never unitPrice/subtotal/total/discount/paymentMethod.
+      // Backend is the sole source of truth for pricing — only productId/packageId/
+      // quantity and customer info are sent, never unitPrice/subtotal/discount/total.
       const payload: CreateOrderRequest = {
         items: cartItems.map((item) => ({
           productId: item.productId,
@@ -126,185 +117,71 @@ export function CheckoutPage() {
       }
       const order = await orderApiService.createOrder(payload)
       setOrderPlaced(true)
+      // Only clear the cart once the order is confirmed created, never before.
       clearCart()
-      // Order creation only reserves the order (status PENDING) — payment is a
-      // separate step handled by the Payment domain (see PaymentPage), not implied
-      // by checkout completing.
+      // Creating the order only reserves it (status PENDING/AWAITING_PAYMENT) —
+      // it does not mean payment succeeded. That's PaymentPage's job next.
       navigate(ROUTES.CHECKOUT_PAYMENT(order.id), { replace: true })
     } catch (error) {
       const message = error instanceof Error ? error.message : t('toast.genericError')
       showToast(message, 'error')
-    } finally {
       setIsSubmitting(false)
     }
   }
 
+  const summary = (
+    <CheckoutOrderSummary
+      variant="embedded"
+      subtotal={subtotal}
+      discount={discount}
+      total={total}
+      locale={locale}
+      couponCode={appliedCoupon?.code}
+    />
+  )
+
+  const coupon = appliedCoupon ? (
+    <p className="rounded-xl border border-dashed border-amber-500/40 bg-amber-500/5 p-3 text-xs text-amber-700">
+      {t('checkout.couponNotAppliedYet')}
+    </p>
+  ) : undefined
+
   return (
-    <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
+    <>
       <Seo title={t('checkout.title')} />
+      <CheckoutLayout
+        backTo={ROUTES.CART}
+        backLabel={t('checkout.layout.backToCart')}
+        currentStep={1}
+        left={
+          <CheckoutReviewCard coupon={coupon} summary={summary}>
+            <CheckoutProductReview items={cartItems} locale={locale} />
+          </CheckoutReviewCard>
+        }
+        mobileSummary={
+          <MobileOrderSummary total={total} locale={locale}>
+            <CheckoutProductReview items={cartItems} locale={locale} />
+            {summary}
+          </MobileOrderSummary>
+        }
+      >
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6" noValidate>
+          <CheckoutCustomerForm register={register} errors={errors} />
 
-      <h1 className="text-2xl font-semibold text-text-primary sm:text-3xl">
-        {t('checkout.title')}
-      </h1>
+          <CheckoutSecurityNotice />
 
-      <div className="mt-8">
-        <StepIndicator
-          steps={[
-            t('checkout.steps.info'),
-            t('checkout.steps.review'),
-            t('checkout.steps.payment'),
-          ]}
-          currentStep={step}
-        />
-      </div>
-
-      <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-3">
-        <div className="rounded-2xl border border-border bg-surface/40 p-5 sm:p-8 lg:col-span-2">
-          {step === 1 && (
-            <RevealOnScroll direction="none">
-              <h2 className="text-lg font-semibold text-text-primary">
-                {t('checkout.steps.info')}
-              </h2>
-              <form onSubmit={handleSubmit(goToStep2)} className="mt-5 flex flex-col gap-4">
-                <Input
-                  label={t('checkout.customerInfo.fullName')}
-                  error={errors.fullName?.message}
-                  {...register('fullName')}
-                />
-                <Input
-                  type="email"
-                  label={t('checkout.customerInfo.email')}
-                  error={errors.email?.message}
-                  {...register('email')}
-                />
-                <Input
-                  label={t('checkout.customerInfo.phone')}
-                  error={errors.phone?.message}
-                  {...register('phone')}
-                />
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  <Input label={t('checkout.customerInfo.company')} {...register('company')} />
-                  <Input label={t('checkout.customerInfo.taxCode')} {...register('taxCode')} />
-                </div>
-                <Textarea label={t('checkout.customerInfo.note')} rows={3} {...register('note')} />
-
-                <div className="mt-2 flex justify-end">
-                  <Button type="submit" size="lg">
-                    {t('common.continue')}
-                  </Button>
-                </div>
-              </form>
-            </RevealOnScroll>
-          )}
-
-          {step === 2 && (
-            <RevealOnScroll direction="none">
-              <h2 className="text-lg font-semibold text-text-primary">
-                {t('checkout.steps.review')}
-              </h2>
-              <div className="mt-5 divide-y divide-border rounded-xl border border-border px-4">
-                {cartItems.map((item) => (
-                  <CartItemRow key={item.cartItemId} item={item} compact />
-                ))}
-              </div>
-
-              <div className="mt-6 flex items-center justify-between">
-                <h3 className="text-sm font-semibold text-text-primary">
-                  {t('checkout.steps.info')}
-                </h3>
-                <button
-                  type="button"
-                  onClick={() => setStep(1)}
-                  className="text-xs font-medium text-primary hover:underline"
-                >
-                  {t('common.back')}
-                </button>
-              </div>
-              <div className="mt-2 grid grid-cols-1 gap-x-6 gap-y-1.5 rounded-xl border border-border p-4 text-sm sm:grid-cols-2">
-                <p>
-                  <span className="text-text-secondary">
-                    {t('checkout.customerInfo.fullName')}:{' '}
-                  </span>
-                  <span className="text-text-primary">{customerInfo.fullName}</span>
-                </p>
-                <p>
-                  <span className="text-text-secondary">{t('checkout.customerInfo.email')}: </span>
-                  <span className="text-text-primary">{customerInfo.email}</span>
-                </p>
-                <p>
-                  <span className="text-text-secondary">{t('checkout.customerInfo.phone')}: </span>
-                  <span className="text-text-primary">{customerInfo.phone}</span>
-                </p>
-                {customerInfo.company && (
-                  <p>
-                    <span className="text-text-secondary">
-                      {t('checkout.customerInfo.company')}:{' '}
-                    </span>
-                    <span className="text-text-primary">{customerInfo.company}</span>
-                  </p>
-                )}
-              </div>
-
-              <div className="mt-6 flex justify-end">
-                <Button size="lg" onClick={() => setStep(3)}>
-                  {t('common.continue')}
-                </Button>
-              </div>
-            </RevealOnScroll>
-          )}
-
-          {step === 3 && (
-            <div>
-              <h2 className="text-lg font-semibold text-text-primary">
-                {t('checkout.paymentMethod.title')}
-              </h2>
-              <RadioGroup
-                name="paymentMethod"
-                value={paymentMethod}
-                onChange={(value) => setPaymentMethod(value as PaymentMethod)}
-                options={paymentOptions}
-                className="mt-4"
-              />
-
-              {(paymentMethod === 'vietqr' || paymentMethod === 'bank_transfer') && (
-                <div className="mt-4">
-                  <PaymentQrPanel method={paymentMethod} />
-                </div>
-              )}
-
-              {paymentMethod === 'international_card' && (
-                <p className="mt-4 rounded-xl border border-dashed border-border bg-surface/40 p-4 text-sm text-text-secondary">
-                  {t('checkout.internationalCardNote')}
-                </p>
-              )}
-
-              <div className="mt-6 flex items-center justify-between">
-                <Button variant="outline" onClick={() => setStep(2)} disabled={isSubmitting}>
-                  {t('common.back')}
-                </Button>
-                <Button size="lg" onClick={handlePlaceOrder} isLoading={isSubmitting}>
-                  {isSubmitting ? t('checkout.processingOrder') : t('checkout.placeOrder')}
-                </Button>
-              </div>
-            </div>
-          )}
-        </div>
-
-        <div className="lg:sticky lg:top-24">
-          <OrderSummaryCard
-            subtotal={subtotal}
-            discount={discount}
-            total={total}
-            locale={locale}
-            title={t('checkout.orderSummary')}
-          />
-          {appliedCoupon && (
-            <p className="mt-3 rounded-xl border border-dashed border-amber-500/40 bg-amber-500/5 p-3 text-xs text-amber-700">
-              {t('checkout.couponNotAppliedYet')}
-            </p>
-          )}
-        </div>
-      </div>
-    </div>
+          <Button
+            type="submit"
+            size="lg"
+            isLoading={isSubmitting}
+            aria-busy={isSubmitting}
+            rightIcon={!isSubmitting ? <ArrowRight className="size-4" aria-hidden="true" /> : undefined}
+            className="w-full sm:w-auto sm:self-end"
+          >
+            {t('checkout.customerInfo.continue')}
+          </Button>
+        </form>
+      </CheckoutLayout>
+    </>
   )
 }

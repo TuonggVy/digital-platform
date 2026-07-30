@@ -40,6 +40,11 @@
   --admin-text-muted: #667085;
   --admin-primary: #0066b3;
   --admin-primary-soft: rgba(0, 102, 179, 0.09);
+
+  /* Header.tsx renders a `fixed` navbar, h-16 (64px) at every breakpoint — the
+     single source of truth so every fixed-header offset in the app (account
+     shell today, anything else tomorrow) references one number. */
+  --site-header-height: 4rem;
 }
 
 .dark {
@@ -212,6 +217,13 @@ button:disabled,
 .focus-ring:focus-visible {
   outline: 2px solid var(--primary);
   outline-offset: 2px;
+}
+
+/* Customer Account shell — the fixed Header (--site-header-height) needs exactly
+   one compensating offset for every /account/* route. Applied once here on the
+   layout, never per-page, so no page can under- or double-compensate it. */
+.account-page-shell {
+  padding-top: calc(var(--site-header-height) + 1.75rem);
 }
 
 /* Admin dropdown/select menu (Radix Select/Popover content) — subtle open/close,

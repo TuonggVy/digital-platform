@@ -10,7 +10,7 @@ import { EmptyState } from '@/components/common/EmptyState'
 import { LoadingSpinner } from '@/components/common/LoadingSpinner'
 import { Pagination } from '@/components/common/Pagination'
 import { BackendOrderStatusBadge } from '@/components/common/BackendOrderStatusBadge'
-import { RevealOnScroll } from '@/components/animation/RevealOnScroll'
+import { AccountPageHeader } from '@/components/account/AccountPageHeader'
 import { StaggerContainer, StaggerItem } from '@/components/animation/StaggerContainer'
 import { useLocale } from '@/hooks/useLocale'
 import { formatCurrency, formatDate } from '@/utils/formatters'
@@ -59,11 +59,7 @@ export function OrdersPage() {
     <div className="flex flex-col gap-6">
       <Seo title={t('account.orders.title')} />
 
-      <RevealOnScroll>
-        <h1 className="text-2xl font-semibold text-text-primary sm:text-3xl">
-          {t('account.orders.title')}
-        </h1>
-      </RevealOnScroll>
+      <AccountPageHeader title={t('account.orders.title')} />
 
       {isLoading ? (
         <LoadingSpinner className="py-24" label={t('common.loading')} />

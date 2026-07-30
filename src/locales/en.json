@@ -642,19 +642,39 @@
   },
   "checkout": {
     "title": "Checkout",
+    "layout": {
+      "backToCart": "Back to cart",
+      "backToOrders": "Back to my orders",
+      "backStep": "Back to Information step"
+    },
     "steps": {
       "info": "Customer info",
+      "information": "Information",
       "review": "Review order",
       "payment": "Payment",
-      "complete": "Complete"
+      "complete": "Complete",
+      "mobileProgress": "Step {{current}}/{{total}}"
     },
     "customerInfo": {
+      "title": "Billing information",
+      "description": "This information is used to process and contact you about your order.",
       "fullName": "Full name",
       "email": "Email",
       "phone": "Phone number",
       "company": "Company name",
       "taxCode": "Tax code",
-      "note": "Note"
+      "note": "Note",
+      "continue": "Continue to payment"
+    },
+    "review": {
+      "title": "Review your items"
+    },
+    "summary": {
+      "appliedCoupon": "Coupon applied"
+    },
+    "security": {
+      "notice1": "Your payment information is processed securely.",
+      "notice2": "Digital Platform does not store your bank card details."
     },
     "paymentMethod": {
       "title": "Payment method",
@@ -697,15 +717,27 @@
     "method": {
       "label": "Method",
       "sandbox": "Sandbox (test)",
-      "bankTransfer": "Bank transfer"
+      "sandboxDescription": "Simulate a payment result — for testing only.",
+      "bankTransfer": "Bank transfer",
+      "bankTransferDescription": "Transfer using this order's payment details.",
+      "vnpay": "VNPay",
+      "vnpayDescription": "Pay securely via ATM card, bank account, or VNPay QR."
     },
     "createPayment": "Create payment",
+    "payWithVnpay": "Pay with VNPay",
+    "createBankTransfer": "Create bank transfer details",
+    "createSandboxPayment": "Create test payment",
+    "processing": "Processing...",
     "retry": "Retry payment",
     "retryNotice": "Your previous attempt was not successful. Create a new payment to try again.",
     "sandboxInstructions": "This is a sandbox test environment. Click one of the buttons below to simulate a payment result.",
     "sandboxSuccess": "Simulate: Payment succeeded",
     "sandboxFailure": "Simulate: Payment failed",
     "sandboxCancel": "Simulate: Cancel payment",
+    "devTools": {
+      "title": "Development tools",
+      "description": "The buttons below only appear in development to simulate a payment result."
+    },
     "viewOrder": "View order detail",
     "orderSettled": "This order is already settled or no longer requires payment.",
     "payNow": "Pay now",
@@ -715,7 +747,27 @@
     "failureReason": "Failure reason",
     "noPaymentYet": "No payment yet",
     "provider": "Provider",
-    "transactionId": "Provider transaction ID"
+    "transactionId": "Provider transaction ID",
+    "return": {
+      "verifying": "Verifying your payment...",
+      "success": {
+        "title": "Payment successful",
+        "description": "Your order has been confirmed."
+      },
+      "failed": {
+        "title": "Payment failed",
+        "description": "The transaction was not successful. You can try paying again."
+      },
+      "cancelled": {
+        "title": "You cancelled the payment",
+        "description": "The transaction was cancelled. You can try again anytime."
+      },
+      "notFound": {
+        "title": "Transaction not found",
+        "description": "We couldn't find this transaction. Please check your order."
+      },
+      "retry": "Try payment again"
+    }
   },
   "account": {
     "sidebar": {

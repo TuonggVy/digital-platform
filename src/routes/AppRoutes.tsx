@@ -26,6 +26,7 @@ import { CartPage } from '@/pages/public/CartPage'
 import { CheckoutPage } from '@/pages/public/CheckoutPage'
 import { CheckoutSuccessPage } from '@/pages/public/CheckoutSuccessPage'
 import { PaymentPage } from '@/pages/public/PaymentPage'
+import { VnpayReturnPage } from '@/pages/payment/VnpayReturnPage'
 
 import { LoginPage } from '@/pages/auth/LoginPage'
 import { RegisterPage } from '@/pages/auth/RegisterPage'
@@ -75,9 +76,7 @@ export function AppRoutes() {
         <Route path="/terms" element={<TermsPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/cart" element={<CartPage />} />
-        <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="/checkout/success/:orderCode" element={<CheckoutSuccessPage />} />
-        <Route path="/checkout/payment/:orderId" element={<PaymentPage />} />
 
         <Route element={<GuestRoute />}>
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
@@ -92,6 +91,16 @@ export function AppRoutes() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
       </Route>
+
+      {/*
+        Checkout/Payment/VNPay-return render outside PublicLayout on purpose —
+        `CheckoutLayout` (components/checkout/CheckoutLayout.tsx) is their own
+        focused chrome (logo + back link only, no marketing nav/footer), so
+        they aren't nested under any layout Route here.
+      */}
+      <Route path="/checkout" element={<CheckoutPage />} />
+      <Route path="/checkout/payment/:orderId" element={<PaymentPage />} />
+      <Route path="/payment/vnpay/return" element={<VnpayReturnPage />} />
 
       <Route element={<CustomerRoute />}>
         <Route element={<CustomerLayout />}>

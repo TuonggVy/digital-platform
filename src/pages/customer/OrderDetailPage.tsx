@@ -14,6 +14,7 @@ import { LoadingSpinner } from '@/components/common/LoadingSpinner'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { BackendOrderStatusBadge } from '@/components/common/BackendOrderStatusBadge'
 import { PaymentStatusBadge } from '@/components/common/PaymentStatusBadge'
+import { AccountPageHeader } from '@/components/account/AccountPageHeader'
 import { RevealOnScroll } from '@/components/animation/RevealOnScroll'
 import { useUiStore } from '@/stores/uiStore'
 import { useLocale } from '@/hooks/useLocale'
@@ -85,217 +86,228 @@ export function OrderDetailPage() {
     return null
   }
 
-  if (isLoading) {
-    return <LoadingSpinner className="py-32" label={t('common.loading')} />
-  }
-
-  if (error || !order) {
-    return (
-      <EmptyState
-        icon={<AlertCircle className="size-6" />}
-        title={t('account.orderDetail.notFound')}
-        description={error ?? undefined}
-        action={
-          <Link to={ROUTES.ACCOUNT_ORDERS}>
-            <Button variant="outline">{t('account.orders.title')}</Button>
-          </Link>
-        }
-      />
-    )
-  }
-
-  const canCancel = CANCELLABLE_STATUSES.includes(order.status)
+  const canCancel = order ? CANCELLABLE_STATUSES.includes(order.status) : false
   const latestPayment = payments[0] ?? null
   const needsPaymentAction =
+    order != null &&
     UNSETTLED_ORDER_STATUSES.includes(order.status) &&
     (!latestPayment || TERMINAL_PAYMENT_STATUSES.includes(latestPayment.status))
   const paymentCtaLabel = !latestPayment ? t('payment.payNow') : t('payment.retry')
 
   return (
     <div className="flex flex-col gap-6">
-      <Seo title={`${t('account.orderDetail.title')} - ${order.orderCode}`} />
+      <Seo
+        title={
+          order
+            ? `${t('account.orderDetail.title')} - ${order.orderCode}`
+            : t('account.orderDetail.title')
+        }
+      />
 
       <Breadcrumb
         items={[
           { label: t('account.orders.title'), href: ROUTES.ACCOUNT_ORDERS },
-          { label: order.orderCode },
+          ...(order ? [{ label: order.orderCode }] : []),
         ]}
       />
 
-      <RevealOnScroll>
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h1 className="text-2xl font-semibold text-text-primary sm:text-3xl">
-              {order.orderCode}
-            </h1>
-            <p className="text-sm text-text-secondary">
-              {formatDateTime(order.createdDate, locale)}
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            <BackendOrderStatusBadge status={order.status} />
-            {canCancel && (
-              <Button
-                size="sm"
-                variant="danger"
-                disabled={isCancelling}
-                onClick={() => setIsConfirmOpen(true)}
-              >
-                {t('account.orderDetail.cancelOrder')}
-              </Button>
-            )}
-          </div>
-        </div>
-      </RevealOnScroll>
+      <AccountPageHeader
+        title={order ? order.orderCode : t('account.orderDetail.title')}
+        description={order ? formatDateTime(order.createdDate, locale) : undefined}
+        actions={
+          order && (
+            <>
+              <BackendOrderStatusBadge status={order.status} />
+              {canCancel && (
+                <Button
+                  size="sm"
+                  variant="danger"
+                  disabled={isCancelling}
+                  onClick={() => setIsConfirmOpen(true)}
+                >
+                  {t('account.orderDetail.cancelOrder')}
+                </Button>
+              )}
+            </>
+          )
+        }
+      />
 
-      <RevealOnScroll>
-        <div className="rounded-2xl border border-border p-5">
-          <h2 className="mb-4 text-lg font-semibold text-text-primary">
-            {t('account.orderDetail.items')}
-          </h2>
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[560px] text-left text-sm">
-              <thead>
-                <tr className="border-b border-border text-xs text-text-secondary">
-                  <th className="py-2 pr-3 font-medium">{t('account.orders.products')}</th>
-                  <th className="py-2 pr-3 font-medium">{t('cart.package')}</th>
-                  <th className="py-2 pr-3 font-medium">{t('common.quantity')}</th>
-                  <th className="py-2 pr-3 font-medium">{t('productDetail.totalPrice')}</th>
-                  <th className="py-2 pl-3 text-right font-medium">{t('account.orders.total')}</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
-                {(order.items ?? []).map((item) => (
-                  <tr key={item.id}>
-                    <td className="py-3 pr-3 font-medium text-text-primary">
-                      {localize(item.productName, locale)}
-                    </td>
-                    <td className="py-3 pr-3 text-text-secondary">
-                      {item.packageName ? localize(item.packageName, locale) : '-'}
-                    </td>
-                    <td className="py-3 pr-3 text-text-secondary">{item.quantity}</td>
-                    <td className="py-3 pr-3 text-text-secondary">
-                      {formatCurrency(item.unitPrice, locale)}
-                    </td>
-                    <td className="py-3 pl-3 text-right font-medium text-text-primary">
-                      {formatCurrency(item.totalPrice, locale)}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+      {isLoading ? (
+        <LoadingSpinner className="py-24" label={t('common.loading')} />
+      ) : error || !order ? (
+        <EmptyState
+          icon={<AlertCircle className="size-6" />}
+          title={t('account.orderDetail.notFound')}
+          description={error ?? undefined}
+          action={
+            <Link to={ROUTES.ACCOUNT_ORDERS}>
+              <Button variant="outline">{t('account.orders.title')}</Button>
+            </Link>
+          }
+        />
+      ) : (
+        <>
+          <RevealOnScroll>
+            <div className="rounded-2xl border border-border p-5">
+              <h2 className="mb-4 text-lg font-semibold text-text-primary">
+                {t('account.orderDetail.items')}
+              </h2>
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[560px] text-left text-sm">
+                  <thead>
+                    <tr className="border-b border-border text-xs text-text-secondary">
+                      <th className="py-2 pr-3 font-medium">{t('account.orders.products')}</th>
+                      <th className="py-2 pr-3 font-medium">{t('cart.package')}</th>
+                      <th className="py-2 pr-3 font-medium">{t('common.quantity')}</th>
+                      <th className="py-2 pr-3 font-medium">{t('productDetail.totalPrice')}</th>
+                      <th className="py-2 pl-3 text-right font-medium">
+                        {t('account.orders.total')}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border">
+                    {(order.items ?? []).map((item) => (
+                      <tr key={item.id}>
+                        <td className="py-3 pr-3 font-medium text-text-primary">
+                          {localize(item.productName, locale)}
+                        </td>
+                        <td className="py-3 pr-3 text-text-secondary">
+                          {item.packageName ? localize(item.packageName, locale) : '-'}
+                        </td>
+                        <td className="py-3 pr-3 text-text-secondary">{item.quantity}</td>
+                        <td className="py-3 pr-3 text-text-secondary">
+                          {formatCurrency(item.unitPrice, locale)}
+                        </td>
+                        <td className="py-3 pl-3 text-right font-medium text-text-primary">
+                          {formatCurrency(item.totalPrice, locale)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
 
-          <div className="mt-4 flex flex-col items-end gap-1.5 border-t border-border pt-4 text-sm">
-            <div className="flex w-full max-w-xs justify-between text-text-secondary sm:w-64">
-              <span>{t('cart.subtotal')}</span>
-              <span>{formatCurrency(order.subtotal, locale)}</span>
+              <div className="mt-4 flex flex-col items-end gap-1.5 border-t border-border pt-4 text-sm">
+                <div className="flex w-full max-w-xs justify-between text-text-secondary sm:w-64">
+                  <span>{t('cart.subtotal')}</span>
+                  <span>{formatCurrency(order.subtotal, locale)}</span>
+                </div>
+                {order.discountAmount > 0 && (
+                  <div className="flex w-full max-w-xs justify-between text-text-secondary sm:w-64">
+                    <span>{t('cart.discount')}</span>
+                    <span>-{formatCurrency(order.discountAmount, locale)}</span>
+                  </div>
+                )}
+                {order.taxAmount > 0 && (
+                  <div className="flex w-full max-w-xs justify-between text-text-secondary sm:w-64">
+                    <span>{t('account.orderDetail.tax')}</span>
+                    <span>{formatCurrency(order.taxAmount, locale)}</span>
+                  </div>
+                )}
+                <div className="flex w-full max-w-xs justify-between text-base font-semibold text-text-primary sm:w-64">
+                  <span>{t('cart.total')}</span>
+                  <span>{formatCurrency(order.totalAmount, locale)}</span>
+                </div>
+              </div>
             </div>
-            {order.discountAmount > 0 && (
-              <div className="flex w-full max-w-xs justify-between text-text-secondary sm:w-64">
-                <span>{t('cart.discount')}</span>
-                <span>-{formatCurrency(order.discountAmount, locale)}</span>
-              </div>
-            )}
-            {order.taxAmount > 0 && (
-              <div className="flex w-full max-w-xs justify-between text-text-secondary sm:w-64">
-                <span>{t('account.orderDetail.tax')}</span>
-                <span>{formatCurrency(order.taxAmount, locale)}</span>
-              </div>
-            )}
-            <div className="flex w-full max-w-xs justify-between text-base font-semibold text-text-primary sm:w-64">
-              <span>{t('cart.total')}</span>
-              <span>{formatCurrency(order.totalAmount, locale)}</span>
-            </div>
-          </div>
-        </div>
-      </RevealOnScroll>
+          </RevealOnScroll>
 
-      <RevealOnScroll>
-        <div className="rounded-2xl border border-border p-5">
-          <h2 className="mb-4 text-lg font-semibold text-text-primary">{t('payment.title')}</h2>
-          {latestPayment ? (
-            <dl className="flex flex-col gap-3 text-sm">
-              <div className="flex justify-between gap-3">
-                <dt className="text-text-secondary">{t('payment.paymentCode')}</dt>
-                <dd className="text-right font-medium text-text-primary">{latestPayment.paymentCode}</dd>
-              </div>
-              <div className="flex justify-between gap-3">
-                <dt className="text-text-secondary">{t('payment.method.label')}</dt>
-                <dd className="text-right font-medium text-text-primary">
-                  {t(`payment.method.${latestPayment.method === 'SANDBOX' ? 'sandbox' : 'bankTransfer'}`)}
-                </dd>
-              </div>
-              <div className="flex justify-between gap-3">
-                <dt className="text-text-secondary">{t('payment.status')}</dt>
-                <dd className="text-right">
-                  <PaymentStatusBadge status={latestPayment.status} />
-                </dd>
-              </div>
-              <div className="flex justify-between gap-3">
-                <dt className="text-text-secondary">{t('payment.amount')}</dt>
-                <dd className="text-right font-medium text-text-primary">
-                  {formatCurrency(latestPayment.amount, locale)}
-                </dd>
-              </div>
-              {latestPayment.paidAt && (
+          <RevealOnScroll>
+            <div className="rounded-2xl border border-border p-5">
+              <h2 className="mb-4 text-lg font-semibold text-text-primary">{t('payment.title')}</h2>
+              {latestPayment ? (
+                <dl className="flex flex-col gap-3 text-sm">
+                  <div className="flex justify-between gap-3">
+                    <dt className="text-text-secondary">{t('payment.paymentCode')}</dt>
+                    <dd className="text-right font-medium text-text-primary">
+                      {latestPayment.paymentCode}
+                    </dd>
+                  </div>
+                  <div className="flex justify-between gap-3">
+                    <dt className="text-text-secondary">{t('payment.method.label')}</dt>
+                    <dd className="text-right font-medium text-text-primary">
+                      {t(
+                        `payment.method.${latestPayment.method === 'SANDBOX' ? 'sandbox' : 'bankTransfer'}`,
+                      )}
+                    </dd>
+                  </div>
+                  <div className="flex justify-between gap-3">
+                    <dt className="text-text-secondary">{t('payment.status')}</dt>
+                    <dd className="text-right">
+                      <PaymentStatusBadge status={latestPayment.status} />
+                    </dd>
+                  </div>
+                  <div className="flex justify-between gap-3">
+                    <dt className="text-text-secondary">{t('payment.amount')}</dt>
+                    <dd className="text-right font-medium text-text-primary">
+                      {formatCurrency(latestPayment.amount, locale)}
+                    </dd>
+                  </div>
+                  {latestPayment.paidAt && (
+                    <div className="flex justify-between gap-3">
+                      <dt className="text-text-secondary">{t('payment.paidAt')}</dt>
+                      <dd className="text-right font-medium text-text-primary">
+                        {formatDateTime(latestPayment.paidAt, locale)}
+                      </dd>
+                    </div>
+                  )}
+                  {latestPayment.failureReason && (
+                    <div className="flex justify-between gap-3">
+                      <dt className="text-text-secondary">{t('payment.failureReason')}</dt>
+                      <dd className="text-right font-medium text-text-primary">
+                        {latestPayment.failureReason}
+                      </dd>
+                    </div>
+                  )}
+                </dl>
+              ) : (
+                <p className="text-sm text-text-secondary">{t('payment.noPaymentYet')}</p>
+              )}
+              {needsPaymentAction && (
+                <Button
+                  className="mt-4 w-full sm:w-auto"
+                  onClick={() => navigate(ROUTES.CHECKOUT_PAYMENT(order.id))}
+                >
+                  {paymentCtaLabel}
+                </Button>
+              )}
+            </div>
+          </RevealOnScroll>
+
+          <RevealOnScroll>
+            <div className="rounded-2xl border border-border p-5">
+              <h2 className="mb-4 text-lg font-semibold text-text-primary">
+                {t('account.orderDetail.customerInfo')}
+              </h2>
+              <dl className="flex flex-col gap-3 text-sm">
                 <div className="flex justify-between gap-3">
-                  <dt className="text-text-secondary">{t('payment.paidAt')}</dt>
+                  <dt className="text-text-secondary">{t('checkout.customerInfo.fullName')}</dt>
+                  <dd className="text-right font-medium text-text-primary">{order.customerName}</dd>
+                </div>
+                <div className="flex justify-between gap-3">
+                  <dt className="text-text-secondary">{t('checkout.customerInfo.email')}</dt>
                   <dd className="text-right font-medium text-text-primary">
-                    {formatDateTime(latestPayment.paidAt, locale)}
+                    {order.customerEmail}
                   </dd>
                 </div>
-              )}
-              {latestPayment.failureReason && (
                 <div className="flex justify-between gap-3">
-                  <dt className="text-text-secondary">{t('payment.failureReason')}</dt>
+                  <dt className="text-text-secondary">{t('checkout.customerInfo.phone')}</dt>
                   <dd className="text-right font-medium text-text-primary">
-                    {latestPayment.failureReason}
+                    {order.customerPhone}
                   </dd>
                 </div>
-              )}
-            </dl>
-          ) : (
-            <p className="text-sm text-text-secondary">{t('payment.noPaymentYet')}</p>
-          )}
-          {needsPaymentAction && (
-            <Button
-              className="mt-4 w-full sm:w-auto"
-              onClick={() => navigate(ROUTES.CHECKOUT_PAYMENT(order.id))}
-            >
-              {paymentCtaLabel}
-            </Button>
-          )}
-        </div>
-      </RevealOnScroll>
-
-      <RevealOnScroll>
-        <div className="rounded-2xl border border-border p-5">
-          <h2 className="mb-4 text-lg font-semibold text-text-primary">
-            {t('account.orderDetail.customerInfo')}
-          </h2>
-          <dl className="flex flex-col gap-3 text-sm">
-            <div className="flex justify-between gap-3">
-              <dt className="text-text-secondary">{t('checkout.customerInfo.fullName')}</dt>
-              <dd className="text-right font-medium text-text-primary">{order.customerName}</dd>
+                {order.note && (
+                  <div className="flex justify-between gap-3">
+                    <dt className="text-text-secondary">{t('checkout.customerInfo.note')}</dt>
+                    <dd className="text-right font-medium text-text-primary">{order.note}</dd>
+                  </div>
+                )}
+              </dl>
             </div>
-            <div className="flex justify-between gap-3">
-              <dt className="text-text-secondary">{t('checkout.customerInfo.email')}</dt>
-              <dd className="text-right font-medium text-text-primary">{order.customerEmail}</dd>
-            </div>
-            <div className="flex justify-between gap-3">
-              <dt className="text-text-secondary">{t('checkout.customerInfo.phone')}</dt>
-              <dd className="text-right font-medium text-text-primary">{order.customerPhone}</dd>
-            </div>
-            {order.note && (
-              <div className="flex justify-between gap-3">
-                <dt className="text-text-secondary">{t('checkout.customerInfo.note')}</dt>
-                <dd className="text-right font-medium text-text-primary">{order.note}</dd>
-              </div>
-            )}
-          </dl>
-        </div>
-      </RevealOnScroll>
+          </RevealOnScroll>
+        </>
+      )}
 
       <ConfirmDialog
         isOpen={isConfirmOpen}
