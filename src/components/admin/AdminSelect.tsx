@@ -143,10 +143,7 @@ export function AdminSelect({
               contentClassName,
             )}
           >
-            <RadixSelect.ScrollUpButton className="flex items-center justify-center py-1 text-admin-text-muted">
-              <ChevronDown className="size-3.5 rotate-180" />
-            </RadixSelect.ScrollUpButton>
-            <RadixSelect.Viewport className="max-h-[300px] overflow-y-auto">
+            <RadixSelect.Viewport className="max-h-[300px] overflow-y-auto overscroll-contain [scrollbar-gutter:stable]">
               {options.length === 0 ? (
                 <p className="px-2.5 py-2 text-sm text-admin-text-muted">—</p>
               ) : (
@@ -180,9 +177,6 @@ export function AdminSelect({
                 ))
               )}
             </RadixSelect.Viewport>
-            <RadixSelect.ScrollDownButton className="flex items-center justify-center py-1 text-admin-text-muted">
-              <ChevronDown className="size-3.5" />
-            </RadixSelect.ScrollDownButton>
           </RadixSelect.Content>
         </RadixSelect.Portal>
       </RadixSelect.Root>
